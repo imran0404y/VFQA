@@ -1,4 +1,5 @@
 package utilities;
+
 import Libraries.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,30 +9,30 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import io.appium.java_client.android.AndroidDriver;
 
 @SuppressWarnings("rawtypes")
-public class SetCapabilities extends Driver{
-	
+public class SetCapabilities extends Driver {
+
 	static AndroidDriver dr;
 	static String DeviceName;
-	
+
 	public String setDialerCapabilities() {
 		String Test_OutPut = "", Status = "";
 		try {
-		if (!(getdata("DeviceName").equals(""))) {
-			DeviceName = getdata("DeviceName");
-			Result.fUpdateLog("Device Name is set to "+DeviceName);
-			setDialerCapabilities1(DeviceName);
-			Status = "PASS";
-		} else {
-			Result.fUpdateLog("Device "+ DeviceName +" not found");
-			Status = "FAIL";
-		}}
-		catch(Exception e) {
+			if (!(getdata("DeviceName").equals(""))) {
+				DeviceName = getdata("DeviceName");
+				Result.fUpdateLog("Device Name is set to " + DeviceName);
+				setDialerCapabilities1(DeviceName);
+				Status = "PASS";
+			} else {
+				Result.fUpdateLog("Device " + DeviceName + " not found");
+				Status = "FAIL";
+			}
+		} catch (Exception e) {
 			Result.fUpdateLog("Capabilites are not set due to" + e);
 			Status = "FAIL";
 		}
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
-	
+
 	public static void setDialerCapabilities1(String DeviceName) {
 		System.out.println("*** Setting Up Dialer Capabilities ***");
 		try {
@@ -45,8 +46,8 @@ public class SetCapabilities extends Driver{
 			capabilities.setCapability("platformName", "Android");
 			capabilities.setCapability("appPackage", p.getProperty(DeviceName + "_AppPackage_DialerApp"));
 			capabilities.setCapability("appActivity", p.getProperty(DeviceName + "_AppActivity_DialerApp"));
-			dr = new AndroidDriver(
-					new URL("http://127.0.0.1:" + p.getProperty(DeviceName + "_Port") + "/wd/hub"), capabilities);
+			dr = new AndroidDriver(new URL("http://127.0.0.1:" + p.getProperty(DeviceName + "_Port") + "/wd/hub"),
+					capabilities);
 			System.out.println("*** Dialer Capabilities are now Set ***");
 		} catch (Exception e) {
 			Result.fUpdateLog("Capabilites are not set due to" + e);
@@ -66,9 +67,8 @@ public class SetCapabilities extends Driver{
 			capabilities.setCapability("platformName", "Android");
 			capabilities.setCapability("appPackage", p.getProperty(DeviceName + "_AppPackage_MessageApp"));
 			capabilities.setCapability("appActivity", p.getProperty(DeviceName + "_AppActivity_MessageApp"));
-			@SuppressWarnings("unused")
-			AndroidDriver dr = new AndroidDriver(
-					new URL("http://127.0.0.1:" + p.getProperty(DeviceName + "_Port") + "/wd/hub"), capabilities);
+			dr = new AndroidDriver(new URL("http://127.0.0.1:" + p.getProperty(DeviceName + "_Port") + "/wd/hub"),
+					capabilities);
 			Result.fUpdateLog("*** Messenger Capabilities are now Set ***");
 		} catch (Exception e) {
 			Result.fUpdateLog("Capabilites are not set due to" + e);

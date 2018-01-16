@@ -2,8 +2,6 @@ package utilities;
 import Libraries.*;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.soap.SOAPMessage;
@@ -86,10 +84,9 @@ public class MobileRTBCheck extends Driver {
 				// Read the request XML File
 				SOAPMessage message = CO.readSoapMessage(XMLRequest_Path, SOAP_Action);
 				message.writeTo(System.out);
-				// String
-				// URL="http://10.162.53.91:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
+				String URL="http://10.162.53.91:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
 				// Establish SOAP Connection and send request to End Point URL
-				SOAPMessage soapResponse = CO.XML_Request(message, URL.get());
+				SOAPMessage soapResponse = CO.XML_Request(message, URL);
 
 				// Process the SOAP Response and store it
 				XMLResponse_Path = XMLfilepath + "/" + currKW.get() + "_" + MSISDN + "_Response.xml";
@@ -113,7 +110,7 @@ public class MobileRTBCheck extends Driver {
 				utils.clenaup();
 				Fillo fillo = new Fillo();
 				Connection connection = fillo
-						.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\result.xlsx");
+						.getConnection("MobileFramework\\db\\result.xlsx");
 				String strQuery;
 
 				for (int i = 0; i < list.getLength(); i++) {
@@ -123,11 +120,13 @@ public class MobileRTBCheck extends Driver {
 					BucketExpiry = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:DueNow", i);
 					if(BucketID=="") {
 						BucketName="Primary Balance";
-						BucketID="1";
+						BucketID="PRMBAL";
 					}
+					BucketValue=utils.Bal(BucketValue);
 					Priority = utils.getPriority(BucketID);
 					Type = utils.getType(BucketID);
 					strQuery = "INSERT INTO pre(Bucket_Id,Name,Value,Expiry,Priority,Type) VALUES('" + BucketID + "','" + BucketName + "','" + BucketValue + "','" + BucketExpiry + "','" + Priority + "','" + Type + "')";
+					System.out.println(strQuery);
 					connection.executeUpdate(strQuery);
 					}
 				connection.close();
@@ -176,10 +175,11 @@ public class MobileRTBCheck extends Driver {
 				// Read the request XML File
 				SOAPMessage message = CO.readSoapMessage(XMLRequest_Path, SOAP_Action);
 				message.writeTo(System.out);
+				String URL="http://10.162.53.91:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
 				// String
 				// URL="http://10.162.53.91:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
 				// Establish SOAP Connection and send request to End Point URL
-				SOAPMessage soapResponse = CO.XML_Request(message, URL.get());
+				SOAPMessage soapResponse = CO.XML_Request(message, URL);
 
 				// Process the SOAP Response and store it
 				XMLResponse_Path = XMLfilepath + "/" + currKW.get() + "_" + MSISDN + "_Response.xml";
@@ -202,7 +202,7 @@ public class MobileRTBCheck extends Driver {
 				Result.fUpdateLog("Total of elements : " + list.getLength());
 				Fillo fillo = new Fillo();
 				Connection connection = fillo
-						.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\result.xlsx");
+						.getConnection("MobileFramework\\db\\result.xlsx");
 				String strQuery;
 				for (int i = 0; i < list.getLength(); i++) {
 					BucketName = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:English", i);
@@ -211,11 +211,13 @@ public class MobileRTBCheck extends Driver {
 					BucketExpiry = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:DueNow", i);
 					if(BucketID=="") {
 						BucketName="Primary Balance";
-						BucketID="1";
+						BucketID="PRMBAL";
 					}
+					BucketValue=utils.Bal(BucketValue);
 					Priority = utils.getPriority(BucketID);
 					Type = utils.getType(BucketID);
 					strQuery = "INSERT INTO post(Bucket_Id,Name,Value,Expiry,Priority,Type) VALUES('" + BucketID + "','" + BucketName + "','" + BucketValue + "','" + BucketExpiry + "','" + Priority + "','" + Type + "')";
+					System.out.println(strQuery);
 					connection.executeUpdate(strQuery);
 				}
 				Status = "PASS";
@@ -228,61 +230,4 @@ public class MobileRTBCheck extends Driver {
 		
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
-
-	public double ExtractBal(String s) {
-		// String s = "Primary Balance : 11.5500 Your account has primary balance
-		// 0.0000QAR expires on Date Not Given";
-		int qrIndex = s.indexOf(": ");
-		//System.out.println("index is: " + qrIndex);
-		//System.out.println("Text at " + qrIndex + " is:" + s.substring(qrIndex + 1, s.indexOf("Your")));
-		String balancestr = s.substring(qrIndex + 1, s.indexOf("Your"));
-		double balance = Double.parseDouble(balancestr);
-		balance = round(balance, 2);
-		System.out.println("Your balance is QR " + balance);
-		return balance;
-	}
-
-	public static double round(double value, int places) {
-		if (places < 0)
-			throw new IllegalArgumentException();
-
-		BigDecimal bd = new BigDecimal(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
-		return bd.doubleValue();
-	}
-
-	public String LocalOnNetCharging() {
-		double pre, post, charging,actual;
-		String Test_OutPut = "", Status = "",Bucket;
-		try {
-			System.out.println("test");
-			Bucket=utils.findpriority("Local");
-			Result.fUpdateLog(Bucket + "Bucket is having high priority, hence will consume first. ");
-			Test_OutPut+= Bucket + " Bucket is having high priority, hence will consume first.\n";
-			pre = utils.balance(Bucket,"pre");
-			Result.fUpdateLog(pre + " is the previous balance ");
-			Test_OutPut+=pre + " is the previous balance\n";
-			post = utils.balance(Bucket,"post");
-			Result.fUpdateLog(post + " is the balance after usage");
-			Test_OutPut+=post + " is the balance after usage.\n";
-			actual = round(pre-post,2);
-			Result.fUpdateLog(actual + " is the actual charging happened.");
-			Test_OutPut+= actual + " is the actual charging happened.\n";
-			charging = utils.getCharging(Bucket);
-			Result.fUpdateLog(charging + " is the charging expected.");
-			Test_OutPut+=charging + " is the charging expected.\n";
-			if(actual==charging) {
-				Status = "PASS";
-			System.out.println("Pass");}
-			else {
-				Status = "FAIL";
-				System.out.println("Fail");
-			}
-		} catch (Exception e) {
-			Status = "FAIL";
-			Test_OutPut+= "Exception Occured" + e ;	
-		}
-		return Status + "@@" + Test_OutPut + "<br/>";
-	}
-
 }

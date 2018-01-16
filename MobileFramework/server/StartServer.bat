@@ -1,1 +1,1 @@
-java -jar selenium-server-standalone-3.7.1.jar -role hub -port 4444
+java -jar ../../"Selenium Jars"/selenium-server-standalone-3.8.1.jar -role hub -port 4444

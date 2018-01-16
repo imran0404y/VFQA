@@ -17,11 +17,14 @@ import com.codoid.products.fillo.Connection;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
 
+import Libraries.Result;
+
 public class utils {
-	public static void takeScreenShot() throws IOException {
+	public static void takeScreenShot() throws IOException, InterruptedException {
 		// Set folder name to store screenshots.
 		String destDir = "screenshots";
 		// Capture screenshot.
+		Thread.sleep(5000);
 		File scrFile = ((TakesScreenshot) SetCapabilities.dr).getScreenshotAs(OutputType.FILE);
 		// Set date format to set It as screenshot file name.
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy__hh_mm_ssaa");
@@ -33,6 +36,7 @@ public class utils {
 		try {
 			// Copy paste file at destination folder location
 			FileUtils.copyFile(scrFile, new File(destDir + "/" + destFile));
+			Thread.sleep(5000);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -41,14 +45,13 @@ public class utils {
 
 	public static String getPriority(String BucketId) throws FilloException {
 		Fillo fillo = new Fillo();
-		Connection connection = fillo
-				.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\priority.xlsx");
+		Connection connection = fillo.getConnection("MobileFramework\\db\\priority.xlsx");
 		String strQuery = "Select * from sheet1 where Bucket_ID='" + BucketId + "'";
 		Recordset recordset = connection.executeQuery(strQuery);
 		String a;
 		recordset.next();
 		a = recordset.getField("Priority");
-		System.out.println(a);
+		// System.out.println(a);
 		connection.close();
 		return a;
 
@@ -56,8 +59,7 @@ public class utils {
 
 	public static String getType(String BucketId) throws FilloException {
 		Fillo fillo = new Fillo();
-		Connection connection = fillo
-				.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\priority.xlsx");
+		Connection connection = fillo.getConnection("MobileFramework\\db\\priority.xlsx");
 		String strQuery = "Select * from sheet1 where Bucket_ID='" + BucketId + "'";
 		Recordset recordset = connection.executeQuery(strQuery);
 		String a;
@@ -72,9 +74,8 @@ public class utils {
 		int counter = 0;
 		String BuckId = null;
 		Fillo fillo = new Fillo();
-		Connection connection = fillo
-				.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\result.xlsx");
-		String strQuery = "Select * from pre where Type='"+Type+"'";
+		Connection connection = fillo.getConnection("MobileFramework\\db\\result.xlsx");
+		String strQuery = "Select * from pre where Type='" + Type + "' and Value !='0'";
 		Recordset recordset = connection.executeQuery(strQuery);
 		TreeMap<Date, String> expiry = new TreeMap<Date, String>();
 		while (recordset.next()) {
@@ -87,7 +88,7 @@ public class utils {
 			Date key = entry.getKey();
 			String value = entry.getValue();
 			// do stuff
-			System.out.println(key + " :: " + value);
+			Result.fUpdateLog(key + " :: " + value);
 			if (exp == value)
 				counter++;
 		}
@@ -104,42 +105,45 @@ public class utils {
 			for (Map.Entry<Integer, String> entry : priority.entrySet()) {
 				Integer key = entry.getKey();
 				String value = entry.getValue();
-				System.out.println(key + " :: " + value);
-			} BuckId = pri;
-		}else
-			BuckId=exp;	
-		return BuckId;		
+				Result.fUpdateLog(key + " :: " + value);
+			}
+			BuckId = pri;
+		} else
+			BuckId = exp;
+		return BuckId;
 	}
-	
+
 	public static double balance(String Bucket, String type) throws FilloException {
 		double Balance;
 		Fillo fillo = new Fillo();
-		Connection connection = fillo
-				.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\result.xlsx");
-		String strQuery = "Select * from "+type+" where Bucket_Id='"+Bucket+"'";
+		Connection connection = fillo.getConnection("MobileFramework\\db\\result.xlsx");
+		String strQuery = "Select * from " + type + " where Bucket_Id='" + Bucket + "'";
 		Recordset recordset = connection.executeQuery(strQuery);
-		for(int i=0;i<=recordset.getCount();i++)
+		for (int i = 0; i <= recordset.getCount(); i++)
 			recordset.next();
 		String str = recordset.getField(2).value();
 		Balance = convBal(str);
 		return Balance;
 	}
-	
+
+	public static String Bal(String a) {
+		a = a.substring(0, a.indexOf(" "));
+		return a;
+	}
+
 	public static double convBal(String a) {
 		double val;
-		a = a.substring(0, a.indexOf(" "));		
 		val = Double.parseDouble(a);
 		return val;
 	}
-	
+
 	public static double getCharging(String Bucket) throws FilloException {
 		double charging;
 		Fillo fillo = new Fillo();
-		Connection connection = fillo
-				.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\priority.xlsx");
-		String strQuery = "Select * from sheet1 where Bucket_Id='"+Bucket+"'";
+		Connection connection = fillo.getConnection("MobileFramework\\db\\priority.xlsx");
+		String strQuery = "Select * from sheet1 where Bucket_Id='" + Bucket + "'";
 		Recordset recordset = connection.executeQuery(strQuery);
-		for(int i=0;i<=recordset.getCount();i++)
+		for (int i = 0; i <= recordset.getCount(); i++)
 			recordset.next();
 		String str = recordset.getField(3).value();
 		charging = Double.parseDouble(str);
@@ -148,13 +152,11 @@ public class utils {
 
 	public static void clenaup() throws FilloException {
 		Fillo fillo = new Fillo();
-		Connection connection = fillo
-				.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\result.xlsx");
+		Connection connection = fillo.getConnection("MobileFramework\\db\\result.xlsx");
 		String strQuery = "Update pre Set Bucket_Id = '', Name='',Value='',Expiry='',Priority='',Type=''";
 		connection.executeUpdate(strQuery);
 		connection.close();
-		connection = fillo
-				.getConnection("D:\\AutomationScript\\Automation\\VFQA_V1\\MobileFramework\\db\\result.xlsx");
+		connection = fillo.getConnection("MobileFramework\\db\\result.xlsx");
 		strQuery = "Update post Set Bucket_Id = '', Name='',Value='',Expiry='',Priority='',Type=''";
 		connection.executeUpdate(strQuery);
 		connection.close();

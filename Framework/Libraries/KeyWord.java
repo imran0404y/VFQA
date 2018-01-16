@@ -1,5 +1,6 @@
 package Libraries;
 
+import utilities.Charging;
 import utilities.Dialers;
 import utilities.MobileRTBCheck;
 import utilities.SetCapabilities;
@@ -17,7 +18,7 @@ public class KeyWord {
 	Dialers KD = new Dialers();
     SetCapabilities KSC = new SetCapabilities();
     MobileRTBCheck RTB = new MobileRTBCheck();
-
+    Charging Chrg = new Charging();
 
 	// ------------------Keyword CRM -------------------//
 	public String Siebel_Login() {
@@ -59,21 +60,29 @@ public class KeyWord {
 	public String Entp_ContactCreation() {
 		return KC.Entp_ContactCreation();
 	}
-
-	public String Modify() {
-		return KC.Modify();
+	
+	public String RealTimeBalance_Screen() {
+		return KC.RealTimeBalance_Screen();
+	}
+	
+	public String SiebleValidation() {
+		return KC.SiebleValidation();
 	}
 
-	public String Plan_UpgradeDowngrade() {
-		return KC.Plan_UpgradeDowngrade();
+	public String ServicePoint() {
+		return KC.ServicePoint();
+	}
+	
+	public String Modify() {
+		return KC.Modify();
 	}
 
 	public String SIMSwap() {
 		return KC.SIMSwap();
 	}
-
-	public String Change_MSISDN() {
-		return KC.Change_MSISDN();
+	
+	public String Plan_UpgradeDowngrade() {
+		return KC.Plan_UpgradeDowngrade();
 	}
 
 	public String Consumer_Migration() {
@@ -84,10 +93,6 @@ public class KeyWord {
 		return KC.Enterprise_Migration();
 	}
 
-	public String RealTimeBalance_Screen() {
-		return KC.RealTimeBalance_Screen();
-	}
-
 	public String Change_SmartLimit() {
 		return KC.Change_SmartLimit();
 	}
@@ -95,7 +100,11 @@ public class KeyWord {
 	public String BillPayment() {
 		return KC.BillPayment();
 	}
-
+	
+	public String Change_MSISDN() {
+		return KC.Change_MSISDN();
+	}
+	
 	public String Disconnection() {
 		return KC.Disconnection();
 	}
@@ -112,24 +121,32 @@ public class KeyWord {
 		return KC.TransferOfService();
 	}
 
-	public String SiebleValidation() {
-		return KC.SiebleValidation();
-	}
-
 	public String TransferOfOwnership() {
 		return KC.TransferOfOwnership();
 	}
 
-	public String ServicePoint() {
-		return KC.ServicePoint();
+	public String Suspension() {
+		return KC.Suspension();
 	}
-
+	
+	public String Resume() {
+		return KC.Resume();
+	}
+	
 	public String UpgradePromotion_Account360() {
 		return KC.UpgradePromotion_Account360();
 	}
 
 	public String Account360() {
 		return KC.Account360();
+	}
+	
+	public String OpenUI_AccesRrights_6Segments() {
+		return KC.OpenUI_AccesRrights_6Segments();
+	}
+	
+	public String OrderPayments() {
+		return KC.OrderPayments();
 	}
 
 	// ------------------Keyword CRM -------------------//
@@ -223,7 +240,7 @@ public class KeyWord {
 
 	// ---------------------Keyword_OSM------------------------//
 	// ---------------------Mobile Usages------------------------//
-	public String LocalDialerOnNet() {
+	public String LocalCall() {
 		return KD.LocalDialerOnNet();
 	}
 
@@ -239,8 +256,8 @@ public class KeyWord {
 		return RTB.PostCheckBalance();
 	}
 
-	public String LocalOnNetCharging() {
-		return RTB.LocalOnNetCharging();
+	public String LocalCallCharging() {
+		return Chrg.LocalCallCharging();
 	}
 
 	public String RTBLogin() {
