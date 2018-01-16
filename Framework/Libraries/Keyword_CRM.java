@@ -1020,6 +1020,12 @@ public class Keyword_CRM extends Driver {
 				Browser.WebLink.click("SalesOd_Expand");
 				CO.waitforload();
 			}
+			
+			Row_Count = Browser.WebTable.getRowCount("Line_Items");
+			if (Row_Count <= 3) {
+				Browser.WebButton.waittillvisible("Expand");
+				Browser.WebButton.click("Expand");
+			}
 			CO.Action_Update("Add", MSISDN);
 			//Test_OutPut += OrderSubmission().split("@@")[1];
 			
