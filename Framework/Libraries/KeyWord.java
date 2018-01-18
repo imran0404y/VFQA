@@ -215,6 +215,10 @@ public class KeyWord {
 	public String BillGeneration_AccountLevel() {
 		return KP.BillGeneration_AccountLevel();
 	}
+	
+	public String Invoicegeneration() {
+		return KP.Invoicegeneration();
+	}
 	// ---------------------Keyword Putty------------------------//
 
 	// ---------------------Keyword_OSM------------------------//

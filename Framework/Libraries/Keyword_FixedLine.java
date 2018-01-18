@@ -501,9 +501,15 @@ public class Keyword_FixedLine extends Driver {
 	
 	
 			CO.waitforload();
-
-			Test_OutPut += KC.OrderSubmission().split("@@")[1];
+			Row_Count = Browser.WebTable.getRowCount("Line_Items");
+			if (Row_Count <= 3) {
+				Browser.WebButton.waittillvisible("Expand");
+				Browser.WebButton.click("Expand");
+			}
 			CO.Action_Update("Add", "MSISDN");
+			Result.takescreenshot("");
+			//Test_OutPut += KC.OrderSubmission().split("@@")[1];
+			//CO.Action_Update("Add", "MSISDN");
 
 			if (Continue.get()) {
 				Status = "PASS";
