@@ -182,9 +182,9 @@ public class Keyword_Putty extends Driver {
 
 			if (!(getdata("Beyond_PVT_Date").equals(""))) {
 				//./vfq_export_invXML-BILL.pl  -end 17-12-2012 10:10:10 
-				Dt = "./vfq_export_invXML-BILL.pl -end " + getdata("Beyond_PVT_Date").replace("/", "-").replace("m", "");
+				Dt = "./vfq_export_invXML-BILL.pl -end " + getdata("Beyond_PVT_Date").replace("M", "");
 			} else {
-				Dt = "./vfq_export_invXML-BILL.pl -end " + pulldata("Beyond_PVT_Date").replace("/", "-").replace("m", "");
+				Dt = "./vfq_export_invXML-BILL.pl -end " + pulldata("Beyond_PVT_Date").replace("M", "");
 			}
 
 			List<String> commands = new ArrayList<String>();

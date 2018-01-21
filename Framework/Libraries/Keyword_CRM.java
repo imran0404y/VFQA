@@ -1327,12 +1327,14 @@ public class Keyword_CRM extends Driver {
 				}
 
 				CO.Link_Select(Acc);
-				do {
+				
+				// To be commented for QA6
+				/*do {
 					CO.waitforload();
 					Result.fUpdateLog("Loading...");
 				} while (!Browser.WebLink.waitTillEnabled("Acc_Portal"));
 
-				Browser.WebLink.click("Acc_Portal");
+				Browser.WebLink.click("Acc_Portal");*/
 
 				Browser.WebLink.waittillvisible("Acc_Summary");
 

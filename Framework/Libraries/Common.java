@@ -455,9 +455,11 @@ public class Common extends Driver {
 			if (Row == 2) {
 				Browser.WebButton.click("Account360");
 				waitforload();
-				Browser.WebLink.waittillvisible("Acc_Portal");
-				waitforload();
-				Browser.WebLink.click("Acc_Portal");
+				
+				// To be commented for QA6
+				//Browser.WebLink.waittillvisible("Acc_Portal");
+				//waitforload();
+				//Browser.WebLink.click("Acc_Portal");
 				Result.fUpdateLog("Account Search is done Successfully ");
 			} else
 				Continue.set(false);
@@ -554,7 +556,7 @@ public class Common extends Driver {
 				scroll("Prod_Serv_Menu", "WebButton");
 				Browser.WebButton.click("Prod_Serv_Menu");
 			}
-
+			waitforload();
 			String[] objprop = Utlities.FindObject("Menu_Selection", "WebButton");
 			String cellXpath = objprop[0] + Text + "']";
 			if (cDriver.get().findElement(By.xpath(cellXpath)).isDisplayed()) {
@@ -785,6 +787,7 @@ public class Common extends Driver {
 				Browser.WebTable.clickL("Assert", Row, Col);
 			else
 				Continue.set(false);
+			// To be commented for QA6
 			// Browser.WebLink.waittillvisible("Acc_Portal");
 			// waitforload();
 			// Browser.WebLink.click("Acc_Portal");
@@ -854,9 +857,10 @@ public class Common extends Driver {
 				Browser.WebTable.clickL("Assert", Row, Col);
 			else
 				Continue.set(false);
-			Browser.WebLink.waittillvisible("Acc_Portal");
-			waitforload();
-			Browser.WebLink.click("Acc_Portal");
+			// to be commented for QA6
+			//Browser.WebLink.waittillvisible("Acc_Portal");
+			//waitforload();
+			//Browser.WebLink.click("Acc_Portal");
 			Browser.WebLink.waittillvisible("Inst_Assert_ShowMore");
 
 		} catch (Exception e) {
