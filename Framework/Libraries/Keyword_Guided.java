@@ -44,12 +44,7 @@ public class Keyword_Guided extends Driver
 			} else {
 				MediaType = pulldata("MediaType");
 			}
-
-			if (!(getdata("MediaType").equals(""))) {
-				MediaType = getdata("MediaType");
-			} else {
-				MediaType = pulldata("MediaType");
-			}
+			
 			if (!(getdata("BillType").equals(""))) {
 				BillType = getdata("BillType");
 			} else {
@@ -77,7 +72,7 @@ public class Keyword_Guided extends Driver
 			if (!(getdata("ID_Number").equals(""))) {
 				IDNumber = getdata("ID_Number");
 			} else {
-				IDNumber = pulldata("ID_Number") + R.nextInt(1000);
+				IDNumber = pulldata("ID_Number") + R.nextInt(10000);
 			}
 
 			if (!(getdata("ID_Expiry").equals(""))) {
@@ -173,11 +168,13 @@ public class Keyword_Guided extends Driver
 
 			CO.scroll("ID_Number_Guided", "WebEdit");
 			Browser.WebEdit.Set("ID_Number_Guided", IDNumber);
+			Result.fUpdateLog("IDNumber : " + IDNumber);
 			Test_OutPut += "IDNumber : " + IDNumber + ",";
 
 			CO.waitforload();
 			CO.waitforobj("IDType", "ListBox");
 			Browser.ListBox.select("IDType", ID_Type);
+			Result.fUpdateLog("ID_Type : " + ID_Type);
 			Test_OutPut += "ID_Type : " + ID_Type + ",";
 
 			CO.waitforobj("GO", "WebButton");
@@ -271,7 +268,6 @@ public class Keyword_Guided extends Driver
 				CO.waitforload();
 
 				Result.takescreenshot("Address Selected : " + Address);
-				Result.fUpdateLog("Address Selected : " + Address);
 				Test_OutPut += "Address : " + Address + ",";
 				Utlities.StoreValue("Address", Address);
 				CO.waitforload();
@@ -299,6 +295,8 @@ public class Keyword_Guided extends Driver
 			// Browser.ListBox.select("Customer_Segment", Segment);
 			CO.waitforload();
 			Account_Name = Browser.WebEdit.gettext("Account_Name");
+			Test_OutPut += "Account_Name : " + Account_Name + ",";
+			Utlities.StoreValue("Account_Name", Account_Name);
 			Result.takescreenshot("Guided :  Account  Completed");
 			Result.fUpdateLog("Guided :  Account  Completed");
 
@@ -309,7 +307,7 @@ public class Keyword_Guided extends Driver
 			// Billing
 
 			CO.waitforload();
-			// String Account_no= Browser.WebEdit.getAttribute("Guid_Account");
+			//String Account_no= Browser.WebEdit.getAttribute("Guid_Account");
 
 			CO.scroll("MediaType", "ListBox");
 
@@ -505,8 +503,7 @@ public class Keyword_Guided extends Driver
 			int Col, col1, RowCount;
 			Col = CO.Select_Cell("Contact", "Account");
 			Browser.WebTable.SetDataE("Contact", Row, Col, "Account", Account_Name);
-			Test_OutPut += "Account_Name : " + Account_Name + ",";
-			Utlities.StoreValue("Account_Name", Account_Name);
+			
 			col1 = CO.Select_Cell("Contact", "ID Number");
 			Browser.WebTable.SetDataE("Contact", Row, col1, "ID_Number", IDNumber);
 			/*

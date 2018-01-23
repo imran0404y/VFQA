@@ -176,9 +176,10 @@ public class Keyword_Putty extends Driver {
 	public String Invoicegeneration() {
 		String Test_OutPut = "", Status = "";
 		Result.fUpdateLog("------Invoice generation Event Details------");
-		String Dt = "";
+		String Dt = "",x = "";
 		try {
 			String str_FileContent = "";
+			
 
 			if (!(getdata("Beyond_PVT_Date").equals(""))) {
 				//./vfq_export_invXML-BILL.pl  -end 17-12-2012 10:10:10 
@@ -195,7 +196,7 @@ public class Keyword_Putty extends Driver {
 			str_FileContent = Executecmd(nsession.get(), commands, "");
 			
 			Date today = new Date();
-			String x  = today.toString();
+			x  = today.toString();
 			x=x.substring(4, 16);
 			Result.fUpdateLog(x);
 			
@@ -246,16 +247,18 @@ public class Keyword_Putty extends Driver {
 				commands3.add("ls -lrt");
 				String str_FileContent2 = Executecmd(nsession.get(), commands3, "");
 				str_FileContent += str_FileContent2;
+				String xa[]=str_FileContent2.split("\n");
+				int i=xa.length-6;
+				System.out.println(xa[i].length());
+				str_FileContent2 = xa[i].substring(63,xa[i].length()-6);				
+				Result.fUpdateLog(str_FileContent2);
 				
-				Date today3 = new Date();
-				x  = today3.toString();
-				x=x.substring(4, 16);
-				Result.fUpdateLog(x);
-				
-				if(str_FileContent2.contains(x) ){
+				if(str_FileContent2.contains(".zip") ){
 					Continue.set(true);
 					Result.fUpdateLog("latest .zip file is updated : invoice_processed");
 					Test_OutPut += "latest .zip file is updated : invoice_processed" + ",";
+					Test_OutPut += ".Zip file Name : "+ str_FileContent2 + ",";
+					InvoiceZip.set(str_FileContent2);
 					List<String> commands4 = new ArrayList<String>();
 					commands4.add("test");
 					commands4.add("pvt -m0");
@@ -278,6 +281,8 @@ public class Keyword_Putty extends Driver {
 					}
 					
 				}else {
+					Result.fUpdateLog(".Zip file not generated");
+					Test_OutPut += ".Zip file not generated" + ",";
 					Continue.set(false);
 				}
 			}

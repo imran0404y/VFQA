@@ -455,11 +455,12 @@ public class Common extends Driver {
 			if (Row == 2) {
 				Browser.WebButton.click("Account360");
 				waitforload();
-				
-				// To be commented for QA6
-				//Browser.WebLink.waittillvisible("Acc_Portal");
-				//waitforload();
-				//Browser.WebLink.click("Acc_Portal");
+
+				// Comment for QA6
+				if (Browser.WebLink.exist("Acc_Portal")) {
+					waitforload();
+					Browser.WebLink.click("Acc_Portal");
+				}
 				Result.fUpdateLog("Account Search is done Successfully ");
 			} else
 				Continue.set(false);
@@ -502,21 +503,21 @@ public class Common extends Driver {
 				Browser.WebTable.clickL("Assert", Row, Col);
 			else
 				Continue.set(false);
-			// Browser.WebLink.waittillvisible("Acc_Portal");
-			// waitforload();
-			// Browser.WebLink.click("Acc_Portal");
+			// Comment for QA6
+			if (Browser.WebLink.exist("Acc_Portal")) {
+				waitforload();
+				Browser.WebLink.click("Acc_Portal");
+			}
 			Browser.WebLink.waittillvisible("Inst_Assert_ShowMore");
 			Result.takescreenshot("");
-			// Browser.WebLink.click("Inst_Assert_ShowMore");
+
 			waitforload();
 			InstalledAssertChange("New Query                   [Alt+Q]");
 			Col = Select_Cell("Installed_Assert", "Service ID");
 			Browser.WebTable.SetDataE("Installed_Assert", 2, Col, "Serial_Number", MSISDN);
 			Browser.WebButton.click("InstalledAssert_Go");
-			// waitforload();
-			// Browser.WebTable.Expand("Installed_Assert", i, 1);
+
 			Result.takescreenshot("");
-			// }
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -762,10 +763,8 @@ public class Common extends Driver {
 		try {
 			waitforload();
 			int Row = 2, Col;
-			/*
-			 * if (Browser.WebButton.exist("VFQ_LeftScroll")) {
-			 * Browser.WebButton.click("VFQ_LeftScroll"); }
-			 */
+			String Pay_Type = "";
+
 			Title_Select("a", "Home");
 			waitforload();
 			Browser.WebLink.waittillvisible("VQ_Assert");
@@ -788,9 +787,11 @@ public class Common extends Driver {
 			else
 				Continue.set(false);
 			// To be commented for QA6
-			// Browser.WebLink.waittillvisible("Acc_Portal");
-			// waitforload();
-			// Browser.WebLink.click("Acc_Portal");
+			if (Browser.WebLink.exist("Acc_Portal")) {
+				waitforload();
+				Browser.WebLink.click("Acc_Portal");
+			}
+
 			Browser.WebLink.waittillvisible("Inst_Assert_ShowMore");
 			InstalledAssertChange("New Query                   [Alt+Q]");
 			Col = Select_Cell("Installed_Assert", "Service ID");
@@ -798,7 +799,9 @@ public class Common extends Driver {
 			Browser.WebButton.click("InstalledAssert_Go");
 
 			int Col1 = Select_Cell("Installed_Assert", "Billing Profile");
+
 			String BP = Browser.WebTable.getCellData("Installed_Assert", 2, Col1);
+			// String BP="1-4KG38HZ";
 			waitforload();
 
 			scroll("Profile_Tab", "WebButton");
@@ -806,26 +809,43 @@ public class Common extends Driver {
 			waitforload();
 			int Row_Count = Browser.WebTable.getRowCount("Bill_Prof");
 			int Col_Val = Select_Cell("Bill_Prof", "Name");
+			int Col2 = Select_Cell("Bill_Prof", "Payment Type");
 			for (int i = 2; i <= Row_Count; i++) {
 				String BillPro = Browser.WebTable.getCellData("Bill_Prof", i, Col_Val);
 				if (BillPro.equals(BP)) {
+					Pay_Type = Browser.WebTable.getCellData("Bill_Prof", i, Col2);
 					Browser.WebTable.click("Bill_Prof", i, Col_Val);
-					do {
-						waitforload();
-					} while (!Browser.WebButton.waitTillEnabled("Bill_Valid_Name"));
 
 					break;
 				}
 			}
-			// Text_Select("a", "Unbilled Usage");
-			waitforload();
-			do {
-				TabNavigator("Real Time Balance");
+			if (Pay_Type.equalsIgnoreCase("Postpaid")) {
+				do {
+					waitforload();
+				} while (!Browser.WebButton.waitTillEnabled("Bill_Valid_Name"));
 				waitforload();
-			} while (!Browser.WebButton.waitTillEnabled("RTB_Valid_Name"));
-			Browser.WebButton.waittillvisible("RTB_Valid_Name");
-			scroll("RTB_Valid_Name", "WebButton");
-			Result.takescreenshot("Real Time Balance");
+				do {
+					TabNavigator("Real Time Balance");
+					waitforload();
+				} while (!Browser.WebButton.waitTillEnabled("RTB_Valid_Name"));
+				Browser.WebButton.waittillvisible("RTB_Valid_Name");
+				scroll("RTB_Valid_Name", "WebButton");
+				Result.takescreenshot("Real Time Balance");
+			} else if (Pay_Type.equalsIgnoreCase("Prepaid")) {
+
+				do {
+					scroll("RTB_Check_Button", "WebButton");
+					waitforload();
+				} while (!Browser.WebButton.waitTillEnabled("RTB_Check_Button"));
+				waitforload();
+				Browser.WebButton.click("RTB_Check_Button");
+				Browser.WebButton.waittillvisible("RTB_Valid_Name");
+				scroll("RTB_Valid_Name", "WebButton");
+				Result.takescreenshot("Real Time Balance");
+
+			}
+			// Text_Select("a", "Unbilled Usage");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -858,9 +878,10 @@ public class Common extends Driver {
 			else
 				Continue.set(false);
 			// to be commented for QA6
-			//Browser.WebLink.waittillvisible("Acc_Portal");
-			//waitforload();
-			//Browser.WebLink.click("Acc_Portal");
+			if (Browser.WebLink.exist("Acc_Portal")) {
+				waitforload();
+				Browser.WebLink.click("Acc_Portal");
+			}
 			Browser.WebLink.waittillvisible("Inst_Assert_ShowMore");
 
 		} catch (Exception e) {
@@ -1889,51 +1910,46 @@ public class Common extends Driver {
 		}
 	}
 
-	
-public void AccountView(String MSISDN, String Status)
-	
-	{	
-		try
-		{
-		int Row = 2, Col;
-		
-		Browser.WebLink.waittillvisible("VQ_Assert");
-		Browser.WebLink.click("VQ_Assert");
-		Browser.WebLink.waittillvisible("Assert_Search");
-		waitforload();
-		scroll("Assert_Search", "WebLink");
-		Browser.WebLink.click("Assert_Search");
-		waitforload();
+	public void AccountView(String MSISDN, String Status)
 
-		// Installed_Assert
-		Col = Select_Cell("Assert", "Service ID");
-		Browser.WebTable.SetDataE("Assert", Row, Col, "Serial_Number", MSISDN);
-		Col = Select_Cell("Assert", "Status");
-		Browser.WebTable.SetDataE("Assert", Row, Col, "Status", Status);
-		Col = Select_Cell("Assert", "Product");
-		Browser.WebButton.waitTillEnabled("Assert_Go");
-		Browser.WebButton.click("Assert_Go");
-		waitforload();
-		Col = Select_Cell("Assert", "Account");
-		int Assert_Row_Count = Browser.WebTable.getRowCount("Assert");
-		if (Assert_Row_Count > 1){
-			Browser.WebTable.clickL("Assert", Row, Col);
-			Result.takescreenshot("Record Fetched");
-			Result.fUpdateLog("Record Fetched");
-			
-		}
-		else{
-			Continue.set(false);
-			Result.takescreenshot("Record is not available");
-			Result.fUpdateLog("Record is not available");
-			
-			}
-	}
-	catch(Exception e)
 	{
-		Result.fUpdateLog("Exception Occcurred in Account 360");
-		Continue.set(false);
-	}
+		try {
+			int Row = 2, Col;
+
+			Browser.WebLink.waittillvisible("VQ_Assert");
+			Browser.WebLink.click("VQ_Assert");
+			Browser.WebLink.waittillvisible("Assert_Search");
+			waitforload();
+			scroll("Assert_Search", "WebLink");
+			Browser.WebLink.click("Assert_Search");
+			waitforload();
+
+			// Installed_Assert
+			Col = Select_Cell("Assert", "Service ID");
+			Browser.WebTable.SetDataE("Assert", Row, Col, "Serial_Number", MSISDN);
+			Col = Select_Cell("Assert", "Status");
+			Browser.WebTable.SetDataE("Assert", Row, Col, "Status", Status);
+			Col = Select_Cell("Assert", "Product");
+			Browser.WebButton.waitTillEnabled("Assert_Go");
+			Browser.WebButton.click("Assert_Go");
+			waitforload();
+			Col = Select_Cell("Assert", "Account");
+			int Assert_Row_Count = Browser.WebTable.getRowCount("Assert");
+			if (Assert_Row_Count > 1) {
+				Browser.WebTable.clickL("Assert", Row, Col);
+				Result.takescreenshot("Record Fetched");
+				Result.fUpdateLog("Record Fetched");
+
+			} else {
+				Continue.set(false);
+				Result.takescreenshot("Record is not available");
+				Result.fUpdateLog("Record is not available");
+
+			}
+		} catch (Exception e) {
+			Result.fUpdateLog("Exception Occcurred in Account 360");
+			Continue.set(false);
+		}
 	}
 
 }

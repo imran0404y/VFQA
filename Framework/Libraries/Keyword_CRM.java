@@ -1016,17 +1016,13 @@ public class Keyword_CRM extends Driver {
 			Browser.WebTable.click("Line_Items", Row_Val, Col_S);
 			Browser.WebTable.SetData("Line_Items", Row_Val, Col_S, "Service_Id", SIM);
 			Result.takescreenshot("Plan Selection is Successful : " + PlanName);
-			if (Browser.WebLink.exist("SalesOd_Expand")) {
-				Browser.WebLink.click("SalesOd_Expand");
-				CO.waitforload();
-			}
 			
 			Row_Count = Browser.WebTable.getRowCount("Line_Items");
 			if (Row_Count <= 3) {
 				Browser.WebButton.waittillvisible("Expand");
 				Browser.WebButton.click("Expand");
 			}
-			CO.Action_Update("Add", MSISDN);
+			CO.LineItems_Data();
 			Result.takescreenshot("");
 			//Test_OutPut += OrderSubmission().split("@@")[1];
 			
@@ -1071,6 +1067,8 @@ public class Keyword_CRM extends Driver {
 		try {
 			int Complete_Status = 0, Wait = 0, Row = 2, Col, Bill_Col, Row_Count;
 			String EStatus = "Complete", FStatus = "Failed", Bill_Cycle;
+			CO.waitforload();
+			
 			if (Browser.WebLink.exist("SalesOd_Expand")) {
 				Browser.WebLink.click("SalesOd_Expand");
 				CO.waitforload();
@@ -1132,6 +1130,7 @@ public class Keyword_CRM extends Driver {
 			if (Continue.get()) {
 				switch (UseCaseName.get()) {
 				case "ConsumerPostpaid_Provisioning":
+				case "ConsumerPostpaid_Prov_OrdPay":
 					// case "Plan_UpgradeDowngrade":
 				case "Consumer_Migration":
 					switch (TestCaseN.get()) {
@@ -1328,7 +1327,12 @@ public class Keyword_CRM extends Driver {
 
 				CO.Link_Select(Acc);
 				
-				// To be commented for QA6
+				
+				// to be commented for QA6
+				if (Browser.WebLink.exist("Acc_Portal")) {
+					CO.waitforload();
+					Browser.WebLink.click("Acc_Portal");
+				}
 				/*do {
 					CO.waitforload();
 					Result.fUpdateLog("Loading...");
@@ -2332,12 +2336,6 @@ public class Keyword_CRM extends Driver {
 					}
 				}
 			}
-			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
-			if (Row_Count1 <= 4) {
-				Browser.WebButton.waittillvisible("Expand");
-				Browser.WebButton.click("Expand");
-			}
-			CO.LineItems_Data();
 
 			Order_no = CO.Order_ID();
 			Utlities.StoreValue("Order_no", Order_no);
@@ -2346,6 +2344,13 @@ public class Keyword_CRM extends Driver {
 			CO.waitforload();
 			Test_OutPut += OrderSubmission().split("@@")[1];
 
+			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
+			if (Row_Count1 <= 4) {
+				Browser.WebButton.waittillvisible("Expand");
+				Browser.WebButton.click("Expand");
+			}
+			CO.LineItems_Data();
+			
 			CO.ToWait();
 			CO.GetSiebelDate();
 			if (Continue.get()) {
@@ -2462,12 +2467,6 @@ public class Keyword_CRM extends Driver {
 					}
 				}
 			}
-			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
-			if (Row_Count1 <= 4) {
-				Browser.WebButton.waittillvisible("Expand");
-				Browser.WebButton.click("Expand");
-			}
-			CO.LineItems_Data();
 
 			Order_no = CO.Order_ID();
 			Utlities.StoreValue("Order_no", Order_no);
@@ -2476,6 +2475,13 @@ public class Keyword_CRM extends Driver {
 			CO.waitforload();
 			Test_OutPut += OrderSubmission().split("@@")[1];
 
+			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
+			if (Row_Count1 <= 4) {
+				Browser.WebButton.waittillvisible("Expand");
+				Browser.WebButton.click("Expand");
+			}
+			CO.LineItems_Data();
+			
 			CO.ToWait();
 			CO.GetSiebelDate();
 			if (Continue.get()) {
@@ -5526,13 +5532,9 @@ public class Keyword_CRM extends Driver {
 
 		try {
 			int Row = 2, RowCount, Col;
-			String OrderID, TransactionAmt, PayType, Reference;
+			String TransactionAmt, PayType, Reference;
+			String PaymentReference = "", ChannelT;
 
-			if (!(getdata("OrderID").equals(""))) {
-				OrderID = getdata("OrderID");
-			} else {
-				OrderID = pulldata("OrderID");
-			}
 			if (!(getdata("TransactionAmt").equals(""))) {
 				TransactionAmt = getdata("TransactionAmt");
 			} else {
@@ -5543,15 +5545,15 @@ public class Keyword_CRM extends Driver {
 			} else {
 				PayType = pulldata("PayType");
 			}
-			if (!(getdata("Reference").equals(""))) {
-				Reference = getdata("Reference");
-			} else if (!(pulldata("Reference").equals(""))) {
-				Reference = pulldata("Reference");
+			if (!(getdata("PaymentReference").equals(""))) {
+				Reference = getdata("PaymentReference");
+			} else if (!(pulldata("PaymentReference").equals(""))) {
+				Reference = pulldata("PaymentReference");
 			} else {
 				Reference = R.nextInt(10000) + "WIN" + R.nextInt(10000);
 			}
 
-			Browser.WebLink.click("SalesOrder");
+			/*Browser.WebLink.click("SalesOrder");
 			CO.waitforload();
 
 			Result.takescreenshot("Sales Order Navigation");
@@ -5582,7 +5584,7 @@ public class Keyword_CRM extends Driver {
 				Result.takescreenshot("Order not found " + OrderID);
 				Result.fUpdateLog("Order not found " + OrderID);
 				Continue.set(false);
-			}
+			}*/
 
 			CO.waitforload();
 			CO.Text_Select("a", "Payments");
@@ -5596,10 +5598,13 @@ public class Keyword_CRM extends Driver {
 			if (RowCount > 1) {
 				Col = CO.Select_Cell("PaymentList", "Payment Method");
 				Browser.WebTable.SetData("PaymentList", Row, Col, "Payment_Method", PayType);
-				Col = CO.Select_Cell("PaymentList", "Payment Method");
-				if ((Browser.WebTable.getCellData("PaymentList", Row, Col)).isEmpty()) {
-					Browser.WebTable.SetData("PaymentList", Row, Col, "Transaction Amount", TransactionAmt);
-				}
+				Col = CO.Select_Cell("PaymentList", "Transaction Amount");
+				//if ((Browser.WebTable.getCellData("PaymentList", Row, Col)).isEmpty()) {
+				Browser.WebTable.SetData("PaymentList", Row, Col, "Transaction_Amount", TransactionAmt);
+				//}
+				
+				CO.isAlertExist();
+				
 				Browser.WebEdit.Set("WinCashReference", Reference);
 				Result.takescreenshot("Payment Added for the Order ");
 				Result.fUpdateLog("Payment Added for the Order ");
@@ -5612,16 +5617,16 @@ public class Keyword_CRM extends Driver {
 				Col = CO.Select_Cell("PaymentList", "Payment Status");
 
 				if (Browser.WebTable.getCellData("PaymentList", Row, Col).equalsIgnoreCase("Authorized")) {
-					Col = CO.Select_Cell("PaymentList", "Payment #");
-					String PaymentReference, ChannelTransaction;
+					Col = CO.Actual_Cell("PaymentList", "Payment #");
+					
 					PaymentReference = Browser.WebTable.getCellData("PaymentList", Row, Col);
-					Col = CO.Select_Cell("PaymentList", "Channel Transaction #");
-					ChannelTransaction = Browser.WebTable.getCellData("PaymentList", Row, Col);
+					Col = CO.Actual_Cell("PaymentList", "Channel Transaction #");
+					ChannelT = Browser.WebTable.getCellData("PaymentList", Row, Col);
 
-					Result.takescreenshot("Payment Done Successfully with Payment Id " + PaymentReference
-							+ " and channel Transaction Refernce " + ChannelTransaction);
-					Result.fUpdateLog("Payment Done Successfully with Payment Id " + PaymentReference
-							+ " and channel Transaction Refernce " + ChannelTransaction);
+					Result.takescreenshot("Payment Done Successfully with Payment Id : " + PaymentReference
+							+ " and channel : " + ChannelT);
+					Result.fUpdateLog("Payment Done Successfully with Payment Id : " + PaymentReference
+							+ " and channel : " + ChannelT);
 				} else {
 					Result.takescreenshot("Payment is not authorised ");
 					Result.fUpdateLog("Payment is not authorised  ");
@@ -5634,7 +5639,9 @@ public class Keyword_CRM extends Driver {
 			}
 
 			if (Continue.get()) {
-				Test_OutPut += "Order level payment is done Successfully " + ",";
+				CO.Text_Select("a", "Line Items");
+				Browser.WebTable.waittillvisible("Line_Items");
+				Test_OutPut += "Order level payment is done Successfully: "+PaymentReference  + ",";
 				Result.fUpdateLog("Order level payment is done Successfully ");
 				Status = "PASS";
 			} else {

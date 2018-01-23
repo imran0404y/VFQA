@@ -148,6 +148,14 @@ public class KeyWord {
 	public String OrderPayments() {
 		return KC.OrderPayments();
 	}
+	
+	public String Barring() {
+		return KC.Barring();
+	}
+	
+	public String UnBarring() {
+		return KC.UnBarring();
+	}
 
 	// ------------------Keyword CRM -------------------//
 

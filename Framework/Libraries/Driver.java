@@ -71,8 +71,8 @@ public class Driver {
 	public static ThreadLocal<String> SalesOrder_No = new ThreadLocal<String>();
 	public static ThreadLocal<String> contact = new ThreadLocal<String>();
 	public static ThreadLocal<String> New_Account = new ThreadLocal<String>();
-	// public static ThreadLocal<String> Billprofile_No = new ThreadLocal<String>();
-
+	public static ThreadLocal<String> InvoiceZip = new ThreadLocal<String>();
+	
 	public static ThreadLocal<Dictionary> TestData = new ThreadLocal<Dictionary>();
 	public static ThreadLocal<Dictionary> ValidateDT = new ThreadLocal<Dictionary>();
 	public static ThreadLocal<Dictionary> database = new ThreadLocal<Dictionary>();
