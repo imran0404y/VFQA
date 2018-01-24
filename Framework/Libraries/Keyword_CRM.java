@@ -1016,7 +1016,7 @@ public class Keyword_CRM extends Driver {
 			Browser.WebTable.click("Line_Items", Row_Val, Col_S);
 			Browser.WebTable.SetData("Line_Items", Row_Val, Col_S, "Service_Id", SIM);
 			Result.takescreenshot("Plan Selection is Successful : " + PlanName);
-			
+
 			Row_Count = Browser.WebTable.getRowCount("Line_Items");
 			if (Row_Count <= 3) {
 				Browser.WebButton.waittillvisible("Expand");
@@ -1024,8 +1024,7 @@ public class Keyword_CRM extends Driver {
 			}
 			CO.LineItems_Data();
 			Result.takescreenshot("");
-			//Test_OutPut += OrderSubmission().split("@@")[1];
-			
+			// Test_OutPut += OrderSubmission().split("@@")[1];
 
 			if (Continue.get() & (Row_Count >= 3)) {
 				Status = "PASS";
@@ -1068,7 +1067,7 @@ public class Keyword_CRM extends Driver {
 			int Complete_Status = 0, Wait = 0, Row = 2, Col, Bill_Col, Row_Count;
 			String EStatus = "Complete", FStatus = "Failed", Bill_Cycle;
 			CO.waitforload();
-			
+
 			if (Browser.WebLink.exist("SalesOd_Expand")) {
 				Browser.WebLink.click("SalesOd_Expand");
 				CO.waitforload();
@@ -1326,19 +1325,18 @@ public class Keyword_CRM extends Driver {
 				}
 
 				CO.Link_Select(Acc);
-				
-				
+
 				// to be commented for QA6
 				if (Browser.WebLink.exist("Acc_Portal")) {
 					CO.waitforload();
 					Browser.WebLink.click("Acc_Portal");
 				}
-				/*do {
-					CO.waitforload();
-					Result.fUpdateLog("Loading...");
-				} while (!Browser.WebLink.waitTillEnabled("Acc_Portal"));
-
-				Browser.WebLink.click("Acc_Portal");*/
+				/*
+				 * do { CO.waitforload(); Result.fUpdateLog("Loading..."); } while
+				 * (!Browser.WebLink.waitTillEnabled("Acc_Portal"));
+				 * 
+				 * Browser.WebLink.click("Acc_Portal");
+				 */
 
 				Browser.WebLink.waittillvisible("Acc_Summary");
 
@@ -1658,6 +1656,7 @@ public class Keyword_CRM extends Driver {
 					String x = Browser.WebEdit.gettext("Due_Date");
 					if (!x.contains("/")) {
 						Browser.WebButton.click("Date_Cancel");
+						CO.waitforload();
 						Browser.WebButton.click("Assert_Modify");
 					}
 					CO.waitforload();
@@ -2350,7 +2349,7 @@ public class Keyword_CRM extends Driver {
 				Browser.WebButton.click("Expand");
 			}
 			CO.LineItems_Data();
-			
+
 			CO.ToWait();
 			CO.GetSiebelDate();
 			if (Continue.get()) {
@@ -2481,7 +2480,7 @@ public class Keyword_CRM extends Driver {
 				Browser.WebButton.click("Expand");
 			}
 			CO.LineItems_Data();
-			
+
 			CO.ToWait();
 			CO.GetSiebelDate();
 			if (Continue.get()) {
@@ -3065,7 +3064,7 @@ public class Keyword_CRM extends Driver {
 			CO.Assert_Search(MSISDN, "Active");
 			CO.waitforload();
 			CO.TabNavigator("Trouble Tickets");
-
+			CO.waitforload();
 			int Row = 2, Col;
 			Browser.WebButton.waitTillEnabled("TT_New");
 			CO.scroll("TT_New", "WebButton");
@@ -3400,6 +3399,10 @@ public class Keyword_CRM extends Driver {
 				} else {
 					PlanName = pulldata("PlanBundle");
 				}
+				
+				CO.waitforload();
+				CO.Text_Select("a", "Mobile Plans");
+				
 				CO.Radio_Select(PlanName);
 				CO.waitforload();
 				Result.takescreenshot("Customising to Select Discounts");
@@ -4013,20 +4016,23 @@ public class Keyword_CRM extends Driver {
 			} else {
 				CO.InstalledAssertChange("InstalledAssertChange");
 			}
-			CO.waitmoreforload();
-
-			CO.scroll("Due_Date_chicklet", "WebButton");
-			Browser.WebButton.click("Due_Date_chicklet");
 			CO.waitforload();
-			String x = Browser.WebEdit.gettext("Due_Date");
+
+			/*
+			 * CO.scroll("Due_Date_chicklet", "WebButton");
+			 * Browser.WebButton.click("Due_Date_chicklet");
+			 */
+			CO.waitforload();
+			String x;
 			do {
 				x = Browser.WebEdit.gettext("Due_Date");
 				if (!x.contains("/")) {
 					Browser.WebButton.click("Date_Cancel");
+					CO.waitforload();
 					Browser.WebButton.click("Suspend");
 				}
 				CO.waitforload();
-			} while (!(x.isEmpty()));
+			} while (x.isEmpty());
 
 			CO.scroll("Date_Continue", "WebButton");
 			Browser.WebButton.click("Date_Continue");
@@ -4130,18 +4136,21 @@ public class Keyword_CRM extends Driver {
 				CO.InstalledAssertChange("Resume");
 			}
 			CO.waitforload();
-			CO.scroll("Due_Date_chicklet", "WebButton");
-			Browser.WebButton.click("Due_Date_chicklet");
+			/*
+			 * CO.scroll("Due_Date_chicklet", "WebButton");
+			 * Browser.WebButton.click("Due_Date_chicklet");
+			 */
 			CO.waitforload();
-			String x = Browser.WebEdit.gettext("Due_Date");
+			String x;
 			do {
 				x = Browser.WebEdit.gettext("Due_Date");
 				if (!x.contains("/")) {
 					Browser.WebButton.click("Date_Cancel");
+					CO.waitforload();
 					Browser.WebButton.click("Resume");
 				}
 				CO.waitforload();
-			} while (!(x.isEmpty()));
+			} while (x.isEmpty());
 
 			CO.scroll("Date_Continue", "WebButton");
 			Browser.WebButton.click("Date_Continue");
@@ -4522,7 +4531,7 @@ public class Keyword_CRM extends Driver {
 				}
 
 				Browser.WebButton.waittillvisible("Validate");
-				Test_OutPut += OrderSubmission().split("@@")[1];
+				Test_OutPut += OrderSubmission().split("@@")[1]+ ",";
 				Order_no[k] = CO.Order_ID();
 				Utlities.StoreValue("Order_no", Order_no[k]);
 				Test_OutPut += "Order_no : " + Order_no[k] + ",";
@@ -4812,21 +4821,20 @@ public class Keyword_CRM extends Driver {
 		Result.fUpdateLog("------Account 360 view ------");
 
 		try {
-			if (!(getdata("ACC_NO").equals(""))) {
-				ACC_NO = getdata("ACC_NO");
+			if (!(getdata("AccountNo").equals(""))) {
+				ACC_NO = getdata("AccountNo");
 			}
 
 			CO.waitforload();
 			Browser.WebLink.click("VQ_Account");
 
 			Browser.WebLink.click("All_Accounts");
-
+			CO.waitforload();
 			Browser.WebButton.click("Account_Query");
-
-			Browser.WebEdit.Set("Account_Number", ACC_NO);
-
+			CO.Webtable_Value("Account #", ACC_NO);
+			
 			Browser.WebButton.click("Account_Go");
-
+			CO.waitforload();
 			Browser.WebLink.click("Account_names");
 
 			CO.waitforload();
@@ -5553,38 +5561,30 @@ public class Keyword_CRM extends Driver {
 				Reference = R.nextInt(10000) + "WIN" + R.nextInt(10000);
 			}
 
-			/*Browser.WebLink.click("SalesOrder");
-			CO.waitforload();
-
-			Result.takescreenshot("Sales Order Navigation");
-			Result.fUpdateLog("Sales Order Navigation");
-
-			CO.waitforload();
-			CO.Text_Select("a", "All Sales Orders");
-			CO.waitforload();
-
-			Result.takescreenshot("All Sales Order Navigation");
-			Result.fUpdateLog("All Sales Order Navigation");
-
-			CO.waitforload();
-			Browser.WebButton.click("OrderQuery");
-			Col = CO.Select_Cell("Orders", "Order #");
-
-			Browser.WebTable.SetDataE("Orders", Row, Col, "Order_Number", OrderID);
-			Col = CO.Select_Cell("Orders", "Order Type");
-			CO.waitforload();
-			RowCount = Browser.WebTable.getRowCount("Orders");
-			if (RowCount > 1) {
-				Browser.WebTable.click("Orders", Row, Col);
-				Col = CO.Select_Cell("Orders", "Order #");
-				Browser.WebTable.clickL("Orders", Row, Col);
-				Result.takescreenshot("Order Found " + OrderID);
-				Result.fUpdateLog("Order Found " + OrderID);
-			} else {
-				Result.takescreenshot("Order not found " + OrderID);
-				Result.fUpdateLog("Order not found " + OrderID);
-				Continue.set(false);
-			}*/
+			/*
+			 * Browser.WebLink.click("SalesOrder"); CO.waitforload();
+			 * 
+			 * Result.takescreenshot("Sales Order Navigation");
+			 * Result.fUpdateLog("Sales Order Navigation");
+			 * 
+			 * CO.waitforload(); CO.Text_Select("a", "All Sales Orders"); CO.waitforload();
+			 * 
+			 * Result.takescreenshot("All Sales Order Navigation");
+			 * Result.fUpdateLog("All Sales Order Navigation");
+			 * 
+			 * CO.waitforload(); Browser.WebButton.click("OrderQuery"); Col =
+			 * CO.Select_Cell("Orders", "Order #");
+			 * 
+			 * Browser.WebTable.SetDataE("Orders", Row, Col, "Order_Number", OrderID); Col =
+			 * CO.Select_Cell("Orders", "Order Type"); CO.waitforload(); RowCount =
+			 * Browser.WebTable.getRowCount("Orders"); if (RowCount > 1) {
+			 * Browser.WebTable.click("Orders", Row, Col); Col = CO.Select_Cell("Orders",
+			 * "Order #"); Browser.WebTable.clickL("Orders", Row, Col);
+			 * Result.takescreenshot("Order Found " + OrderID);
+			 * Result.fUpdateLog("Order Found " + OrderID); } else {
+			 * Result.takescreenshot("Order not found " + OrderID);
+			 * Result.fUpdateLog("Order not found " + OrderID); Continue.set(false); }
+			 */
 
 			CO.waitforload();
 			CO.Text_Select("a", "Payments");
@@ -5599,12 +5599,12 @@ public class Keyword_CRM extends Driver {
 				Col = CO.Select_Cell("PaymentList", "Payment Method");
 				Browser.WebTable.SetData("PaymentList", Row, Col, "Payment_Method", PayType);
 				Col = CO.Select_Cell("PaymentList", "Transaction Amount");
-				//if ((Browser.WebTable.getCellData("PaymentList", Row, Col)).isEmpty()) {
+				// if ((Browser.WebTable.getCellData("PaymentList", Row, Col)).isEmpty()) {
 				Browser.WebTable.SetData("PaymentList", Row, Col, "Transaction_Amount", TransactionAmt);
-				//}
-				
+				// }
+
 				CO.isAlertExist();
-				
+
 				Browser.WebEdit.Set("WinCashReference", Reference);
 				Result.takescreenshot("Payment Added for the Order ");
 				Result.fUpdateLog("Payment Added for the Order ");
@@ -5618,7 +5618,7 @@ public class Keyword_CRM extends Driver {
 
 				if (Browser.WebTable.getCellData("PaymentList", Row, Col).equalsIgnoreCase("Authorized")) {
 					Col = CO.Actual_Cell("PaymentList", "Payment #");
-					
+
 					PaymentReference = Browser.WebTable.getCellData("PaymentList", Row, Col);
 					Col = CO.Actual_Cell("PaymentList", "Channel Transaction #");
 					ChannelT = Browser.WebTable.getCellData("PaymentList", Row, Col);
@@ -5641,7 +5641,7 @@ public class Keyword_CRM extends Driver {
 			if (Continue.get()) {
 				CO.Text_Select("a", "Line Items");
 				Browser.WebTable.waittillvisible("Line_Items");
-				Test_OutPut += "Order level payment is done Successfully: "+PaymentReference  + ",";
+				Test_OutPut += "Order level payment is done Successfully: " + PaymentReference + ",";
 				Result.fUpdateLog("Order level payment is done Successfully ");
 				Status = "PASS";
 			} else {

@@ -822,7 +822,7 @@ public class Keyword_Guided extends Driver
 			Browser.WebTable.SetDataE("Assert", Row, Col, "Serial_Number", MSISDN);
 			Col = CO.Select_Cell("Assert", "Status");
 			Browser.WebTable.SetDataE("Assert", Row, Col, "Status", "Active");
-			Col = CO.Select_Cell("Assert", "Product");
+			CO.waitforload();
 			Browser.WebButton.waitTillEnabled("Assert_Go");
 			Browser.WebButton.click("Assert_Go");
 			CO.waitforload();
@@ -850,7 +850,7 @@ public class Keyword_Guided extends Driver
 			Result.takescreenshot("Contact Verification for SIM Swap Guided Journey");
 			Result.fUpdateLog("Contact Verification for SIM Swap Guided Journey");
 			IDNum = Browser.WebEdit.gettext("Contact_IDNumber");
-			IDType = Browser.WebEdit.gettext("IDType");
+			IDType = Browser.WebEdit.gettext("Contact_IDType");
 			FirstName = Browser.WebEdit.gettext("FirstName");
 			Browser.WebButton.click("S_Continue");
 
@@ -918,7 +918,7 @@ public class Keyword_Guided extends Driver
 			CO.waitforload();
 
 			if (IDNum.equalsIgnoreCase(Browser.WebEdit.gettext("Contact_IDNumber"))
-					& IDType.equalsIgnoreCase(Browser.WebEdit.gettext("IDType"))
+					& IDType.equalsIgnoreCase(Browser.WebEdit.gettext("Contact_IDType"))
 					& FirstName.equalsIgnoreCase(Browser.WebEdit.gettext("FirstName"))) {
 				Result.takescreenshot("Contact Verification is Successfull");
 				Result.fUpdateLog("Contact Verification is Successfull");
