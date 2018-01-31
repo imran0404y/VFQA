@@ -14,11 +14,12 @@ public class KeyWord {
 	Keyword_Putty KP = new Keyword_Putty();
 	Keyword_Guided KG = new Keyword_Guided();
 	Keyword_FixedLine KF = new Keyword_FixedLine();
+	Keyword_DB KDB = new Keyword_DB();
 	Keyword_OSM KO = new Keyword_OSM();
 	Dialers KD = new Dialers();
-    SetCapabilities KSC = new SetCapabilities();
-    MobileRTBCheck RTB = new MobileRTBCheck();
-    Charging Chrg = new Charging();
+	SetCapabilities KSC = new SetCapabilities();
+	MobileRTBCheck RTB = new MobileRTBCheck();
+	Charging Chrg = new Charging();
 
 	// ------------------Keyword CRM -------------------//
 	public String Siebel_Login() {
@@ -60,11 +61,11 @@ public class KeyWord {
 	public String Entp_ContactCreation() {
 		return KC.Entp_ContactCreation();
 	}
-	
+
 	public String RealTimeBalance_Screen() {
 		return KC.RealTimeBalance_Screen();
 	}
-	
+
 	public String SiebleValidation() {
 		return KC.SiebleValidation();
 	}
@@ -72,7 +73,7 @@ public class KeyWord {
 	public String ServicePoint() {
 		return KC.ServicePoint();
 	}
-	
+
 	public String Modify() {
 		return KC.Modify();
 	}
@@ -80,7 +81,7 @@ public class KeyWord {
 	public String SIMSwap() {
 		return KC.SIMSwap();
 	}
-	
+
 	public String Plan_UpgradeDowngrade() {
 		return KC.Plan_UpgradeDowngrade();
 	}
@@ -100,11 +101,11 @@ public class KeyWord {
 	public String BillPayment() {
 		return KC.BillPayment();
 	}
-	
+
 	public String Change_MSISDN() {
 		return KC.Change_MSISDN();
 	}
-	
+
 	public String Disconnection() {
 		return KC.Disconnection();
 	}
@@ -128,11 +129,11 @@ public class KeyWord {
 	public String Suspension() {
 		return KC.Suspension();
 	}
-	
+
 	public String Resume() {
 		return KC.Resume();
 	}
-	
+
 	public String UpgradePromotion_Account360() {
 		return KC.UpgradePromotion_Account360();
 	}
@@ -140,19 +141,19 @@ public class KeyWord {
 	public String Account360() {
 		return KC.Account360();
 	}
-	
+
 	public String OpenUI_AccesRrights_6Segments() {
 		return KC.OpenUI_AccesRrights_6Segments();
 	}
-	
+
 	public String OrderPayments() {
 		return KC.OrderPayments();
 	}
-	
+
 	public String Barring() {
 		return KC.Barring();
 	}
-	
+
 	public String UnBarring() {
 		return KC.UnBarring();
 	}
@@ -223,9 +224,13 @@ public class KeyWord {
 	public String BillGeneration_AccountLevel() {
 		return KP.BillGeneration_AccountLevel();
 	}
-	
+
 	public String Invoicegeneration() {
 		return KP.Invoicegeneration();
+	}
+
+	public String Collections() {
+		return KP.Collections();
 	}
 	// ---------------------Keyword Putty------------------------//
 
@@ -277,4 +282,17 @@ public class KeyWord {
 	}
 	// ---------------------Mobile Usages------------------------//
 
+	// ---------------------Keyword CRM/BRM DB------------------------//
+	public String DBConnection() {
+		return KDB.DBConnection();
+	}
+
+	public String BillPoID() {
+		return KDB.BillPoID();
+	}
+
+	public String DBDisconnection() {
+		return KDB.DBDisconnection();
+	}
+	// ---------------------Keyword CRM/BRM DB------------------------//
 }
