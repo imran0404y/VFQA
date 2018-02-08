@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Map;
 import java.lang.reflect.Method;
 
 import org.openqa.selenium.WebDriver;
@@ -31,6 +32,7 @@ public class Driver {
 	public static ThreadLocal<String> Result_FLD = new ThreadLocal<String>();
 	public static ThreadLocal<String> Templete_FLD = new ThreadLocal<String>();
 	public static ThreadLocal<String> XMLfilepth = new ThreadLocal<String>();
+	public static ThreadLocal<String> UCscreenfilepth = new ThreadLocal<String>();
 	public static ThreadLocal<String> URL = new ThreadLocal<String>();
 
 	public static int passUC = 0;
@@ -72,6 +74,7 @@ public class Driver {
 	public static ThreadLocal<String> contact = new ThreadLocal<String>();
 	public static ThreadLocal<String> New_Account = new ThreadLocal<String>();
 	public static ThreadLocal<String> InvoiceZip = new ThreadLocal<String>();
+	public static ThreadLocal<String> Dunning = new ThreadLocal<String>();
 	
 	public static ThreadLocal<Dictionary> TestData = new ThreadLocal<Dictionary>();
 	public static ThreadLocal<Dictionary> ValidateDT = new ThreadLocal<Dictionary>();
@@ -80,6 +83,11 @@ public class Driver {
 	public static HashMap<String, String> RTBOutputData = new HashMap<String, String>();
 	public static HashMap<String, String> LineItemData = new HashMap<String, String>();
 	// static String[] LineItemData = new String[15]; ;
+	
+	public static Map<String, String> DunningSchedule = new HashMap<String, String>();
+	public static Map<String, String> BillSchedule = new HashMap<String, String>();
+	// public static ThreadLocal<String> Billprofile_No = new ThreadLocal<String>();
+	public static Map<String, String> CreditAlert = new HashMap<String, String>();
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("Intialization");
@@ -93,6 +101,7 @@ public class Driver {
 		Database_File.set(Storage_FLD.get() + "/CommonDirectory.xlsx");
 		Directory_FLD.set(Base_Path.get() + "/Database");
 		TestDataDB_File.set(Directory_FLD.get() + "/TestDataDB.xlsx");
+		Dunning.set(Storage_FLD.get() + "/DunningCalendar.xlsx");
 		Result_FLD.set(WorkingDir.get() + "/Results");
 		Templete_FLD.set(Base_Path.get() + "/Templates");
 

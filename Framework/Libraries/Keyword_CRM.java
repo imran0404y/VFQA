@@ -3,6 +3,8 @@ package Libraries;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.openqa.selenium.By;
@@ -908,6 +910,7 @@ public class Keyword_CRM extends Driver {
 					StarNumber = Browser.WebTable.getCellData("Numbers", Row, Col_pri);
 					StarNumber = StarNumber.substring(2, StarNumber.length());
 				}
+				Result.takescreenshot("proceeding for Number Reservation");
 
 				Result.fUpdateLog("Category " + Category);
 				Browser.WebButton.click("Reserve");
@@ -1128,7 +1131,7 @@ public class Keyword_CRM extends Driver {
 			CO.waitmoreforload();
 			if (Continue.get()) {
 				switch (UseCaseName.get()) {
-				case "ConsumerPostpaid_Provisioning":
+				case "ConsumerPostpaid_Provision":
 				case "ConsumerPostpaid_Prov_OrdPay":
 					// case "Plan_UpgradeDowngrade":
 				case "Consumer_Migration":
@@ -3399,10 +3402,10 @@ public class Keyword_CRM extends Driver {
 				} else {
 					PlanName = pulldata("PlanBundle");
 				}
-				
+
 				CO.waitforload();
 				CO.Text_Select("a", "Mobile Plans");
-				
+
 				CO.Radio_Select(PlanName);
 				CO.waitforload();
 				Result.takescreenshot("Customising to Select Discounts");
@@ -4531,7 +4534,7 @@ public class Keyword_CRM extends Driver {
 				}
 
 				Browser.WebButton.waittillvisible("Validate");
-				Test_OutPut += OrderSubmission().split("@@")[1]+ ",";
+				Test_OutPut += OrderSubmission().split("@@")[1] + ",";
 				Order_no[k] = CO.Order_ID();
 				Utlities.StoreValue("Order_no", Order_no[k]);
 				Test_OutPut += "Order_no : " + Order_no[k] + ",";
@@ -4832,7 +4835,7 @@ public class Keyword_CRM extends Driver {
 			CO.waitforload();
 			Browser.WebButton.click("Account_Query");
 			CO.Webtable_Value("Account #", ACC_NO);
-			
+
 			Browser.WebButton.click("Account_Go");
 			CO.waitforload();
 			Browser.WebLink.click("Account_names");
@@ -5953,6 +5956,884 @@ public class Keyword_CRM extends Driver {
 			e.printStackTrace();
 		}
 		Result.fUpdateLog("------UnBarring Services Details - Completed------");
+		return Status + "@@" + Test_OutPut + "<br/>";
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: DunningProcess
+	 * Arguments			: None
+	 * Use 					: DunningProcess for a specific Account
+	 * Designed By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 22-Jan-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public String DunningProcess() {
+		String Test_OutPut = "", Status = "";
+		String AccNo, BillingProfile, Segment, Action, Amtdue, DueDate = "", BillDate = "";
+		double AmtOwed = 0.00;
+		int RowCount, Col, Row = 2, CreditScore = 0;
+		Result.fUpdateLog("------Dunning Process Check Initiated------");
+		try {
+			if (!(getdata("AccountNo").equals(""))) {
+				AccNo = getdata("AccountNo");
+			} else {
+				AccNo = pulldata("AccountNo");
+			}
+
+			if (!(getdata("Action").equals(""))) {
+				Action = getdata("Action");
+			} else {
+				Action = pulldata("Action");
+			}
+
+			if (!(getdata("BillingProfile").equals(""))) {
+				BillingProfile = getdata("BillingProfile");
+			} else {
+				BillingProfile = pulldata("BillingProfile");
+			}
+
+			CO.Account_Search(AccNo);
+
+			CO.waitforload();
+			Result.fUpdateLog("Fetching Customer Segment");
+			Result.takescreenshot("Fetching Customer Segment");
+			CO.scroll("Customer_Segment", "WebEdit");
+			Segment = Browser.WebEdit.gettext("Customer_Segment");
+			CO.waitforload();
+
+			CO.Text_Select("a", "Profiles");
+			CO.waitforload();
+			RowCount = Browser.WebTable.getRowCount("Bill_Prof");
+			Col = CO.Select_Cell("Bill_Prof", "Name");
+			if (BillingProfile.isEmpty() == false) {
+				Browser.WebButton.click("Profile_Query");
+				CO.waitforload();
+				Browser.WebTable.SetData("Bill_Prof", Row, Col, "Name", BillingProfile);
+				CO.waitforload();
+				RowCount = Browser.WebTable.getRowCount("Bill_Prof");
+				if (RowCount == 2) {
+					Result.fUpdateLog("Proceeding to RTB Screen " + BillingProfile);
+					Result.takescreenshot("Proceeding to RTB Screen " + BillingProfile);
+					Browser.WebTable.clickL("Bill_Prof", Row, Col);
+					Utlities.StoreValue("BillingProfileName", BillingProfile);
+				} else {
+					Result.fUpdateLog("Billing Profile Not Found");
+					Result.takescreenshot("Billing Profile Not Found");
+					Continue.set(false);
+				}
+			}
+			if (RowCount >= 2) {
+				Boolean flag = false;
+				Col = CO.Select_Cell("Bill_Prof", "Payment Type");
+				for (int i = 2; i <= RowCount; i++)
+					if (Browser.WebTable.getCellData("Bill_Prof", i, Col).equalsIgnoreCase("Postpaid")) {
+						Col = CO.Select_Cell("Bill_Prof", "Name");
+						BillingProfile = Browser.WebTable.getCellData("Bill_Prof", i, Col);
+						Result.fUpdateLog("Proceeding to RTB Screen " + BillingProfile);
+						Result.takescreenshot("Proceeding to RTB Screen " + BillingProfile);
+						Utlities.StoreValue("BillingProfileName", BillingProfile);
+						Browser.WebTable.clickL("Bill_Prof", i, Col);
+						flag = true;
+						break;
+					}
+				if (flag == false) {
+					Result.fUpdateLog("Postpaid Billing Profile Not Found");
+					Result.takescreenshot("Postpaid Billing Profile Not Found");
+					Continue.set(false);
+				}
+			} else {
+				Result.fUpdateLog("Billing Profile Not Found");
+				Result.takescreenshot("Billing Profile Not Found");
+				Continue.set(false);
+			}
+
+			CO.waitmoreforload();
+
+			if (Browser.WebTable.exist("Bills")) {
+				Result.fUpdateLog("Proceeding with data fetch");
+				Result.takescreenshot("Proceeding with data fetch");
+			} else {
+				CO.Text_Select("a", "Bills");
+				CO.waitforload();
+				if (Browser.WebTable.exist("Bills")) {
+					Result.fUpdateLog("Proceeding with data fetch");
+					Result.takescreenshot("Proceeding with data fetch");
+				} else {
+					Result.fUpdateLog("Unable to proceed with data fetch -- No Records Found ");
+					Result.takescreenshot("Unable to proceed with data fetch -- No Records Found ");
+					Continue.set(false);
+				}
+			}
+
+			Amtdue = Browser.WebEdit.gettext("Due_Now").replaceAll("QR", "");
+			DateFormat DF = new SimpleDateFormat("MM/dd/yyyy");
+			Date date;
+			Calendar c = Calendar.getInstance();
+
+			RowCount = Browser.WebTable.getRowCount("Bills");
+			if (RowCount > 1) {
+				Result.fUpdateLog("Fetching Bill Cycle, Due Amount, Due Date ");
+				String BillPeriod;
+				Col = CO.Select_Cell("Bills", "Amount Due");
+				// Amtdue=(Browser.WebTable.getCellData("Bills", Row, Col)).replaceAll("QR",
+				// "");
+				AmtOwed = Double.parseDouble(Amtdue);
+				Col = CO.Select_Cell("Bills", "Bill Period");
+				BillPeriod = Browser.WebTable.getCellData("Bills", Row, Col);
+				BillDate = BillPeriod.split("-")[1];
+				Col = CO.Select_Cell("Bills", "Due Date");
+				// Date Format Convertion for Due Da
+				DueDate = Browser.WebTable.getCellData("Bills", Row, Col);
+				date = DF.parse(DueDate);
+				c.setTime(date);
+				DateFormat DDF = new SimpleDateFormat("MMddHHmmyyyy");
+				DueDate = DDF.format(c.getTime());
+
+				Utlities.StoreValue("DueDate", DueDate);
+
+			} else {
+				Result.fUpdateLog("Unable to proceed with data fetch -- No Records Found ");
+				Result.takescreenshot("Unable to proceed with data fetch -- No Records Found ");
+				Continue.set(false);
+			}
+
+			if (Browser.WebButton.exist("CreditScore")) {
+				CO.scroll("ThirdLevelView", "WebButton");
+				Browser.WebButton.click("ThirdLevelView");
+				CO.waitforload();
+				Browser.WebButton.click("CreditScore");
+			} else {
+				CO.Text_Select("a", "Credit Score");
+			}
+			CO.waitforload();
+			RowCount = Browser.WebTable.getRowCount("CreditScore");
+			if (RowCount == 2) {
+				String Score = Browser.WebTable.getCellData("CreditScore", RowCount,
+						Browser.WebTable.getColCount("CreditScore"));
+				CreditScore = Integer.parseInt(Score);
+				Result.fUpdateLog("Fetching Credit Score");
+				Result.takescreenshot("Fetching Credit Score");
+			} else {
+				Result.fUpdateLog("Unable to Fetch Credit Score -- No Records Found");
+				Result.takescreenshot("Unable to Fetch Credit Score -- No Records Found");
+				Continue.set(false);
+			}
+
+			CO.DunningCalendar(Segment, CreditScore, AmtOwed);
+			if (BillDate.isEmpty() == false) {
+				for (Entry<String, String> entry : DunningSchedule.entrySet()) {
+					String key = entry.getKey();
+					String Val = entry.getValue();
+					if (Val != null) {
+						date = DF.parse(BillDate);
+						c = Calendar.getInstance();
+						c.setTime(date); // Now use today date.
+						c.add(Calendar.DATE, Integer.parseInt(Val.toString())); // Adding the acquired date as per
+																				// actions
+						BillDate = DF.format(c.getTime());
+						BillSchedule.put(key, BillDate);
+						Result.fUpdateLog("Computed Date for " + key + " is " + BillSchedule.get(Action));
+					}
+				}
+
+			} else {
+				Continue.set(false);
+				Result.fUpdateLog("Bill Date is Empty");
+			}
+
+			Result.fUpdateLog("Displaying the Computed Date " + BillSchedule.get(Action));
+			Result.fUpdateLog("Displaying the Due Date " + DueDate);
+
+			CO.ToWait();
+			if (Continue.get()) {
+				Test_OutPut += "Dunning Process is done Successfully " + ",";
+				Result.fUpdateLog("Dunning Process is done Successfully ");
+				Status = "PASS";
+			} else {
+				Test_OutPut += "Dunning Process Failed" + ",";
+				Result.takescreenshot("Dunning Process Failed");
+				Result.fUpdateLog("Dunning Process Failed");
+				Status = "FAIL";
+			}
+		} catch (Exception e) {
+			Status = "FAIL";
+			Test_OutPut += "Exception occurred" + ",";
+			Result.takescreenshot("Exception occurred");
+			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+			e.printStackTrace();
+		}
+		Result.fUpdateLog("------Dunning Process Details - Completed------");
+		return Status + "@@" + Test_OutPut + "<br/>";
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: JobCreation
+	 * Arguments			: None
+	 * Use 					: Create a Job
+	 * Designed By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 25-Jan-2018
+	--------------------------------------------------------------------------------------------------------	
+	public String JobCreation()
+	{
+		String Test_OutPut = "", Status = "";
+		Result.fUpdateLog("------Job Creation Process Initiated------");
+	try
+	{
+		int Row=2,RowCount,Col;
+		String JobStatus,JobName,ParameterName,ParameterValue;
+		
+		if (!(getdata("JobName").equals(""))) {
+			JobName = getdata("JobName");
+		} else {
+			JobName = pulldata("JobName");
+		}
+		
+		if (!(getdata("ParameterName").equals(""))) {
+			ParameterName = getdata("ParameterName");
+		} else {
+			ParameterName = pulldata("ParameterName");
+		}
+		
+		
+		if (!(getdata("ParameterValue").equals(""))) {
+			ParameterValue = getdata("ParameterValue");
+		} else {
+			ParameterValue = pulldata("ParameterValue");
+		}
+		
+		Actions a = new Actions(cDriver.get());
+		WebElement we=cDriver.get().findElement(By.xpath("//body"));
+		a.sendKeys(we,Keys.chord(Keys.CONTROL,Keys.SHIFT,"a")).perform();
+		
+		Result.takescreenshot("Site Map View Navigation");
+		Result.fUpdateLog("Site Map View Navigation");
+	
+		CO.Text_Select("a", "Administration - Server Management");
+		CO.waitforload();
+		
+		Result.takescreenshot("Navigating to Jobs");
+		Result.fUpdateLog("Navigating to Jobs");
+		
+		CO.Text_Select("a", "Jobs");
+		CO.waitforload();
+		
+		Result.takescreenshot("Creating New Job");
+		Result.fUpdateLog("Creating New Job");
+		
+		CO.scroll("New_Job", "WebButton");
+		Browser.WebButton.click("New_Job");
+		CO.waitforload();
+		
+		Col=CO.Select_Cell("Jobs", "Component/Job");
+		Browser.WebTable.SetDataE("Jobs", Row, Col, "Job_Name",JobName );
+		
+		CO.scroll("JobParameters", "WebButton");
+		Browser.WebButton.click("JobParameters");
+		CO.waitforload();
+		Result.takescreenshot("Adding Job Parameters");
+		Result.fUpdateLog("Adding Job Parameters");
+		
+		RowCount=Browser.WebTable.getRowCount("JobParameters");
+		
+		if(RowCount==2)
+		{
+			
+			Col=Browser.WebTable.getColCount("JobParameters")-3;
+			Browser.WebTable.SetDataE("JobParameters", RowCount, Col, "Name", ParameterName);
+			
+			Col=Browser.WebTable.getColCount("JobParameters")-2;
+			Browser.WebTable.SetDataE("JobParameters", RowCount, Col, "Value", ParameterValue);
+			
+		}
+		else
+		{
+			Result.takescreenshot("Records were not Added as expected");
+			Result.fUpdateLog("Records were not Added as expected");
+			Continue.set(false);
+		}
+		
+		
+		Result.takescreenshot("-------------Submitting Job-----------");
+		Result.fUpdateLog("-----------Submitting Job-----------");
+		
+		CO.scroll("SubmitJob", "WebButton");
+		Browser.WebButton.click("SubmitJob");
+		CO.waitforload();
+		Col=CO.Select_Cell("Jobs", "Status");
+		
+		int Iterate=0;
+		do{
+		//cDriver.get().navigate().refresh();
+			a.sendKeys(we,Keys.chord(Keys.ALT,Keys.ENTER)).perform();
+		CO.waitforload();
+		System.out.println("Round "+Iterate);
+		JobStatus=Browser.WebTable.getCellData("Jobs", Row, Col);
+		System.out.println("Status Displayed " +JobStatus);
+		Iterate++;
+		}while(Iterate>=12);
+		
+		CO.waitmoreforload();
+		
+		
+		CO.ToWait();
+		JobStatus=Browser.WebTable.getCellData("Jobs", Row, Col);
+		Result.takescreenshot("Job Submitted Successfully");
+		Result.fUpdateLog("Job Submitted Successfully");
+		
+		if (Continue.get() || JobStatus.equalsIgnoreCase("Success") ||JobStatus.equalsIgnoreCase("Error")) {
+			Test_OutPut += "JobCreation Process is done Successfully " + ",";
+			Result.fUpdateLog("JobCreation Process is done Successfully ");
+			Status = "PASS";
+		} else {
+			Test_OutPut += "JobCreation Process Failed" + ",";
+			Result.takescreenshot("JobCreation Process Failed");
+			Result.fUpdateLog("JobCreation Process Failed");
+			Status = "FAIL";}
+	}
+	catch (Exception e) {
+		Status = "FAIL";
+		Test_OutPut += "Exception occurred" + ",";
+		Result.takescreenshot("Exception occurred");
+		Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+		e.printStackTrace();
+	}
+	Result.fUpdateLog("------JobCreation Process Details - Completed------");
+	return Status + "@@" + Test_OutPut + "<br/>";
+		
+	}*/
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: DunningAction
+	 * Arguments			: None
+	 * Use 					: 
+	 * Designed By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 25-Jan-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public String DunningAction() {
+		// 10 min wait time
+		String Test_OutPut = "", Status = "";
+		Result.fUpdateLog("------Credit Alerts Process Initiated------");
+		try {
+			int Row = 2, RowCount, Col;
+			String AccountNumber, ActionType, DueDate, Order_Status, BillingProfile = "";
+
+			if (!(getdata("AccountNo").equals(""))) {
+				AccountNumber = getdata("AccountNo");
+			} else {
+				AccountNumber = pulldata("AccountNo");
+			}
+
+			// cDriver.get().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+			// Thread.sleep(120000);
+			CO.CreditAlertQuery(AccountNumber);
+			CO.waitforload();
+			CO.scroll("CreditQuery", "WebButton");
+			RowCount = Browser.WebTable.getRowCount("CreditAlert");
+			if (RowCount >= 2) {
+				Col = CO.Select_Cell("CreditAlert", "Billing Profile");
+				BillingProfile = Browser.WebTable.getCellData("CreditAlert", Row, Col);
+				Col = CO.Select_Cell("CreditAlert", "Action Type");
+				for (int Iterate = 1; Iterate <= RowCount; Iterate++) {
+					ActionType = Browser.WebTable.getCellData("CreditAlert", Iterate + 1, Col);
+					CreditAlert.put("Action" + Iterate, ActionType);
+				}
+
+				Col = CO.Select_Cell("CreditAlert", "Account");
+				Browser.WebTable.clickL("CreditAlert", Row, Col);
+				CO.waitforload();
+				CO.waitforload();
+				if (Browser.WebButton.exist("CreditAlert") == true) {
+					CO.waitforload();
+					CO.TabNavigator("Credit Alerts");
+					//Browser.WebButton.click("ThirdLevelView");
+					CO.waitforload();
+					CO.waitforload();
+					//Browser.WebButton.click("AccountCreditAlert");
+					RowCount = Browser.WebTable.getRowCount("AccountCreditAlert");
+					Col = CO.Select_Cell("AccountCreditAlert", "Alert #");
+					/*for (int Iterate = 1; Iterate <= RowCount; Iterate++) {
+						if (Browser.WebTable.getCellData("AccountCreditAlert", Iterate + 1, Col)
+								.equals(CreditAlert.get("Action" + Iterate)) == false) {
+							Result.takescreenshot("Expected data is not available");
+							Result.fUpdateLog("Expected data is not available");
+							Continue.set(false);
+						}
+					}*/
+					Col = CO.Select_Cell("AccountCreditAlert", "Billing Profile");
+					BillingProfile = Browser.WebTable.getCellData("AccountCreditAlert", Row, Col);
+				} else {
+					Result.takescreenshot("Expected Page is not available");
+					Result.fUpdateLog("Expected Page is not available");
+					Continue.set(false);
+				}
+
+			} else {
+				Result.takescreenshot("Please check the Account Number");
+				Result.fUpdateLog("Please check the Account Number");
+				Continue.set(false);
+			}
+
+			CO.Text_Select("a", "Profiles");
+			CO.waitforload();
+
+			// Profile_Search
+			Browser.WebButton.click("Profile_Query");
+			CO.waitforload();
+			Col = CO.Select_Cell("Bill_Prof", "Name");
+			Browser.WebTable.SetData("Bill_Prof", Row, Col, "Name", BillingProfile);
+			CO.waitforload();
+			RowCount = Browser.WebTable.getRowCount("Bill_Prof");
+			Col = CO.Select_Cell("Bill_Prof", "Billing Profile Status");
+			if (RowCount == 2 & Browser.WebTable.getCellData("Bill_Prof", Row, Col).equalsIgnoreCase("In Collection")) {
+				Result.takescreenshot("Billing Profile is In Collection as expected");
+				Result.fUpdateLog("Billing Profile is In Collection as expected");
+				Utlities.StoreValue("BillingProfile", BillingProfile);
+			} else {
+				Result.fUpdateLog("Billing Profile is not In Collection");
+				Result.takescreenshot("Billing Profile is not In Collection as expected");
+				Continue.set(false);
+			}
+
+			// OG Barring
+			Boolean OG_Flag = false, IG_Flag = false;
+			CO.CreditAlertQuery(AccountNumber);
+			CO.waitforload();
+			CO.scroll("CreditQuery", "WebButton");
+			RowCount = Browser.WebTable.getRowCount("CreditAlert");
+			if (RowCount >= 2) {
+				Col = CO.Select_Cell("CreditAlert", "Action Type");
+				for (int R = 2; R <= RowCount; R++) {
+					ActionType = Browser.WebTable.getCellData("CreditAlert", R, Col);
+					if (ActionType.equalsIgnoreCase("Outgoing Bar")) {
+
+						Browser.WebTable.click("CreditAlert", R, Col);
+						CO.waitforload();
+						Calendar c = Calendar.getInstance();
+
+						// Getting Current Date
+						DateFormat DF = new SimpleDateFormat("MM/dd/yyyy");
+						DueDate = DF.format(c.getTime());
+						Browser.WebEdit.Set("Due_Date", DueDate);
+
+						Thread.sleep(10000000);
+
+						CO.TraverseLatestOrder(AccountNumber);
+
+						Order_Status = Browser.WebEdit.gettext("Order_Status");
+						if (Order_Status.equals("Complete") == false) {
+							Continue.set(false);
+							Result.fUpdateLog("Order is not Completed");
+							Result.takescreenshot("Order is not Completed");
+						}
+						int Row_Count = Browser.WebTable.getRowCount("Line_Items");
+						CO.scroll("Submit", "WebButton");
+						if (Row_Count <= 3) {
+							Browser.WebButton.waittillvisible("Expand");
+							Browser.WebButton.click("Expand");
+						}
+						String OG_Product = "System Bar - Mobile Collection OG";
+						Boolean OGProduct_Flag = false;
+						Col = CO.Select_Cell("Line_Items", "Product");
+						Result.takescreenshot(
+								"OG Products are available in Line Items for OG Barring Order as expected with Action Add");
+						for (int LI_Row = 2; LI_Row <= Row_Count; LI_Row++) {
+
+							if (OG_Product.equalsIgnoreCase(Browser.WebTable.getCellData("Line_Items", LI_Row, Col))) {
+
+								Col = CO.Select_Cell("Line_Items", "Action");
+								if (Browser.WebTable.getCellData("Line_Items", LI_Row, Col).equalsIgnoreCase("add")) {
+									Result.fUpdateLog(OG_Product
+											+ " is available in Line Items for OG Barring Order as expected with Action Add");
+									OGProduct_Flag = true;
+								} else {
+									Result.fUpdateLog(OG_Product
+											+ " is available in Line Items for OG Barring Order with Action Mismatch");
+									Result.takescreenshot(OG_Product
+											+ " is available in Line Items for OG Barring Order with Action Mismatch");
+									// Continue.set(false);
+									OGProduct_Flag = false;
+									break;
+								}
+
+								break;
+							}
+						}
+						if (OGProduct_Flag == true) {
+							OG_Flag = true;
+						}
+						break;
+					}
+				}
+			}
+
+			// IG Barring Incoming Bar
+
+			CO.CreditAlertQuery(AccountNumber);
+			CO.waitforload();
+			CO.scroll("CreditQuery", "WebButton");
+			RowCount = Browser.WebTable.getRowCount("CreditAlert");
+			if (RowCount >= 2) {
+				Col = CO.Select_Cell("CreditAlert", "Action Type");
+				for (int R = 2; R <= RowCount; R++) {
+					ActionType = Browser.WebTable.getCellData("CreditAlert", R, Col);
+					if (ActionType.equalsIgnoreCase("Incoming Bar")) {
+						Browser.WebTable.click("CreditAlert", R, Col);
+						CO.waitforload();
+						Calendar c = Calendar.getInstance();
+
+						// Getting Current Date
+						DateFormat DF = new SimpleDateFormat("MM/dd/yyyy");
+						DueDate = DF.format(c.getTime());
+						Browser.WebEdit.Set("Due_Date", DueDate);
+
+						Thread.sleep(10000000);
+						Boolean IGProduct_Flag = false, IGProduct = false;
+						CO.TraverseLatestOrder(AccountNumber);
+						Order_Status = Browser.WebEdit.gettext("Order_Status");
+						if (Order_Status.equals("Complete") == false) {
+							Continue.set(false);
+							Result.fUpdateLog("Order is not Completed");
+							Result.takescreenshot("Order is not Completed");
+						}
+						int Row_Count = Browser.WebTable.getRowCount("Line_Items");
+						CO.scroll("Submit", "WebButton");
+						if (Row_Count <= 3) {
+							Browser.WebButton.waittillvisible("Expand");
+							Browser.WebButton.click("Expand");
+						}
+						Col = CO.Select_Cell("Line_Items", "Product");
+						Result.takescreenshot(
+								"IG Products are available in Line Items for OG Barring Order as expected with Action Delete");
+						for (int LI_Row = 2; LI_Row <= Row_Count; LI_Row++) {
+							String IG_Product = Browser.WebTable.getCellData("Line_Items", LI_Row, Col);
+							IGProduct_Flag = true;
+							Col = CO.Select_Cell("Line_Items", "Action");
+							if (Browser.WebTable.getCellData("Line_Items", LI_Row, Col).equalsIgnoreCase("suspend")) {
+								Result.fUpdateLog(IG_Product
+										+ " is available in Line Items for OG Barring Order as expected with Action Delete");
+							} else {
+								Result.fUpdateLog(IG_Product
+										+ " is available in Line Items for OG Barring Order with Action Mismatch");
+								Result.takescreenshot(IG_Product
+										+ " is available in Line Items for OG Barring Order with Action Mismatch");
+								IGProduct_Flag = false;
+								break;
+							}
+						}
+
+						CO.TraverseLatestBeforeOrder(AccountNumber);
+						Order_Status = Browser.WebEdit.gettext("Order_Status");
+						if (Order_Status.equals("Complete") == false) {
+							Continue.set(false);
+							Result.fUpdateLog("Order is not Completed");
+							Result.takescreenshot("Order is not Completed");
+						}
+						Row_Count = Browser.WebTable.getRowCount("Line_Items");
+						CO.scroll("Submit", "WebButton");
+						if (Row_Count <= 3) {
+							Browser.WebButton.waittillvisible("Expand");
+							Browser.WebButton.click("Expand");
+						}
+						String OG_Product = "System Bar - Mobile Collection OG";
+						Col = CO.Select_Cell("Line_Items", "Product");
+						for (int LI_Row = 2; LI_Row <= Row_Count; LI_Row++) {
+
+							if (OG_Product.equalsIgnoreCase(Browser.WebTable.getCellData("Line_Items", LI_Row, Col))) {
+								IGProduct_Flag = true;
+								Col = CO.Select_Cell("Line_Items", "Action");
+								if (Browser.WebTable.getCellData("Line_Items", LI_Row, Col)
+										.equalsIgnoreCase("delete")) {
+									Result.fUpdateLog(OG_Product
+											+ " is available in Line Items for OG Barring Order as expected with Action Delete");
+									Result.takescreenshot(OG_Product
+											+ " is available in Line Items for OG Barring Order as expected with Action Delete");
+								} else {
+									Result.fUpdateLog(OG_Product
+											+ " is available in Line Items for OG Barring Order with Action Mismatch");
+									Result.takescreenshot(OG_Product
+											+ " is available in Line Items for OG Barring Order with Action Mismatch");
+									Continue.set(false);
+								}
+
+								break;
+							}
+						}
+
+						if (IGProduct_Flag == true & IGProduct == true) {
+							IG_Flag = true;
+						}
+						break;
+					}
+				}
+			}
+			if (Continue.get() & IG_Flag & OG_Flag) {
+				Test_OutPut += "Credit Alerts Process is done Successfully " + ",";
+				Result.fUpdateLog("Credit Alerts Process is done Successfully ");
+				Status = "PASS";
+			} else {
+				Test_OutPut += "Credit Alerts Process Failed" + ",";
+				Result.takescreenshot("Credit Alerts Process Failed");
+				Result.fUpdateLog("Credit Alerts Process Failed");
+				Status = "FAIL";
+			}
+		} catch (Exception e) {
+			Status = "FAIL";
+			Test_OutPut += "Exception occurred" + ",";
+			Result.takescreenshot("Exception occurred");
+			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+			e.printStackTrace();
+		}
+		Result.fUpdateLog("------Credit Alerts Process Details - Completed------");
+		return Status + "@@" + Test_OutPut + "<br/>";
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: ExitCriteria
+	 * Arguments			: None
+	 * Use 					: 
+	 * Designed By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 02-Feb-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public String ExitCriteria() {
+		String Test_OutPut = "", Status = "";
+
+		try {
+			int Row = 2, RowCount, Col, Row_Count, Col_P, Col_S;
+			String AccountNumber, BillAmt, BillingProfile = "", Channel;
+
+			if (!(getdata("AccountNo").equals(""))) {
+				AccountNumber = getdata("AccountNo");
+			} else {
+				AccountNumber = pulldata("AccountNo");
+			}
+
+			if (!(getdata("BillingProfile").equals(""))) {
+				BillingProfile = getdata("BillingProfile");
+			} else {
+				BillingProfile = pulldata("BillingProfile");
+			}
+			if (!(getdata("Channel").equals(""))) {
+				Channel = getdata("Channel");
+			} else {
+				Channel = "Cash";
+			}
+
+			CO.Account_Search(AccountNumber);
+			CO.waitforload();
+
+			CO.Text_Select("a", "Profiles");
+			CO.waitforload();
+			RowCount = Browser.WebTable.getRowCount("Bill_Prof");
+			Col = CO.Select_Cell("Bill_Prof", "Name");
+			if (BillingProfile.isEmpty() == false) {
+				Browser.WebButton.click("Profile_Query");
+				CO.waitforload();
+				Browser.WebTable.SetData("Bill_Prof", Row, Col, "Name", BillingProfile);
+				CO.waitforload();
+				RowCount = Browser.WebTable.getRowCount("Bill_Prof");
+				if (RowCount == 2) {
+					Result.fUpdateLog("Proceeding to RTB Screen " + BillingProfile);
+					Result.takescreenshot("Proceeding to RTB Screen " + BillingProfile);
+					BillingProfile = Browser.WebTable.getCellData("Bill_Prof", Row, Col);
+					Utlities.StoreValue("BillingProfileName", BillingProfile);
+				} else {
+					Result.fUpdateLog("Billing Profile Not Found");
+					Result.takescreenshot("Billing Profile Not Found");
+					Continue.set(false);
+				}
+			}
+			if (RowCount >= 2) {
+				Boolean flag = false;
+				Col = CO.Select_Cell("Bill_Prof", "Payment Type");
+				for (int i = 2; i <= RowCount; i++)
+					if (Browser.WebTable.getCellData("Bill_Prof", i, Col).equalsIgnoreCase("Postpaid")) {
+						Col = CO.Select_Cell("Bill_Prof", "Name");
+						BillingProfile = Browser.WebTable.getCellData("Bill_Prof", i, Col);
+						Result.fUpdateLog("Proceeding to RTB Screen " + BillingProfile);
+						Result.takescreenshot("Proceeding to RTB Screen " + BillingProfile);
+						Utlities.StoreValue("BillingProfileName", BillingProfile);
+						flag = true;
+						break;
+					}
+				if (flag == false) {
+					Result.fUpdateLog("Postpaid Billing Profile Not Found");
+					Result.takescreenshot("Postpaid Billing Profile Not Found");
+					Continue.set(false);
+				}
+			} else {
+				Result.fUpdateLog("Billing Profile Not Found");
+				Result.takescreenshot("Billing Profile Not Found");
+				Continue.set(false);
+			}
+
+			CO.waitforload();
+			CO.Link_Select("Profiles");
+			CO.waitforload();
+			Browser.WebButton.click("Profile_Query");
+			Col_P = CO.Select_Cell("Bill_Prof", "Name");
+			Col = CO.Select_Cell("Bill_Prof", "Status");
+			Browser.WebTable.SetData("Bill_Prof", Row, Col_P, "Name", BillingProfile);
+			CO.waitforload();
+			CO.waitforload();
+			if (Browser.WebTable.getRowCount("Bill_Prof") >= 2) {
+				Browser.WebTable.click("Bill_Prof", Row, Col);
+				Browser.WebTable.clickL("Bill_Prof", Row, Col_P);
+			} else
+				Continue.set(false);
+
+			CO.waitforload();
+			BillAmt = Browser.WebEdit.gettext("Balance");
+			Test_OutPut += "Balance: " + BillAmt + ",";
+			Result.takescreenshot("Getting Outstanding Balance" + BillAmt);
+
+			CO.Account_Search(AccountNumber);
+			CO.waitforload();
+
+			CO.Link_Select("Payments");
+
+			CO.waitforload();
+			Result.takescreenshot("Account level Payment");
+			Col_P = CO.Select_Cell("AccountPayment", "Billing Profile");
+			int Col_C = CO.Select_Cell("AccountPayment", "Payment_Method");
+			int Col_A = CO.Select_Cell("AccountPayment", "Payment_Amount");
+			CO.waitforobj("Pay_Add", "WebButton");
+			Browser.WebButton.click("Pay_Add");
+			String Bill_Status = "";
+			Row = 2;
+
+			do {
+				Col_S = CO.Actual_Cell("AccountPayment", "Status");
+				Bill_Status = Browser.WebTable.getCellData("AccountPayment", Row, Col_S);
+				if ((Bill_Status.equalsIgnoreCase("Open"))) {
+					break;
+				}
+			} while (true);
+
+			CO.waitforload();
+
+			Browser.WebTable.SetDataE("AccountPayment", Row, Col_A, "Payment_Amount", BillAmt);
+			Browser.WebTable.SetData("AccountPayment", Row, Col_C, "Payment_Method", Channel);
+			Browser.WebTable.click("AccountPayment", Row, Col_P);
+			Browser.WebTable.SetData("AccountPayment", Row, Col_P, "VFQA_Bill_Prof_Name", BillingProfile);
+
+			CO.isAlertExist();
+			if (Channel.equalsIgnoreCase("cash")) {
+				CO.scroll("Reference_Number", "WebEdit");
+				Browser.WebEdit.Set("Reference_Number", "VFQA" + R.nextInt(100000000));
+			}
+
+			Col_S = CO.Select_Cell("AccountPayment", "Channel Transaction #");
+			String Txn = Browser.WebTable.getCellData("AccountPayment", Row, Col_S);
+
+			Browser.WebButton.click("Bill_Submit");
+			CO.waitmoreforload();
+			Result.takescreenshot("Bill Submittion for Payment");
+			Browser.WebButton.click("Payment_Query");
+			Browser.WebTable.SetData("AccountPayment", Row, Col_S, "VFQA_Channel_Transaction__", Txn);
+			CO.waitforload();
+
+			Col = CO.Select_Cell("AccountPayment", "Payment #");
+			String Payment_Reference = Browser.WebTable.getCellData("AccountPayment", Row, Col);
+			Test_OutPut += "Payment Reference Number:" + Payment_Reference + ",";
+
+			Col_S = CO.Select_Cell("AccountPayment", "Status");
+			Bill_Status = Browser.WebTable.getCellData("AccountPayment", Row, Col_S);
+			if ((Bill_Status.equalsIgnoreCase("Submitted"))) {
+				CO.Link_Select("Account Summary");
+				CO.waitforload();
+				CO.Link_Select("Payments");
+				CO.waitforload();
+				Browser.WebButton.click("Payment_Query");
+				CO.waitforload();
+				Browser.WebTable.SetData("AccountPayment", Row, Col, "Payment_Number", Payment_Reference);
+				CO.waitforload();
+				Row_Count = Browser.WebTable.getRowCount("AccountPayment");
+				if (Row_Count == 1)
+					Continue.set(false);
+				Bill_Status = Browser.WebTable.getCellData("AccountPayment", Row, Col_S);
+				Result.takescreenshot("Payment Status Verification" + Payment_Reference);
+
+			} else if ((Bill_Status.equalsIgnoreCase("Success"))) {
+				Continue.set(true);
+			} else
+				Continue.set(false);
+
+			CO.CreditAlertQuery(AccountNumber);
+			CO.waitforload();
+			CO.scroll("CreditQuery", "WebButton");
+			RowCount = Browser.WebTable.getRowCount("CreditAlert");
+			Boolean flag = false;
+			if (RowCount >= 2) {
+				Col_S = CO.Select_Cell("CreditAlert", "Status");
+				// BillingProfile=Browser.WebTable.getCellData("CreditAlert", Row, Col);
+				Col = CO.Select_Cell("CreditAlert", "Alert #");
+				String AlertStatus, Alert;
+				for (int Iterate = 2; Iterate <= RowCount; Iterate++) {
+					Alert = Browser.WebTable.getCellData("CreditAlert", Iterate, Col);
+					AlertStatus = Browser.WebTable.getCellData("CreditAlert", Iterate, Col_S);
+					if (AlertStatus.equalsIgnoreCase("cancelled") == false
+							& AlertStatus.equalsIgnoreCase("closed") == false) {
+						Result.takescreenshot("Alert Status is not Closed or Cancelled as expected");
+						Result.fUpdateLog("Alert Status is not Closed or Cancelled as expected");
+						Continue.set(false);
+						break;
+					}
+					if (Alert.contains("Exist collection")) {
+						Result.takescreenshot("Exit Collection Record Found in the table");
+						Result.fUpdateLog("Exit Collection Record Found in the table");
+						Row = 2;
+						flag = true;
+					}
+				}
+			}
+
+			if (flag == true) {
+				String Order_Status;
+				flag = false;
+				CO.TraverseLatestOrder(AccountNumber);
+				Order_Status = Browser.WebEdit.gettext("Order_Status");
+				if (Order_Status.equals("Complete") == false) {
+					Continue.set(false);
+					Result.fUpdateLog("Order is not Completed");
+					Result.takescreenshot("Order is not Completed");
+				}
+				Row_Count = Browser.WebTable.getRowCount("Line_Items");
+				CO.scroll("Submit", "WebButton");
+				if (Row_Count <= 3) {
+					Browser.WebButton.waittillvisible("Expand");
+					Browser.WebButton.click("Expand");
+				}
+				Col = CO.Select_Cell("Line_Items", "Product");
+				for (int LI_Row = 2; LI_Row <= Row_Count; LI_Row++) {
+					String IG_Product = Browser.WebTable.getCellData("Line_Items", LI_Row, Col);
+					flag = true;
+					Col = CO.Select_Cell("Line_Items", "Action");
+					if (Browser.WebTable.getCellData("Line_Items", LI_Row, Col).equalsIgnoreCase("resume") == false) {
+						flag = false;
+						Result.fUpdateLog(IG_Product + " is not available with Action Resume");
+						Result.takescreenshot(IG_Product + " is not available with Action Resume");
+						break;
+					}
+				}
+
+			}
+
+			if (Continue.get() & flag) {
+				Test_OutPut += "ExitCriteria Process is done Successfully " + ",";
+				Result.fUpdateLog("ExitCriteria Process is done Successfully ");
+				Status = "PASS";
+			} else {
+				Test_OutPut += "ExitCriteria Process Failed" + ",";
+				Result.takescreenshot("ExitCriteria Process Failed");
+				Result.fUpdateLog("ExitCriteria Process Failed");
+				Status = "FAIL";
+			}
+		} catch (Exception e) {
+			Status = "FAIL";
+			Test_OutPut += "Exception occurred" + ",";
+			Result.takescreenshot("Exception occurred");
+			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+			e.printStackTrace();
+		}
+
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
 

@@ -106,7 +106,7 @@ public class Keyword_Putty extends Driver {
 			Test_OutPut += str_FileContent + ",";
 
 			if (!(getdata("PVT_Date").equals(""))) {
-				// "pvt -m2 010710002018 	"
+				// "pvt -m2 010710002018 "
 				pvt = "pvt -m2 " + getdata("PVT_Date");
 			} else {
 				pvt = "pvt -m2 " + pulldata("PVT_Date");
@@ -117,43 +117,43 @@ public class Keyword_Putty extends Driver {
 			commands.add("cd control_file_gen");
 			commands.add("./bill_control_gen.pl");
 			commands.add("cp PinBillRunControl.xml $PIN_HOME/apps/pin_billd");
-
+			commands.add("test");
+			commands.add(pvt);
+			commands.add("pvt");
 			commands.add("apps");
 			commands.add("cd pin_billd");
 			commands.add("cat PinBillRunControl.xml");
-			commands.add("pvt");
-			commands.add(pvt);
-			commands.add("pvt");
-			commands.add("pin_deferred_act –verbose");
-			commands.add("pin_cycle_fees -cycle_fees -verbose");
+			// commands.add("pin_deferred_act –verbose");
+			// commands.add("pin_cycle_fees -cycle_fees -verbose");
 			// commands.add("pin_cycle_fees -purchase -verbose");
-			commands.add("pin_cycle_fees -cancel -verbose");
+			// commands.add("pin_cycle_fees -cancel -verbose");
 			commands.add("pin_bill_accts -file PinBillRunControl.xml -verbose");
+			commands.add("test");
 			commands.add("pvt -m0");
 			commands.add("pvt");
 
 			// commands.add("history");
 
 			str_FileContent = Executecmd(nsession.get(), commands, "");
-			
+
 			Date today = new Date();
-			String x  = today.toString();
-			x=x.substring(4, 16);
+			String x = today.toString();
+			x = x.substring(4, 13).replace("0", " ");
 			Result.fUpdateLog(x);
-			
-			if(str_FileContent.contains(x) ){
+
+			if (str_FileContent.contains(x)) {
 				Result.fUpdateLog("PVT set as Normal");
 				Test_OutPut += "PVT set as Normal" + ",";
 				Continue.set(true);
-			}else {
+			} else {
 				Result.fUpdateLog("Fail to set PVT Normal");
 				Test_OutPut += "Fail to set PVT Normal" + ",";
 				Continue.set(false);
 			}
-			
+
 			CopytoDoc(str_FileContent);
 
-			if (str_FileContent.contains("logout")&& Continue.get()) {
+			if (str_FileContent.contains("logout") && Continue.get()) {
 				Test_OutPut += "Commands Executed Successfully" + ",";
 				Result.fUpdateLog(str_FileContent);
 				Status = "PASS";
@@ -176,13 +176,12 @@ public class Keyword_Putty extends Driver {
 	public String Invoicegeneration() {
 		String Test_OutPut = "", Status = "";
 		Result.fUpdateLog("------Invoice generation Event Details------");
-		String Dt = "",x = "";
+		String Dt = "", x = "";
 		try {
 			String str_FileContent = "";
-			
 
 			if (!(getdata("Beyond_PVT_Date").equals(""))) {
-				//./vfq_export_invXML-BILL.pl  -end 17-12-2012 10:10:10 
+				// ./vfq_export_invXML-BILL.pl -end 17-12-2012 10:10:10
 				Dt = "./vfq_export_invXML-BILL.pl -end " + getdata("Beyond_PVT_Date").replace("M", "");
 			} else {
 				Dt = "./vfq_export_invXML-BILL.pl -end " + pulldata("Beyond_PVT_Date").replace("M", "");
@@ -194,17 +193,17 @@ public class Keyword_Putty extends Driver {
 			commands.add("./pending_invoice_gen.pl");
 			commands.add("ls -lrt");
 			str_FileContent = Executecmd(nsession.get(), commands, "");
-			
+
 			Date today = new Date();
-			x  = today.toString();
-			x=x.substring(4, 16);
+			x = today.toString();
+			x = x.substring(4, 13).replace("0", " ");
 			Result.fUpdateLog(x);
-			
-			if(str_FileContent.contains(x) ){
+
+			if (str_FileContent.contains(x)) {
 				Continue.set(true);
 				Result.fUpdateLog("The f1 directory is updated : control_file_gen");
 				Test_OutPut += "The f1 directory is updated : control_file_gen" + ",";
-				
+
 				List<String> commands1 = new ArrayList<String>();
 				commands1.add("test");
 				commands1.add("cd control_file_gen");
@@ -214,31 +213,31 @@ public class Keyword_Putty extends Driver {
 				commands1.add("ls -lrt");
 				String str_FileContent1 = Executecmd(nsession.get(), commands1, "");
 				str_FileContent += str_FileContent1;
-				
+
 				Date today1 = new Date();
-				x  = today1.toString();
-				x=x.substring(4, 16);
+				x = today1.toString();
+				x = x.substring(4, 13).replace("0", " ");
 				Result.fUpdateLog(x);
-				
-				if(str_FileContent1.contains(x) ){
+
+				if (str_FileContent1.contains(x)) {
 					Result.fUpdateLog("The f1 directory is updated : pin_inv");
 					Test_OutPut += "The f1 directory is updated : pin_inv" + ",";
-					
+
 					List<String> commands2 = new ArrayList<String>();
 					commands2.add("apps");
 					commands2.add("cd pin_inv");
 					commands2.add("pin_inv_accts -details -file f1 -verbose");
 					String str_FileContent4 = Executecmd(nsession.get(), commands2, "");
 					str_FileContent += str_FileContent4;
-				}else {
+				} else {
 					Continue.set(false);
 				}
-				
-			}else {
+
+			} else {
 				Continue.set(false);
 			}
-			
-			if(Continue.get()) {
+
+			if (Continue.get()) {
 				List<String> commands3 = new ArrayList<String>();
 				commands3.add("apps");
 				commands3.add("cd vfq_exp_XML/vfq_exp_XML-Bill");
@@ -247,26 +246,27 @@ public class Keyword_Putty extends Driver {
 				commands3.add("ls -lrt");
 				String str_FileContent2 = Executecmd(nsession.get(), commands3, "");
 				str_FileContent += str_FileContent2;
-				String xa[]=str_FileContent2.split("\n");
-				int i=xa.length-5;
-				//String str = "-rw-rw-r-- 1 pin         pin            4744 Jan 25 09:13 [01;31mInvoice_1516860799.zip[00m"; //
+				String xa[] = str_FileContent2.split("\n");
+				int i = xa.length - 5;
+				// String str = "-rw-rw-r-- 1 pin pin 4744 Jan 25 09:13
+				// [01;31mInvoice_1516860799.zip[00m"; //
 				String str = xa[i];
 				System.out.println(xa[i].length());
-				str_FileContent2 = xa[i].substring(66,xa[i].length()-6);	
-				//String str_FileContent2 = "Invoice_1516860799.zip";
+				str_FileContent2 = xa[i].substring(66, xa[i].length() - 6);
+				// String str_FileContent2 = "Invoice_1516860799.zip";
 				Result.fUpdateLog(str_FileContent2);
-				
+
 				Date today5 = new Date();
-				x  = today5.toString();
-				x=x.substring(4, 16);
-				//x = "Jan 25 09:45";
+				x = today5.toString();
+				x = x.substring(4, 13).replace("0", " ");
+				// x = "Jan 25 09:45";
 				Result.fUpdateLog(x);
-				
-				if(str_FileContent2.contains("zip") & str.contains(x) ){
+
+				if (str_FileContent2.contains("zip") & str.contains(x)) {
 					Continue.set(true);
 					Result.fUpdateLog("latest .zip file is updated : invoice_processed");
 					Test_OutPut += "latest .zip file is updated : invoice_processed" + ",";
-					Test_OutPut += ".Zip file Name : "+ str_FileContent2 + ",";
+					Test_OutPut += ".Zip file Name : " + str_FileContent2 + ",";
 					InvoiceZip.set(str_FileContent2);
 					List<String> commands4 = new ArrayList<String>();
 					commands4.add("test");
@@ -274,28 +274,28 @@ public class Keyword_Putty extends Driver {
 					commands4.add("pvt");
 					String str_FileContent3 = Executecmd(nsession.get(), commands4, "");
 					str_FileContent += str_FileContent3;
-					
+
 					Date today2 = new Date();
-					x  = today2.toString();
-					x=x.substring(4, 16);
+					x = today2.toString();
+					x = x.substring(4, 13).replace("0", " ");
 					Result.fUpdateLog(x);
-					if(str_FileContent3.contains(x) ){
+					if (str_FileContent3.contains(x)) {
 						Result.fUpdateLog("PVT set as Normal");
 						Test_OutPut += "PVT set as Normal" + ",";
 						Continue.set(true);
-					}else {
+					} else {
 						Result.fUpdateLog("Fail to set PVT Normal");
 						Test_OutPut += "Fail to set PVT Normal" + ",";
 						Continue.set(false);
 					}
-					
-				}else {
+
+				} else {
 					Result.fUpdateLog(".Zip file not generated");
 					Test_OutPut += ".Zip file not generated" + ",";
 					Continue.set(false);
 				}
 			}
-			
+
 			CopytoDoc(str_FileContent);
 
 			if (str_FileContent.contains("logout") && Continue.get()) {
@@ -317,53 +317,53 @@ public class Keyword_Putty extends Driver {
 		Result.fUpdateLog("------Invoice generation Event Details - Completed------");
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
-	
+
 	public String Collections() {
 		String Test_OutPut = "", Status = "";
 		Result.fUpdateLog("------Collections Event Details------");
-		String Coll = "", pvt = "", str_FileContent="";
+		String Coll = "", pvt = "", str_FileContent = "";
 		try {
 			// date neet to be pick for the StoreDB
 			String PoID = Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(), "BillPoID");
-			
+
 			pvt = "pvt -m2 " + Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(), "DueDate");
 
-			Coll = "pin_collections_process –billinfo " +PoID +"-verbose";
+			Coll = "pin_collections_process -billinfo " + PoID + " -verbose";
 
 			List<String> commands = new ArrayList<String>();
 			commands.add("test");
-			commands.add("pvt");
 			commands.add(pvt);
 			commands.add("pvt");
-			
+
 			commands.add("apps");
 			commands.add("cd pin_collections");
 			commands.add(Coll);
+			commands.add("test");
 			commands.add("pvt -m0");
 			commands.add("pvt");
 
 			// commands.add("history");
 
 			str_FileContent = Executecmd(nsession.get(), commands, "");
-			
+
 			Date today = new Date();
-			String x  = today.toString();
-			x=x.substring(4, 16);
+			String x = today.toString();
+			x = x.substring(4, 13).replace("0", " ");
 			Result.fUpdateLog(x);
-			
-			if(str_FileContent.contains(x) ){
+
+			if (str_FileContent.contains(x)) {
 				Result.fUpdateLog("PVT set as Normal");
 				Test_OutPut += "PVT set as Normal" + ",";
 				Continue.set(true);
-			}else {
+			} else {
 				Result.fUpdateLog("Fail to set PVT Normal");
 				Test_OutPut += "Fail to set PVT Normal" + ",";
 				Continue.set(false);
 			}
-			
+
 			CopytoDoc(str_FileContent);
 
-			if (str_FileContent.contains("logout")&& Continue.get()) {
+			if (str_FileContent.contains("logout") && Continue.get()) {
 				Test_OutPut += "Commands Executed Successfully" + ",";
 				Result.fUpdateLog(str_FileContent);
 				Status = "PASS";
@@ -382,7 +382,7 @@ public class Keyword_Putty extends Driver {
 		Result.fUpdateLog("------Collections Event Details - Completed------");
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
-	
+
 	public String ReadFileFromLinux(Session obj_Session, String str_FileDirectory, String str_FileName) {
 		StringBuilder obj_StringBuilder = new StringBuilder();
 		try {
@@ -473,6 +473,7 @@ public class Keyword_Putty extends Driver {
 					}
 					str1 = new String(buffer, 0, i);
 					str = str + str1;
+					Result.fUpdateLog(str1);
 				}
 
 				if (str1.contains("logout")) {

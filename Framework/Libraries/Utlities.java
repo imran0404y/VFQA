@@ -231,14 +231,14 @@ public class Utlities extends Driver {
 			rs.moveNext();
 			for (int readloop = 0; readloop < noOfColumns; readloop++) {
 				String colname = fieldnames.get(readloop);
-				if (!colname.equals("Application_Details")) {
+				//if (!colname.equals("Application_Details")) {
 					String dat = rs.getField(readloop).value();
 					if (dat == null) {
 						dict.put(colname, "");
 					} else {
 						dict.put(colname, dat);
 					}
-				}
+				//}
 			}
 			rs.close();
 			connection.close();

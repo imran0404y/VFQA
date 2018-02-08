@@ -2,8 +2,12 @@ package Libraries;
 
 import utilities.Charging;
 import utilities.Dialers;
+import utilities.Handset;
 import utilities.MobileRTBCheck;
+import utilities.Notification;
 import utilities.SetCapabilities;
+import utilities.Siebel;
+import utilities.USSD;
 
 public class KeyWord {
 
@@ -16,10 +20,15 @@ public class KeyWord {
 	Keyword_FixedLine KF = new Keyword_FixedLine();
 	Keyword_DB KDB = new Keyword_DB();
 	Keyword_OSM KO = new Keyword_OSM();
-	Dialers KD = new Dialers();
-	SetCapabilities KSC = new SetCapabilities();
-	MobileRTBCheck RTB = new MobileRTBCheck();
-	Charging Chrg = new Charging();
+
+	Dialers KDialers = new Dialers();
+	SetCapabilities KSetCapabilities = new SetCapabilities();
+	MobileRTBCheck KRTB = new MobileRTBCheck();
+	Charging KCharging = new Charging();
+	Notification KNotification = new Notification();
+	Handset KHandset = new Handset();
+	USSD KUSSD = new USSD();
+	Siebel KSiebel = new Siebel();
 
 	// ------------------Keyword CRM -------------------//
 	public String Siebel_Login() {
@@ -158,6 +167,17 @@ public class KeyWord {
 		return KC.UnBarring();
 	}
 
+	public String DunningProcess() {
+		return KC.DunningProcess();
+	}
+
+	public String DunningAction() {
+		return KC.DunningAction();
+	}
+
+	public String ExitCriteria() {
+		return KC.ExitCriteria();
+	}
 	// ------------------Keyword CRM -------------------//
 
 	// ------------------Keyword Guided -------------------//
@@ -256,31 +276,107 @@ public class KeyWord {
 	}
 
 	// ---------------------Keyword_OSM------------------------//
+
 	// ---------------------Mobile Usages------------------------//
-	public String LocalCall() {
-		return KD.LocalDialerOnNet();
+	public String Dialer() {
+		return KDialers.Dialer();
 	}
 
-	public String SetCapabilities() {
-		return KSC.setDialerCapabilities();
+	public String smsSender() {
+		return KDialers.smsSender();
+	}
+
+	public String BalanceCheckDialer() {
+		return KDialers.BalanceCheckDialer();
+	}
+
+	public String RechargeDialer() {
+		return KDialers.RechargeDialer();
+	}
+
+	public String setMessengerCapabilities() {
+		return KSetCapabilities.setMessengerCapabilities();
+	}
+
+	public String SetCallCapabilities() {
+		return KSetCapabilities.setDialerCapabilities();
 	}
 
 	public String PrevCheckBalance() {
-		return RTB.PrevCheckBalance();
+		return KRTB.PrevCheckBalance();
 	}
 
 	public String PostCheckBalance() {
-		return RTB.PostCheckBalance();
+		return KRTB.PostCheckBalance();
 	}
 
 	public String LocalCallCharging() {
-		return Chrg.LocalCallCharging();
+		return KCharging.LocalCallCharging();
 	}
 
-	public String RTBLogin() {
-		return RTB.RTBLogin();
+	public String LocalSMSCharging() {
+		return KCharging.LocalSMSCharging();
 	}
-	// ---------------------Mobile Usages------------------------//
+
+	public String InternationalCallCharging() {
+		return KCharging.InternationalCallCharging();
+	}
+
+	public String InternationalSMSCharging() {
+		return KCharging.InternationalSMSCharging();
+	}
+
+	public String BalanceCheck() {
+		return KNotification.BalanceCheck();
+	}
+
+	public String FlexBalanceCheck() {
+		return KNotification.FlexBalanceCheck();
+	}
+
+	public String ProductInfoNotification() {
+		return KNotification.ProductInfoNotification();
+	}
+
+	public String ConfigureSMSC() {
+		return KHandset.ConfigureSMSC();
+	}
+
+	public String RestartMobile() {
+		return KHandset.RestartMobile();
+	}
+
+	public String VerifyRecharge() {
+		return KUSSD.VerifyRecharge();
+	}
+
+	public String USSDJourney() {
+		return KUSSD.USSDJourney();
+	}
+
+	public String InvokeUSSDMenu() {
+		return KUSSD.InvokeUSSDMenu();
+	}
+
+	public String USSDCleaner() {
+		return KUSSD.USSDCleaner();
+	}
+
+	public String PunchRechargePIN() {
+		return KUSSD.PunchRechargePIN();
+	}
+
+	public String VerifyProductActivationPrepaid() {
+		return KUSSD.VerifyProductActivationPrepaid();
+	}
+
+	public String SearchAsset() {
+		return KSiebel.SearchAsset();
+	}
+
+	public String CheckOrder() {
+		return KSiebel.CheckOrder();
+	}// ---------------------Mobile Usages------------------------//
 
 	// ---------------------Keyword CRM/BRM DB------------------------//
 	public String DBConnection() {

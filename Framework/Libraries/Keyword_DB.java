@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class Keyword_DB extends Driver {
 
-	Connection con = null;
+	public static ThreadLocal<Connection> con = new ThreadLocal<Connection>();
 
 	public String DBConnection() {
 		String Test_OutPut = "", Status = "";
@@ -15,20 +15,20 @@ public class Keyword_DB extends Driver {
 		String ServiceName = "";
 
 		if (getdata("Application_Details").equals("BRM_DB")) {
-			ServiceName = "BRMPORD";
+			ServiceName = "BRMPROD";
 		} else if (getdata("Application_Details").equals("CRM_DB")) {
-			ServiceName = "CRMPORD";
+			ServiceName = "CRMPROD";
 		}
-		String Username = getdata("VQ_Login_User");
-		String password = getdata("VQ_Login_Pswd");
+		String Username = getdata("VQ_Login_User").trim();
+		String password = getdata("VQ_Login_Pswd").trim();
 		String Host = getdata("URL/HOST");
 		int Port = 1521;
 
 		String driver = "oracle.jdbc.OracleDriver";
 		try {
 			Class.forName(driver);
-			con = DriverManager.getConnection("jdbc:oracle:thin:@" + Host + ":" + Port + ":" + ServiceName, Username,
-					password);
+			con.set(DriverManager.getConnection("jdbc:oracle:thin:@" + Host + ":" + Port + ":" + ServiceName, Username,
+					password));
 			Result.fUpdateLog("connected to DB");
 
 			Result.fUpdateLog("Connected to DB: " + Host);
@@ -48,7 +48,7 @@ public class Keyword_DB extends Driver {
 		String Test_OutPut = "", Status = "";
 		Result.fUpdateLog("------DB Disconnection Event Details------");
 		try {
-			con.close();
+			con.get().close();
 			Result.fUpdateLog("DB disconnected successfully");
 			Test_OutPut += "DB disconnected successfully" + ",";
 			Status = "PASS";
@@ -76,7 +76,7 @@ public class Keyword_DB extends Driver {
 		}
 		
 		try {
-			Statement statement = con.createStatement();
+			Statement statement = con.get().createStatement();
 			String queryString = "Select a.account_no,b.poid_id0,b.bill_info_id from pin.account_t a,pin.billinfo_t b where a.account_no in '"
 					+ AccountNo + "' and b.account_obj_id0=a.poid_id0 and b.bill_info_id='"+BillingProfileName+"'";
 			
@@ -85,11 +85,9 @@ public class Keyword_DB extends Driver {
 				Test_OutPut = "BillPoID: " +rs.getString(2)+" BillingProfileName: "+ rs.getString(3) +",";
 				Utlities.StoreValue("BillPoID", rs.getString(2));
 			}
-			Result.fUpdateLog("DB disconnected successfully");
-			Test_OutPut += "DB disconnected successfully" + ",";
 			Status = "PASS";
 		} catch (Exception e) {
-			Test_OutPut += "Failed to disconnect DB" + ",";
+			Test_OutPut += "Failed to BillPoID" + ",";
 			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
 			Status = "FAIL";
 			e.printStackTrace();

@@ -51,10 +51,11 @@ public class MobileRTBCheck extends Driver {
 	}
 
 	public String PrevCheckBalance() {
-		String Type="",Priority="",BucketName="", BucketID = "", BucketValue="", BucketExpiry="",MSISDN, SOAP_Action, XMLResponse_Path = "", XMLRequest_Path = "",Test_OutPut = "", Status = "";
+		String Type="",Priority="",SubType="",BucketName="", BucketID = "", BucketValue="", BucketExpiry="",MSISDN, SOAP_Action, XMLResponse_Path = "", XMLRequest_Path = "",Test_OutPut = "", Status = "";
 		Result.fUpdateLog("------Checking Balance Prior to Usage------");
 
 		try {
+				utils.copyResultTemplate();
 			if (!(getdata("MSISDN").equals(""))) {
 				MSISDN = getdata("MSISDN");
 				SOAP_Action = "QueryRealTimeBalance";
@@ -84,7 +85,7 @@ public class MobileRTBCheck extends Driver {
 				// Read the request XML File
 				SOAPMessage message = CO.readSoapMessage(XMLRequest_Path, SOAP_Action);
 				message.writeTo(System.out);
-				String URL="http://10.162.53.91:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
+				String URL="http://10.162.53.66:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
 				// Establish SOAP Connection and send request to End Point URL
 				SOAPMessage soapResponse = CO.XML_Request(message, URL);
 
@@ -107,16 +108,17 @@ public class MobileRTBCheck extends Driver {
 				// Det count of Node : rtbrespabo:CmuBalanceSummaryVbc
 				NodeList list = doc1.getElementsByTagName("rtbrespabo:CmuBalanceSummaryVbc");
 				Result.fUpdateLog("Total of elements : " + list.getLength());
-				utils.clenaup();
+				//utils.clenaup();
 				Fillo fillo = new Fillo();
-				Connection connection = fillo
-						.getConnection("MobileFramework\\db\\result.xlsx");
+				//Connection connection = fillo.getConnection("MobileFramework\\db\\result.xlsx");
+				Connection connection = fillo.getConnection(UCscreenfilepth.get()+"\\result.xlsx");
 				String strQuery;
 
 				for (int i = 0; i < list.getLength(); i++) {
 					BucketName = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:English", i);
 					BucketID = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:BucketID", i);
 					BucketValue = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:Total", i);
+					SubType = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:CurrencyCode", i);
 					BucketExpiry = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:DueNow", i);
 					if(BucketID=="") {
 						BucketName="Primary Balance";
@@ -125,7 +127,7 @@ public class MobileRTBCheck extends Driver {
 					BucketValue=utils.Bal(BucketValue);
 					Priority = utils.getPriority(BucketID);
 					Type = utils.getType(BucketID);
-					strQuery = "INSERT INTO pre(Bucket_Id,Name,Value,Expiry,Priority,Type) VALUES('" + BucketID + "','" + BucketName + "','" + BucketValue + "','" + BucketExpiry + "','" + Priority + "','" + Type + "')";
+					strQuery = "INSERT INTO pre(Bucket_Id,Name,Value,Expiry,Priority,Type,SubType) VALUES('" + BucketID + "','" + BucketName + "','" + BucketValue + "','" + BucketExpiry + "','" + Priority + "','" + Type + "','" + SubType +"')";
 					System.out.println(strQuery);
 					connection.executeUpdate(strQuery);
 					}
@@ -142,7 +144,7 @@ public class MobileRTBCheck extends Driver {
 	}
 
 	public String PostCheckBalance() {
-		String Type="",Priority="",BucketName="", BucketID = "", BucketValue="", BucketExpiry="",MSISDN, SOAP_Action, XMLResponse_Path = "", XMLRequest_Path = "",Test_OutPut = "", Status = "";
+		String Type="",Priority="",BucketName="",SubType="", BucketID = "", BucketValue="", BucketExpiry="",MSISDN, SOAP_Action, XMLResponse_Path = "", XMLRequest_Path = "",Test_OutPut = "", Status = "";
 		Result.fUpdateLog("------Checking Balance After Usage------");
 		
 		try {
@@ -175,7 +177,7 @@ public class MobileRTBCheck extends Driver {
 				// Read the request XML File
 				SOAPMessage message = CO.readSoapMessage(XMLRequest_Path, SOAP_Action);
 				message.writeTo(System.out);
-				String URL="http://10.162.53.91:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
+				String URL="http://10.162.53.66:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
 				// String
 				// URL="http://10.162.53.91:8001/soa-infra/services/vfqamrgdomain/QueryRealTimeBalanceSiebelReqABCSImpl/queryrealtimebalancesiebelreqabcsimpl_client_ep?WSDL";
 				// Establish SOAP Connection and send request to End Point URL
@@ -201,13 +203,14 @@ public class MobileRTBCheck extends Driver {
 				NodeList list = doc1.getElementsByTagName("rtbrespabo:CmuBalanceSummaryVbc");
 				Result.fUpdateLog("Total of elements : " + list.getLength());
 				Fillo fillo = new Fillo();
-				Connection connection = fillo
-						.getConnection("MobileFramework\\db\\result.xlsx");
+				//Connection connection = fillo.getConnection("MobileFramework\\db\\result.xlsx");
+				Connection connection = fillo.getConnection(UCscreenfilepth.get()+"\\result.xlsx");
 				String strQuery;
 				for (int i = 0; i < list.getLength(); i++) {
 					BucketName = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:English", i);
 					BucketID = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:BucketID", i);
 					BucketValue = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:Total", i);
+					SubType = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:CurrencyCode", i);
 					BucketExpiry = CO.getvalue(doc1, "rtbrespabo:CmuBalanceSummaryVbc", "rtbrespabo:DueNow", i);
 					if(BucketID=="") {
 						BucketName="Primary Balance";
@@ -216,7 +219,7 @@ public class MobileRTBCheck extends Driver {
 					BucketValue=utils.Bal(BucketValue);
 					Priority = utils.getPriority(BucketID);
 					Type = utils.getType(BucketID);
-					strQuery = "INSERT INTO post(Bucket_Id,Name,Value,Expiry,Priority,Type) VALUES('" + BucketID + "','" + BucketName + "','" + BucketValue + "','" + BucketExpiry + "','" + Priority + "','" + Type + "')";
+					strQuery = "INSERT INTO post(Bucket_Id,Name,Value,Expiry,Priority,Type,SubType) VALUES('" + BucketID + "','" + BucketName + "','" + BucketValue + "','" + BucketExpiry + "','" + Priority + "','" + Type + "','" + SubType + "')";
 					System.out.println(strQuery);
 					connection.executeUpdate(strQuery);
 				}

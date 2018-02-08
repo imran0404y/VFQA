@@ -54,7 +54,26 @@ public class SetCapabilities extends Driver {
 		}
 	}
 
-	public static void setMessengerCapabilities(String DeviceName) throws IOException, InterruptedException {
+	public String setMessengerCapabilities() {
+		String Test_OutPut = "", Status = "";
+		try {
+			if (!(getdata("DeviceName").equals(""))) {
+				DeviceName = getdata("DeviceName");
+				Result.fUpdateLog("Device Name is set to " + DeviceName);
+				setMessengerCapabilities1(DeviceName);
+				Status = "PASS";
+			} else {
+				Result.fUpdateLog("Device " + DeviceName + " not found");
+				Status = "FAIL";
+			}
+		} catch (Exception e) {
+			Result.fUpdateLog("Capabilites are not set due to" + e);
+			Status = "FAIL";
+		}
+		return Status + "@@" + Test_OutPut + "<br/>";
+	}
+	
+	public static void setMessengerCapabilities1(String DeviceName) throws IOException, InterruptedException {
 		System.out.println("*** Setting Up Messenger Capabilities ***");
 		try {
 			FileReader reader = new FileReader("MobileFramework/config/config.properties");

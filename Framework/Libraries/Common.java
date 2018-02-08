@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.soap.MessageFactory;
@@ -32,6 +33,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.codoid.products.fillo.Connection;
+import com.codoid.products.fillo.Fillo;
+import com.codoid.products.fillo.Recordset;
 import com.google.common.base.CharMatcher;
 
 public class Common extends Driver {
@@ -72,7 +76,7 @@ public class Common extends Driver {
 	public void waitmoreforload() {
 		try {
 			cDriver.get().manage().timeouts().implicitlyWait(240, TimeUnit.SECONDS);
-			Thread.sleep(20000);
+			Thread.sleep(30000);
 
 		} catch (Exception e) {
 		}
@@ -1828,7 +1832,6 @@ public class Common extends Driver {
 			return false;
 		}
 	}
-	// ContactSegment
 
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: GlobalSegmentVerification
@@ -1948,6 +1951,208 @@ public class Common extends Driver {
 			}
 		} catch (Exception e) {
 			Result.fUpdateLog("Exception Occcurred in Account 360");
+			Continue.set(false);
+		}
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	* Method Name			: DunningCalendar
+	* Arguments			: CustSeg - Customer Segment, CreditScore - Credit Score, AmtOwed - Amount Owed
+	* Use 					: DunningCalendar 
+	* Modified By			: Vinodhini Raviprasad
+	* Last Modified Date 	: 21-01-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public void DunningCalendar(String CustSeg, int CreditScore, double AmtOwed) {
+		try {
+			String ActionType, DueDate;
+			Fillo fillo = new Fillo();
+
+			String OutStnd = OutstandingBucket(CustSeg, CreditScore, AmtOwed);
+			if (OutStnd.equalsIgnoreCase("No_Data")) {
+				Result.fUpdateLog("Dunning Calendar Match Failed");
+				Continue.set(false);
+			} else {
+				String BillDays = CustSeg.replace(" ", "") + "_" + OutStnd;
+				Result.fUpdateLog("Bill Action " + BillDays);
+				Connection ORconn = fillo.getConnection(Dunning.get());
+				Recordset rs = ORconn.executeQuery("Select ActionType," + BillDays + " from CreditAlerts");
+				while (rs.next()) {
+					DueDate = rs.getField(1).value();
+					ActionType = rs.getField(0).value();
+					if (!DueDate.isEmpty()) {
+						DunningSchedule.put(ActionType, DueDate);
+					}
+				}
+				Result.fUpdateLog("Dunning Calendar Updated");
+				rs.close();
+				ORconn.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: OutstandingBucket
+	 * Arguments			: CustSeg - Customer Segment, CreditScore - Credit Score, AmtOwed - Amount Owed
+	 * Use 					: OutstandingBucket 
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 21-01-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public String OutstandingBucket(String CustSeg, int CreditScore, double AmtOwed) {
+		String OutStandingAmt = "";
+		if (CustSeg.equalsIgnoreCase("Qatari") || CustSeg.equalsIgnoreCase("Expatriate")) {
+			if (AmtOwed >= 50 & CreditScore == 1)
+				OutStandingAmt = "1_GreaterThanOrEqualTo_50";
+			else if (AmtOwed >= 100 & CreditScore == 2)
+				OutStandingAmt = "2_GreaterThanOrEqualTo_100";
+			else if (AmtOwed >= 100 & CreditScore == 3)
+				OutStandingAmt = "3_GreaterThanOrEqualTo_100";
+			else if (AmtOwed >= 250 & CreditScore == 4)
+				OutStandingAmt = "4_GreaterThanOrEqualTo_250";
+			else if (AmtOwed >= 250 & CreditScore == 5)
+				OutStandingAmt = "5_GreaterThanOrEqualTo_250";
+			else
+				OutStandingAmt = "No_Data";
+		} else if (CustSeg.equalsIgnoreCase("Small and Medium")) {
+			if (AmtOwed >= 1000)
+				OutStandingAmt = CreditScore + "_GreaterThanOrEqualTo_1000";
+			else
+				OutStandingAmt = "No_Data";
+		} else if (CustSeg.equalsIgnoreCase("Large")) {
+			if (AmtOwed >= 1000)
+				OutStandingAmt = CreditScore + "_GreaterThanOrEqualTo_1000";
+			else
+				OutStandingAmt = "No_Data";
+		} else if (CustSeg.equalsIgnoreCase("VIP") || CustSeg.equalsIgnoreCase("VVIP")
+				|| CustSeg.equalsIgnoreCase("Royal Family")) {
+			if (AmtOwed >= 250)
+				OutStandingAmt = CreditScore + "_GreaterThanOrEqualTo_250";
+			else
+				OutStandingAmt = "No_Data";
+		}
+		return OutStandingAmt;
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: CreditAlertQuery
+	 * Arguments			: AccountNumber
+	 * Use 					: OutstandingBucket 
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 21-01-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public void CreditAlertQuery(String AccountNumber) {
+		try {
+			Actions a = new Actions(cDriver.get());
+
+			WebElement we = cDriver.get().findElement(By.xpath("//body"));
+			a.sendKeys(we, Keys.chord(Keys.CONTROL, Keys.SHIFT, "a")).perform();
+
+			Result.takescreenshot("Site Map View Navigation");
+			Result.fUpdateLog("Site Map View Navigation");
+
+			Text_Select("a", "Credit Alert List");
+			waitforload();
+			waitforload();
+			waitforload();
+			Result.takescreenshot("Navigating to CreditAlert Table");
+			Result.fUpdateLog("Navigating to CreditAlert Table");
+			waitforload();
+			scroll("CredetitAlertQuery", "WebButton");
+			Browser.WebButton.click("CredetitAlertQuery");
+			waitforload();
+			waitforload();
+			waitforload();
+			Browser.WebEdit.Set("Account_No", AccountNumber);
+			Browser.WebButton.click("CredetitAlertGO");
+		} catch (Exception e) {
+			Continue.set(false);
+			Result.takescreenshot("Failed to Query Credit Alert Account");
+			Result.fUpdateLog("Failed to Query Credit Alert Account");
+		}
+	}
+
+	public void TraverseLatestOrder(String AccountNumber) {
+		try {
+			int Tgt_Row = 2;
+			Account_Search(AccountNumber);
+			waitforload();
+			Text_Select("a", "Orders");
+			waitforload();
+			int Col = Select_Cell("Order_Table", "Order Date");
+			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
+			SimpleDateFormat OD_Format = new SimpleDateFormat("dd/mm/yyyy hh:mm:ss a", Locale.US);
+			Date OrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
+			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
+				Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
+				Calendar cal1 = Calendar.getInstance();
+				Calendar cal2 = Calendar.getInstance();
+				cal1.setTime(OrderDate);
+				cal2.setTime(tempDate);
+				if (cal1.before(cal2)) {
+					OrderDate = tempDate;
+					Tgt_Row = O_Row;
+				}
+			}
+			Col = Select_Cell("Order_Table", "Order #");
+			Result.fUpdateLog("Traversing to the latest created Order " + OrderDate);
+			Result.takescreenshot("Traversing to the latest created Order " + OrderDate);
+			Browser.WebTable.clickL("Order_Table", Tgt_Row, Col);
+		} catch (Exception e) {
+			Continue.set(false);
+		}
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: TraverseLatestBeforeOrder
+	 * Arguments			: AccountNumber
+	 * Use 					: To traverse the latest Order Created in a specific Account 
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 21-01-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public void TraverseLatestBeforeOrder(String AccountNumber) {
+		try {
+			int Tgt_Row = 2;
+			Account_Search(AccountNumber);
+			waitforload();
+			Text_Select("a", "Orders");
+			waitforload();
+			int Col = Select_Cell("Order_Table", "Order Date");
+			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
+			SimpleDateFormat OD_Format = new SimpleDateFormat("dd/mm/yyyy hh:mm:ss a", Locale.US);
+			Date LatestOrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
+
+			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
+				Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
+				Calendar cal1 = Calendar.getInstance();
+				Calendar cal2 = Calendar.getInstance();
+				cal1.setTime(LatestOrderDate);
+				cal2.setTime(tempDate);
+				if (cal1.before(cal2)) {
+					LatestOrderDate = tempDate;
+					Tgt_Row = O_Row;
+				}
+			}
+			Date BeforeOrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", 2, Col));
+			;
+			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
+				if (Tgt_Row != O_Row) {
+					Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
+					Calendar cal1 = Calendar.getInstance();
+					Calendar cal2 = Calendar.getInstance();
+					cal1.setTime(BeforeOrderDate);
+					cal2.setTime(tempDate);
+					if (cal1.before(cal2)) {
+						BeforeOrderDate = tempDate;
+						Tgt_Row = O_Row;
+					}
+				}
+			}
+			Col = Select_Cell("Order_Table", "Order #");
+			Result.fUpdateLog("Traversing to the latest created Order " + BeforeOrderDate);
+			Result.takescreenshot("Traversing to the latest created Order " + BeforeOrderDate);
+			Browser.WebTable.clickL("Order_Table", Tgt_Row, Col);
+		} catch (Exception e) {
 			Continue.set(false);
 		}
 	}
