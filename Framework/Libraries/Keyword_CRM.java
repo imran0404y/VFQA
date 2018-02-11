@@ -5104,6 +5104,7 @@ public class Keyword_CRM extends Driver {
 			}
 			// CO.waitforload();
 			String s = Browser.WebEdit.gettext("User_Responsibility");
+			Result.fUpdateLog(s);
 			if (Browser.WebEdit.gettext("User_Responsibility").contains(Segment)) {
 
 				Result.fUpdateLog("Verifying User Responsibility " + Browser.WebEdit.gettext("User_Responsibility"));
