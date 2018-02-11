@@ -36,6 +36,7 @@ public class Driver {
 	public static ThreadLocal<String> URL = new ThreadLocal<String>();
 
 	public static int passUC = 0;
+	public static int partialypassUC = 0;
 	public static int failUC = 0;
 	public static int totalUC = 0;
 	public static String TestOutput;
@@ -153,6 +154,10 @@ public class Driver {
 				Continue.set(false);
 				TestOutput = "******* Interdependant Failure Blocked*******" + "<br/>";
 				Result.fUpdateLog("******* Interdependant Failure Blocked******");
+			}else if (DP.equalsIgnoreCase("DP") && currUCstatus.get().equalsIgnoreCase("PartiallyPass")){
+				Continue.set(true);
+				currUCstatus.set("PartiallyPass");
+				database.set((Dictionary<?, ?>) Utlities.fdatabase(UseCaseName.get()));
 			} else {
 				Continue.set(true);
 				currUCstatus.set("Pass");
@@ -194,6 +199,9 @@ public class Driver {
 						if (ResultandDes[0].equalsIgnoreCase("FAIL")) {
 							currKWstatus.set("Fail");
 							Continue.set(false);
+						}else if (ResultandDes[0].equalsIgnoreCase("PartiallyPass")) {
+							currKWstatus.set("PartiallyPass");
+							Continue.set(true);
 						} else {
 							currKWstatus.set("Pass");
 							Continue.set(true);

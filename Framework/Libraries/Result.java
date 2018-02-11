@@ -28,7 +28,7 @@ public class Result extends Driver {
 	public static ThreadLocal<String> logfilepth = new ThreadLocal<String>();
 	public static ThreadLocal<String> masterrephtml = new ThreadLocal<String>();
 	public static ThreadLocal<String> UC = new ThreadLocal<String>();
-	
+
 	public static String updatelogmsg = "";
 
 	/*----------------------------------------------------------------------------------------------------
@@ -155,8 +155,9 @@ public class Result extends Driver {
 				+ "<link rel=\"stylesheet\" href=\"" + "Scripts\\style.css\" type=\"text/css\">" + "<script src=\""
 				+ "Scripts\\amcharts.js\" type=\"text/javascript\"></script>" + "<style>" + "table {font-size: 12px;"
 				+ "background:#E6E6E6;" + "}" + "</style>" + "<script>" + "var chart;" + "var chartData = [{"
-				+ "Status: \"Pass\"," + "Count:" + passUC + "}, {" + "Status: \"Fail\"," + "Count:" + failUC + "}];"
-				+ "AmCharts.ready(function () {" + "chart = new AmCharts.AmPieChart();" +
+				+ "Status: \"Pass\"," + "Count:" + passUC + "}, {" + "Status: \"Fail\"," + "Count:" + failUC + "}, {"
+				+ "Status: \"PartiallyPass\"," + "Count:" + partialypassUC + "}];" + "AmCharts.ready(function () {"
+				+ "chart = new AmCharts.AmPieChart();" +
 				// "chart.addTitle(\"Execution Status\", 16);"+
 				"chart.dataProvider = chartData;" + "chart.titleField = \"Status\";" + "chart.valueField = \"Count\";"
 				+ "chart.sequencedAnimation = true;" + "chart.startEffect = \"elastic\";"
@@ -173,10 +174,14 @@ public class Result extends Driver {
 				+ "<td align=\"center\" width='50%' colspan=2><h3>Execution status </h3></td>" + "</tr>" + "<tr>"
 				+ "<td width='50%' align=\"center\" colspan = 2><div id=\"chartdiv\" style=\"width:450px; height:150px;\"></div></td>"
 				+ "<td valign ='top'>" + "<table border =1 width = 100%>" + "<tr>"
-				+ "<td align=\"center\"><b>Total</b></td>" + "<td align=\"center\"><b>Pass</b></td>"
-				+ "<td align=\"center\"><b>Fail</b></td>" + "</tr>" + "<tr>" + "<td align=\"center\" id=\"tot\">"
-				+ totalUC + "</td>" + "<td align=\"center\" id=\"totpass\">" + passUC + "</td>"
-				+ "<td align=\"center\" id=\"totfail\">" + failUC + "</td>" + "</tr>" + "</table><br/><br/>"
+				+ "<td width = 25% align=\"center\"><b>Total</b></td>"
+				+ "<td width = 25% align=\"center\"><b>Pass</b></td>"
+				+ "<td width = 25% align=\"center\"><b>PartiallyPass</b></td>"
+				+ "<td width = 25% align=\"center\"><b>Fail</b></td>" + "</tr>" + "<tr>"
+				+ "<td width = 25% align=\"center\" id=\"tot\">" + totalUC + "</td>"
+				+ "<td width = 25% align=\"center\" id=\"totpass\">" + passUC + "</td>"
+				+ "<td width = 25% align=\"center\" id=\"totpartialypass\">" + partialypassUC + "</td>"
+				+ "<td width = 25% align=\"center\" id=\"totfail\">" + failUC + "</td>" + "</tr>" + "</table><br/><br/>"
 				+ "<table border =1 width = 100%>" + " <tr>"
 				+ "<td align=\"center\" Style=\"color:GoldenRod\"><b>StartTime</b></td>"
 				+ "<td align=\"center\" Style=\"color:GoldenRod\"><b>EndTime</b></td>" + "</tr>" + "<tr>"
@@ -202,12 +207,17 @@ public class Result extends Driver {
 		updatelogmsg = updatelogmsg + "<td width = 22%>" + TestCaseData.get() + "</td>";
 		if (currUCstatus.get().equals("Pass")) {
 			updatelogmsg = updatelogmsg + "<td width = 28%>" + TestOutput + "</td>";
-			updatelogmsg = updatelogmsg + "<td width = 6% Style=\"color:green\"><b><center>Pass</center></b></td></tr>";
+			updatelogmsg = updatelogmsg
+					+ "<td width = 6% Style=\"color:#04D215\"><b><center>Pass</center></b></td></tr>";
+		} else if (currUCstatus.get().equals("PartiallyPass")) {
+			updatelogmsg = updatelogmsg + "<td width = 28%>" + TestOutput + "</td>";
+			updatelogmsg = updatelogmsg
+					+ "<td width = 6% Style=\"color:#0D8ECF\"><b><center>PartiallyPass</center></b></td></tr>";
 		} else if (currUCstatus.get().equals("Fail")) {
 			updatelogmsg = updatelogmsg + "<td width = 28%>" + TestOutput + "\n" + "Failed at " + currKW_Des.get()
 					+ "</td>";
 			updatelogmsg = updatelogmsg
-					+ "<td width = 6% Style=\\\"color:Red\\\"><b><center>Fail</center></b></td></tr>";
+					+ "<td width = 6% Style=\\\"color:#FF0F00\\\"><b><center>Fail</center></b></td></tr>";
 		}
 
 		bw.write(updatelogmsg);

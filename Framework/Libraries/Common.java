@@ -1888,7 +1888,7 @@ public class Common extends Driver {
 			if (flag == true && ACCRowcount > 1) {
 				int Col = Select_Cell("Account", "Name");
 				Browser.WebTable.click("Account", 2, Col);
-				Browser.WebLink.waittillvisible("Acc_Portal");
+				// Browser.WebLink.waittillvisible("Acc_Portal");
 
 				if (Browser.WebButton.exist("Account360")) {
 					Result.fUpdateLog("Able to Navigate Account as expected");
@@ -1918,7 +1918,8 @@ public class Common extends Driver {
 	{
 		try {
 			int Row = 2, Col;
-
+			Text_Select("a", "Home");
+			waitforload();
 			Browser.WebLink.waittillvisible("VQ_Assert");
 			Browser.WebLink.click("VQ_Assert");
 			Browser.WebLink.waittillvisible("Assert_Search");

@@ -263,9 +263,16 @@ public class KeyWord {
 	public String PlanSelection_FL_ENT() {
 		return KF.PlanSelection_FL_ENT();
 	}
+	public String FL_ONT_CPE_Replacement() {
+		return KF.FL_ONT_CPE_Replacement();
+	}
+	public String OrderVerfication() {
+		return KF.OrderVerfication();
+	}
 
-	// ---------------------Keyword_OSM------------------------//
 	// ---------------------Keyword_FixedLine------------------------//
+	// ---------------------Keyword_OSM------------------------//
+	
 
 	public String OSM_Login() {
 		return KO.OSM_Login();

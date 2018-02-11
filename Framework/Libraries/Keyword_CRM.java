@@ -5092,14 +5092,18 @@ public class Keyword_CRM extends Driver {
 
 			Result.fUpdateLog("Verifying User Responsibility");
 			Result.takescreenshot("Verifying User Responsibility");
+			Browser.WebEdit.Set("User_Input", "User Preferences");
+			Browser.WebButton.click("User_Select");
 
-			CO.Text_Select("a", "Profile");
+			// CO.Text_Select("a", "User Preferences");
 			SegmentT = Segment;
 			CO.waitforload();
 			CO.waitforload();
-			if (Segment.equalsIgnoreCase("royal"))
+			if (Segment.equalsIgnoreCase("royal")) {
 				Segment = "All";
-
+			}
+			// CO.waitforload();
+			String s = Browser.WebEdit.gettext("User_Responsibility");
 			if (Browser.WebEdit.gettext("User_Responsibility").contains(Segment)) {
 
 				Result.fUpdateLog("Verifying User Responsibility " + Browser.WebEdit.gettext("User_Responsibility"));
@@ -5195,10 +5199,13 @@ public class Keyword_CRM extends Driver {
 					switch (TestCaseN.get()) {
 					case "GlobalSearchMSISDN":
 						CO.GlobalSearch("MSISDN", MSISDN[i]);
+						break;
 					case "GlobalSearchContact":
 						CO.GlobalSearch("ContactID", MSISDN[i]);
+						break;
 					case "GuidedSIMSwap":
 						CO.GlobalSearch("SIMSwap", MSISDN[i]);
+						break;
 					}
 
 					Result.fUpdateLog("Verifying Customer Segment " + Cust_Seg[i]);
@@ -5310,16 +5317,21 @@ public class Keyword_CRM extends Driver {
 				Account[5] = getdata("Expatriate_AccountNumber");
 
 				for (int i = 0; i < 6; i++) {
+					CO.Text_Select("a", "Home");
+					CO.waitforload();
 					Browser.WebLink.click("VQ_Account");
 					CO.waitforload();
-					Browser.WebLink.click("All_Account");
+					Browser.WebLink.click("All_Accounts");
+					// Browser.WebLink.click("All_Account");
 					CO.waitforload();
 					Browser.WebEdit.Set("AccountName_search", "Account #");
 					CO.waitforload();
 					Browser.WebEdit.Set("AccountName_Label", Account[i]);
 					Path = Utlities.FindObject("AccountName_Label", "WebEdit");
+					CO.waitforload();
 					cDriver.get().findElement(By.xpath(Path[0])).sendKeys(Keys.ENTER);
 					CO.waitforload();
+
 					ACCRowcount = Browser.WebTable.getRowCount("Account");
 
 					Result.fUpdateLog("Verifying Customer Segment " + Cust_Seg[i]);
@@ -5377,9 +5389,13 @@ public class Keyword_CRM extends Driver {
 				AccountName[5] = getdata("Expatriate_AccountName");
 
 				for (int i = 0; i < 6; i++) {
+					CO.Text_Select("a", "Home");
+					CO.waitforload();
 					Browser.WebLink.click("VQ_Account");
 					CO.waitforload();
-					Browser.WebLink.click("All_Account");
+					Browser.WebLink.click("All_Accounts");
+
+					// Browser.WebLink.click("All_Account");
 					CO.waitforload();
 					Browser.WebEdit.Set("AccountName_search", "Name");
 					Browser.WebEdit.Set("AccountName_Label", AccountName[i]);
@@ -5434,7 +5450,6 @@ public class Keyword_CRM extends Driver {
 
 				break;
 			case "ContactIDQuery":
-
 				ContactID[0] = getdata("Royal_ContactID");
 				ContactID[1] = getdata("Black_ContactID");
 				ContactID[2] = getdata("VVIP_ContactID");
@@ -5443,6 +5458,8 @@ public class Keyword_CRM extends Driver {
 				ContactID[5] = getdata("Expatriate_ContactID");
 
 				for (int i = 0; i < 6; i++) {
+					CO.Text_Select("a", "Home");
+					CO.waitforload();
 					Browser.WebLink.click("VQ_Contact");
 					CO.waitforload();
 					Browser.WebLink.click("All_contacts");
@@ -5452,12 +5469,15 @@ public class Keyword_CRM extends Driver {
 					Browser.WebEdit.Set("AccountName_Label", ContactID[i]);
 					Path = Utlities.FindObject("AccountName_Label", "WebEdit");
 					cDriver.get().findElement(By.xpath(Path[0])).sendKeys(Keys.ENTER);
-					CO.waitforload();
-					ACCRowcount = Browser.WebTable.getRowCount("Account");
+					// Browser.WebButton.click("Contact_Go");
+					Browser.WebTable.getRowCount("Contact");
 
-					Col = CO.Select_Cell("Account", "Account");
-					Browser.WebTable.click("Account", 2, Col);
-					Browser.WebLink.waittillvisible("Acc_Portal");
+					CO.waitforload();
+					ACCRowcount = Browser.WebTable.getRowCount("Contact");
+
+					Col = CO.Actual_Cell("Contact", "Account");
+					Browser.WebTable.click("Contact", 2, Col);
+					// Browser.WebLink.waittillvisible("Acc_Portal");
 					CO.waitforload();
 
 					Result.fUpdateLog("Verifying Customer Segment " + Cust_Seg[i]);
@@ -6342,20 +6362,19 @@ public class Keyword_CRM extends Driver {
 				if (Browser.WebButton.exist("CreditAlert") == true) {
 					CO.waitforload();
 					CO.TabNavigator("Credit Alerts");
-					//Browser.WebButton.click("ThirdLevelView");
+					// Browser.WebButton.click("ThirdLevelView");
 					CO.waitforload();
 					CO.waitforload();
-					//Browser.WebButton.click("AccountCreditAlert");
+					// Browser.WebButton.click("AccountCreditAlert");
 					RowCount = Browser.WebTable.getRowCount("AccountCreditAlert");
 					Col = CO.Select_Cell("AccountCreditAlert", "Alert #");
-					/*for (int Iterate = 1; Iterate <= RowCount; Iterate++) {
-						if (Browser.WebTable.getCellData("AccountCreditAlert", Iterate + 1, Col)
-								.equals(CreditAlert.get("Action" + Iterate)) == false) {
-							Result.takescreenshot("Expected data is not available");
-							Result.fUpdateLog("Expected data is not available");
-							Continue.set(false);
-						}
-					}*/
+					/*
+					 * for (int Iterate = 1; Iterate <= RowCount; Iterate++) { if
+					 * (Browser.WebTable.getCellData("AccountCreditAlert", Iterate + 1, Col)
+					 * .equals(CreditAlert.get("Action" + Iterate)) == false) {
+					 * Result.takescreenshot("Expected data is not available");
+					 * Result.fUpdateLog("Expected data is not available"); Continue.set(false); } }
+					 */
 					Col = CO.Select_Cell("AccountCreditAlert", "Billing Profile");
 					BillingProfile = Browser.WebTable.getCellData("AccountCreditAlert", Row, Col);
 				} else {
