@@ -1909,7 +1909,7 @@ public class Keyword_CRM extends Driver {
 			CO.waitforload();
 			CO.scroll("Date_Continue", "WebButton");
 			Browser.WebButton.click("Date_Continue");
-			CO.waitmoreforload();
+			CO.waitforload();
 			CO.Text_Select("button", "Verify");
 			CO.isAlertExist();
 			CO.waitforload();
@@ -1928,8 +1928,8 @@ public class Keyword_CRM extends Driver {
 			Row_Count = Browser.WebTable.getRowCount("Line_Items");
 
 			CO.waitforload();
-			Col = CO.Select_Cell("Line_Items", "Product");
-			Col_S = CO.Select_Cell("Line_Items", "Service Id");
+			Col = CO.Actual_Cell("Line_Items", "Product");
+			Col_S = CO.Actual_Cell("Line_Items", "Service Id");
 			for (int i = 2; i <= Row_Count; i++) {
 				String LData = Browser.WebTable.getCellData("Line_Items", i, Col);
 				if (SData.equalsIgnoreCase(LData)) {
@@ -2292,8 +2292,7 @@ public class Keyword_CRM extends Driver {
 			CO.Text_Select("a", GetData);
 			CO.waitforload();
 			CO.Plan_selection(GetData, MSISDN);
-			CO.waitforload();
-			CO.waitforload();
+			CO.waitmoreforload();
 			Browser.WebEdit.Set("PopupQuery_Search", New_PlanName);
 			String Path[] = Utlities.FindObject("PopupQuery_Search", "WebEdit");
 			cDriver.get().findElement(By.xpath(Path[0])).sendKeys(Keys.ENTER);

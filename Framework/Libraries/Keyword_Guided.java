@@ -818,15 +818,15 @@ public class Keyword_Guided extends Driver
 			Result.takescreenshot("Assert Search");
 			Result.fUpdateLog("Assert Search Initiation");
 			// Installed_Assert
-			Col = CO.Select_Cell("Assert", "Service ID");
+			Col = CO.Actual_Cell("Assert", "Service ID");
 			Browser.WebTable.SetDataE("Assert", Row, Col, "Serial_Number", MSISDN);
-			Col = CO.Select_Cell("Assert", "Status");
+			Col = CO.Actual_Cell("Assert", "Status");
 			Browser.WebTable.SetDataE("Assert", Row, Col, "Status", "Active");
 			CO.waitforload();
 			Browser.WebButton.waitTillEnabled("Assert_Go");
 			Browser.WebButton.click("Assert_Go");
 			CO.waitforload();
-			Col = CO.Select_Cell("Assert", "Account");
+			Col = CO.Actual_Cell("Assert", "Account");
 			int Assert_Row_Count = Browser.WebTable.getRowCount("Assert");
 			if (Assert_Row_Count > 1) {
 				// Browser.WebTable.clickL("Assert", Row, Col);
