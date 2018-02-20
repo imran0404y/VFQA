@@ -175,8 +175,8 @@ public class KeyWord {
 		return KC.DunningAction();
 	}
 
-	public String ExitCriteria() {
-		return KC.ExitCriteria();
+	public String CollectionExit() {
+		return KC.CollectionExit();
 	}
 	// ------------------Keyword CRM -------------------//
 

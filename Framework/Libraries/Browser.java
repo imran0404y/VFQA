@@ -89,18 +89,17 @@ public class Browser extends Driver {
 			String[] objprop = Utlities.FindObject(objname, objtype);
 			return Method.Methodwaittillenabled(objprop);
 		}
-		
+
 		public static Boolean CheckDisabled(String objname) {
 			String objtype = "WebEdit";
 			String[] objprop = Utlities.FindObject(objname, objtype);
-			String cellXpath =objprop[0];
+			String cellXpath = objprop[0];
 			org.openqa.selenium.WebElement scr1 = cDriver.get().findElement(By.xpath(cellXpath));
 			((RemoteWebDriver) cDriver.get()).executeScript("arguments[0].scrollIntoView(true)", scr1);
-			if (cDriver.get().findElement(By.xpath(cellXpath)).isDisplayed() & ((cDriver.get().findElement(By.xpath(cellXpath)).getAttribute("readonly")).equals("readonly"))) 
-			{
+			if (cDriver.get().findElement(By.xpath(cellXpath)).isDisplayed()
+					& ((cDriver.get().findElement(By.xpath(cellXpath)).getAttribute("readonly")).equals("readonly"))) {
 				return true;
-			}	
-			else
+			} else
 				return false;
 		}
 	}
@@ -359,6 +358,23 @@ public class Browser extends Driver {
 	 * Last Modified Date 	: 25-Apr-2016
 	--------------------------------------------------------------------------------------------------------*/
 	public static class WebTable {
+		/*------------------------------------------------------------------------------------------------------
+		* Function Name: scroll
+		* Use :	Scrolls the particular cell in the given row and column of the webtable
+		* Designed By: Vinodhini
+		* Last Modified Date : 15-June-2016
+		--------------------------------------------------------------------------------------------------------*/
+		public static void scroll(String objname, int rownum, int columnnum) {
+			try {
+				String[] objprop = Utlities.FindObject(objname, "WebTable");
+				String cellXpath = objprop[0] + "//tr[" + rownum + "]/td[" + (columnnum+1) + "]";
+				cDriver.get().findElement(By.xpath(cellXpath)).click();
+				WebElement scr1 = (WebElement) cDriver.get().findElement(By.xpath(cellXpath));
+				((RemoteWebDriver) cDriver.get()).executeScript("arguments[0].scrollIntoView(true)", scr1);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
 		/*------------------------------------------------------------------------------------------------------
 		* Function Name: getRowCount
 		* Use :	returns the total number of rows in the webtable
@@ -745,9 +761,11 @@ public class Browser extends Driver {
 		case "ie":
 			cDriver.set(new DesktopWebBrow().getNewDriver());
 			cDriver.get().get(URL);
-			/*Thread.sleep(3000);
-			cDriver.get().get("javascript:document.getElementById('overridelink').click();");
-			Thread.sleep(3000);*/
+			/*
+			 * Thread.sleep(3000); cDriver.get().get(
+			 * "javascript:document.getElementById('overridelink').click();");
+			 * Thread.sleep(3000);
+			 */
 			maximize();
 			System.out.println("Title " + cDriver.get().getTitle());
 			// position();

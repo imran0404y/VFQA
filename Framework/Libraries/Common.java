@@ -501,6 +501,7 @@ public class Common extends Driver {
 			Browser.WebButton.waitTillEnabled("Assert_Go");
 			Browser.WebButton.click("Assert_Go");
 			waitforload();
+			Result.takescreenshot("Account Status : " + Status);
 			Col = Select_Cell("Assert", "Account");
 			int Assert_Row_Count = Browser.WebTable.getRowCount("Assert");
 			if (Assert_Row_Count > 1)
@@ -766,7 +767,7 @@ public class Common extends Driver {
 	public void RTBScreen(String MSISDN, String Status) {
 		try {
 			waitforload();
-			int Row = 2, Col;
+			int Row = 2, Col,flag=1,Count=1;
 			String Pay_Type = "";
 
 			Title_Select("a", "Home");
@@ -829,12 +830,20 @@ public class Common extends Driver {
 				} while (!Browser.WebButton.waitTillEnabled("Bill_Valid_Name"));
 				waitforload();
 				do {
+					//TabNavigator("Unbilled Usage");
+					Browser.WebButton.click("UnbilledUsage_Button");
+
+					Result.takescreenshot("Unbilled Usage");
+					waitforload();
+					waitforload();
 					TabNavigator("Real Time Balance");
 					waitforload();
 				} while (!Browser.WebButton.waitTillEnabled("RTB_Valid_Name"));
 				Browser.WebButton.waittillvisible("RTB_Valid_Name");
 				scroll("RTB_Valid_Name", "WebButton");
 				Result.takescreenshot("Real Time Balance");
+				
+				
 			} else if (Pay_Type.equalsIgnoreCase("Prepaid")) {
 
 				do {
@@ -849,6 +858,27 @@ public class Common extends Driver {
 
 			}
 			// Text_Select("a", "Unbilled Usage");
+			
+			do
+			{
+			String y=cDriver.get().findElement(By.xpath("//div[.='Real Time Balance']/..//span[2]")).getText();
+			String[] b=(y.split("-")[1]).split(" of ");
+			if((b[0].trim()).equalsIgnoreCase(b[1].trim())) {
+				Result.takescreenshot("Real Time Balance"+Count);
+				flag=2;
+				
+			}else {
+				
+				Result.takescreenshot("Real Time Balance"+Count);
+				Browser.WebButton.click("Rowcounter_next");
+				Count =Count+1;
+
+			}
+		
+			
+			} while(flag==1);
+			
+			waitforload();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -883,10 +913,14 @@ public class Common extends Driver {
 				Continue.set(false);
 			// to be commented for QA6
 			if (Browser.WebLink.exist("Acc_Portal")) {
+				
 				waitforload();
 				Browser.WebLink.click("Acc_Portal");
 			}
 			Browser.WebLink.waittillvisible("Inst_Assert_ShowMore");
+			Result.fUpdateLog("Installed Assert");
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2073,19 +2107,35 @@ public class Common extends Driver {
 		}
 	}
 
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: TraverseLatestOrder
+	 * Arguments			: AccountNumber
+	 * Use 					: To traverse the latest Order Created in a specific Account 
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 21-01-2018
+	--------------------------------------------------------------------------------------------------------*/
 	public void TraverseLatestOrder(String AccountNumber) {
 		try {
 			int Tgt_Row = 2;
+			if(Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
+			waitforload();
+			if(Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
 			Account_Search(AccountNumber);
 			waitforload();
 			Text_Select("a", "Orders");
 			waitforload();
 			int Col = Select_Cell("Order_Table", "Order Date");
 			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
-			SimpleDateFormat OD_Format = new SimpleDateFormat("dd/mm/yyyy hh:mm:ss a", Locale.US);
+			SimpleDateFormat OD_Format = new SimpleDateFormat("mm/dd/yyyy hh:mm:ss a", Locale.US);
 			Date OrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
+			Date tempDate;
+			String temp;
 			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
-				Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
+				waitforload();
+				temp=Browser.WebTable.getCellData("Order_Table", O_Row, Col);
+				tempDate= OD_Format.parse(temp);
 				Calendar cal1 = Calendar.getInstance();
 				Calendar cal2 = Calendar.getInstance();
 				cal1.setTime(OrderDate);
@@ -2104,23 +2154,29 @@ public class Common extends Driver {
 		}
 	}
 
+
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: TraverseLatestBeforeOrder
 	 * Arguments			: AccountNumber
-	 * Use 					: To traverse the latest Order Created in a specific Account 
+	 * Use 					: To traverse the second latest Order Created in a specific Account 
 	 * Modified By			: Vinodhini Raviprasad
 	 * Last Modified Date 	: 21-01-2018
 	--------------------------------------------------------------------------------------------------------*/
 	public void TraverseLatestBeforeOrder(String AccountNumber) {
 		try {
 			int Tgt_Row = 2;
+			if(Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
+			waitforload();
+			if(Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
 			Account_Search(AccountNumber);
 			waitforload();
 			Text_Select("a", "Orders");
 			waitforload();
 			int Col = Select_Cell("Order_Table", "Order Date");
 			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
-			SimpleDateFormat OD_Format = new SimpleDateFormat("dd/mm/yyyy hh:mm:ss a", Locale.US);
+			SimpleDateFormat OD_Format = new SimpleDateFormat("mm/dd/yyyy hh:mm:ss a", Locale.US);
 			Date LatestOrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
 
 			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
@@ -2135,7 +2191,7 @@ public class Common extends Driver {
 				}
 			}
 			Date BeforeOrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", 2, Col));
-			;
+			
 			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
 				if (Tgt_Row != O_Row) {
 					Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
@@ -2157,5 +2213,9 @@ public class Common extends Driver {
 			Continue.set(false);
 		}
 	}
+
+	
+	
+	
 
 }

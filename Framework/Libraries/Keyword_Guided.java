@@ -195,7 +195,7 @@ public class Keyword_Guided extends Driver
 				Browser.WebEdit.Set("Nationality", Nationality);
 
 				Browser.WebEdit.Set("Gender", Gender);
-
+				CO.waitforload();
 				Browser.WebEdit.Set("First", First);
 				CO.waitforload();
 				Browser.WebEdit.Set("Last", Last);

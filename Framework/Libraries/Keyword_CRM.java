@@ -11,7 +11,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -1097,7 +1096,7 @@ public class Keyword_CRM extends Driver {
 
 			// CO.isAlertExist();
 			try {
-				WebDriverWait wait = new WebDriverWait(cDriver.get(), 60);
+				WebDriverWait wait = new WebDriverWait(cDriver.get(), 100);
 				if (!(wait.until(ExpectedConditions.alertIsPresent()) == null)) {
 					String popup = cDriver.get().switchTo().alert().getText();
 					Result.fUpdateLog(popup);
@@ -1133,15 +1132,13 @@ public class Keyword_CRM extends Driver {
 				switch (UseCaseName.get()) {
 				case "ConsumerPostpaid_Provision":
 				case "ConsumerPostpaid_Prov_OrdPay":
-					// case "Plan_UpgradeDowngrade":
 				case "Consumer_Migration":
 					switch (TestCaseN.get()) {
 					case "NewCustomer":
 					case "ExtCustomer":
-						// case "ConsumerPostpaid":
 					case "Prepaid_To_Postpaid":
 						try {
-							WebDriverWait wait = new WebDriverWait(cDriver.get(), 80);
+							WebDriverWait wait = new WebDriverWait(cDriver.get(), 100);
 							if (!(wait.until(ExpectedConditions.alertIsPresent()) == null)) {
 								String popup = cDriver.get().switchTo().alert().getText();
 								Result.fUpdateLog(popup);
@@ -1319,16 +1316,16 @@ public class Keyword_CRM extends Driver {
 				}
 
 				CO.waitforload();
-				CO.scroll("Tier", "WebEdit");
+				/*CO.scroll("Tier", "WebEdit");
 				Browser.WebEdit.click("Tier");
 				if (!(getdata("Tier").equals(""))) {
 					Browser.WebEdit.Set("Tier", getdata("Tier"));
 				} else {
 					Browser.WebEdit.Set("Tier", pulldata("Tier"));
-				}
+				}*/
 
 				CO.Link_Select(Acc);
-
+				CO.waitforload();
 				// to be commented for QA6
 				if (Browser.WebLink.exist("Acc_Portal")) {
 					CO.waitforload();
@@ -1777,6 +1774,7 @@ public class Keyword_CRM extends Driver {
 			Browser.WebEdit.Set("PopupQuery_Search", New_PlanName);
 			String Path[] = Utlities.FindObject("PopupQuery_Search", "WebEdit");
 			cDriver.get().findElement(By.xpath(Path[0])).sendKeys(Keys.ENTER);
+			Result.takescreenshot("New Plane is entered in Plan Upgrade Pop Up");
 			CO.waitforload();
 
 			if (Browser.WebTable.getRowCount("Promotion_Upgrades") >= 2) {
@@ -2605,8 +2603,9 @@ public class Keyword_CRM extends Driver {
 			CO.waitmoreforload();
 			Result.takescreenshot("");
 
-			// CO.waitforload();
+			CO.waitforload();
 			Browser.WebEdit.clear("SL_LimitAmount");
+			CO.waitforload();
 			Browser.WebEdit.Set("SL_LimitAmount", SL_LimitAmount);
 			String SL_Min_Value = Browser.WebEdit.gettext("SL_Min_Value");
 			int SL_Min = Integer.parseInt(SL_Min_Value);
@@ -3404,13 +3403,15 @@ public class Keyword_CRM extends Driver {
 
 				CO.waitforload();
 				CO.Text_Select("a", "Mobile Plans");
-
-				CO.Radio_Select(PlanName);
+				CO.waitforload();
+				CO.Link_Select(PlanName);
+				CO.waitforload(); 
+				//CO.Radio_Select(PlanName);
 				CO.waitforload();
 				Result.takescreenshot("Customising to Select Discounts");
-				WebElement Custom = cDriver.get().findElement(By.xpath("//i[@class='siebui-icon-settings']"));
+				/*WebElement Custom = cDriver.get().findElement(By.xpath("//i[@class='siebui-icon-settings']"));
 				((RemoteWebDriver) cDriver.get()).executeScript("arguments[0].scrollIntoView(true)", Custom);
-				cDriver.get().findElement(By.xpath("//i[@class='siebui-icon-settings']")).click();
+				cDriver.get().findElement(By.xpath("//i[@class='siebui-icon-settings']")).click();*/
 				CO.waitforload();
 				CO.Radio_Select(Discount);
 				CO.waitforload();
@@ -4453,6 +4454,8 @@ public class Keyword_CRM extends Driver {
 			for (k = 0; k < MSD.length; k++) {
 				CO.Assert_Search(MSD[k], "Active");
 				CO.waitforload();
+				Utlities.StoreValue("Service_Id", MSD[k]);
+				Test_OutPut += "Service_Id : " + MSD[k] + ","; 
 				CO.Text_Select("a", GetData);
 				CO.waitforload();
 				// Click on Modify Assert
@@ -4460,9 +4463,7 @@ public class Keyword_CRM extends Driver {
 
 					Inst_RowCount = Browser.WebTable.getRowCount("Acc_Installed_Assert");
 					Col_P = CO.Select_Cell("Acc_Installed_Assert", "Product");
-					// Col_SID = CO.Select_Cell("Acc_Installed_Assert", "Service ID");
 					int Col_SR = CO.Actual_Cell("Acc_Installed_Assert", "Status");
-					// To Find the Record with Mobile Service Bundle and MSISDN
 					for (int i = 2; i <= Inst_RowCount; i++)
 						if (!Browser.WebTable.getCellData("Acc_Installed_Assert", i, Col_P).equalsIgnoreCase(GetData)) {
 							CO.waitforload();
@@ -4533,12 +4534,13 @@ public class Keyword_CRM extends Driver {
 				}
 
 				Browser.WebButton.waittillvisible("Validate");
-				Test_OutPut += OrderSubmission().split("@@")[1] + ",";
+				
 				Order_no[k] = CO.Order_ID();
 				Utlities.StoreValue("Order_no", Order_no[k]);
 				Test_OutPut += "Order_no : " + Order_no[k] + ",";
-				Utlities.StoreValue("Service_Id", MSD[k]);
-				Test_OutPut += "Service_Id : " + MSD[k] + ",";
+				
+				Test_OutPut += OrderSubmission().split("@@")[1] + ",";
+				
 				int Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
 				if (Row_Count1 <= 4) {
 					Browser.WebButton.waittillvisible("Expand");
@@ -4619,7 +4621,7 @@ public class Keyword_CRM extends Driver {
 
 					Browser.WebTable.SetData("Con_ServicePoint", 2, Col, "Location", "Not In Use");
 					if (MDU.equalsIgnoreCase("MDU")) {
-						String Device_Number = getdata("OSM_SerialN");
+						String Device_Number = getdata("ONT");
 						String Card_id = getdata("OSM_CardID");
 						String OPortID = getdata("OSM_PortID");
 						CO.waitforload();
@@ -5988,7 +5990,7 @@ public class Keyword_CRM extends Driver {
 	--------------------------------------------------------------------------------------------------------*/
 	public String DunningProcess() {
 		String Test_OutPut = "", Status = "";
-		String AccNo, BillingProfile, Segment, Action, Amtdue, DueDate = "", BillDate = "";
+		String AccNo, BillingProfile, Segment, Amtdue, DueDate = "";//,BillDate="";
 		double AmtOwed = 0.00;
 		int RowCount, Col, Row = 2, CreditScore = 0;
 		Result.fUpdateLog("------Dunning Process Check Initiated------");
@@ -5999,27 +6001,21 @@ public class Keyword_CRM extends Driver {
 				AccNo = pulldata("AccountNo");
 			}
 
-			if (!(getdata("Action").equals(""))) {
-				Action = getdata("Action");
-			} else {
-				Action = pulldata("Action");
-			}
-
 			if (!(getdata("BillingProfile").equals(""))) {
 				BillingProfile = getdata("BillingProfile");
 			} else {
 				BillingProfile = pulldata("BillingProfile");
 			}
-
+			
 			CO.Account_Search(AccNo);
-
+			
 			CO.waitforload();
 			Result.fUpdateLog("Fetching Customer Segment");
 			Result.takescreenshot("Fetching Customer Segment");
 			CO.scroll("Customer_Segment", "WebEdit");
 			Segment = Browser.WebEdit.gettext("Customer_Segment");
 			CO.waitforload();
-
+			
 			CO.Text_Select("a", "Profiles");
 			CO.waitforload();
 			RowCount = Browser.WebTable.getRowCount("Bill_Prof");
@@ -6083,25 +6079,25 @@ public class Keyword_CRM extends Driver {
 					Continue.set(false);
 				}
 			}
-
+			
 			Amtdue = Browser.WebEdit.gettext("Due_Now").replaceAll("QR", "");
 			DateFormat DF = new SimpleDateFormat("MM/dd/yyyy");
 			Date date;
 			Calendar c = Calendar.getInstance();
-
+			
 			RowCount = Browser.WebTable.getRowCount("Bills");
 			if (RowCount > 1) {
 				Result.fUpdateLog("Fetching Bill Cycle, Due Amount, Due Date ");
-				String BillPeriod;
+				//String BillPeriod;
 				Col = CO.Select_Cell("Bills", "Amount Due");
 				// Amtdue=(Browser.WebTable.getCellData("Bills", Row, Col)).replaceAll("QR",
 				// "");
 				AmtOwed = Double.parseDouble(Amtdue);
 				Col = CO.Select_Cell("Bills", "Bill Period");
-				BillPeriod = Browser.WebTable.getCellData("Bills", Row, Col);
-				BillDate = BillPeriod.split("-")[1];
+				//BillPeriod = Browser.WebTable.getCellData("Bills", Row, Col);
+				//BillDate = BillPeriod.split("-")[1];
 				Col = CO.Select_Cell("Bills", "Due Date");
-				// Date Format Convertion for Due Da
+				// Date Format Conversion for Due Date
 				DueDate = Browser.WebTable.getCellData("Bills", Row, Col);
 				date = DF.parse(DueDate);
 				c.setTime(date);
@@ -6109,13 +6105,13 @@ public class Keyword_CRM extends Driver {
 				DueDate = DDF.format(c.getTime());
 
 				Utlities.StoreValue("DueDate", DueDate);
-
+				
 			} else {
 				Result.fUpdateLog("Unable to proceed with data fetch -- No Records Found ");
 				Result.takescreenshot("Unable to proceed with data fetch -- No Records Found ");
 				Continue.set(false);
 			}
-
+			
 			if (Browser.WebButton.exist("CreditScore")) {
 				CO.scroll("ThirdLevelView", "WebButton");
 				Browser.WebButton.click("ThirdLevelView");
@@ -6139,34 +6135,13 @@ public class Keyword_CRM extends Driver {
 			}
 
 			CO.DunningCalendar(Segment, CreditScore, AmtOwed);
-			if (BillDate.isEmpty() == false) {
-				for (Entry<String, String> entry : DunningSchedule.entrySet()) {
-					String key = entry.getKey();
-					String Val = entry.getValue();
-					if (Val != null) {
-						date = DF.parse(BillDate);
-						c = Calendar.getInstance();
-						c.setTime(date); // Now use today date.
-						c.add(Calendar.DATE, Integer.parseInt(Val.toString())); // Adding the acquired date as per
-																				// actions
-						BillDate = DF.format(c.getTime());
-						BillSchedule.put(key, BillDate);
-						Result.fUpdateLog("Computed Date for " + key + " is " + BillSchedule.get(Action));
-					}
-				}
 
-			} else {
-				Continue.set(false);
-				Result.fUpdateLog("Bill Date is Empty");
-			}
-
-			Result.fUpdateLog("Displaying the Computed Date " + BillSchedule.get(Action));
 			Result.fUpdateLog("Displaying the Due Date " + DueDate);
 
 			CO.ToWait();
 			if (Continue.get()) {
-				Test_OutPut += "Dunning Process is done Successfully " + ",";
-				Result.fUpdateLog("Dunning Process is done Successfully ");
+				Test_OutPut += "Dunning Process is Applicable to the customer and done Successfully " + ",";
+				Result.fUpdateLog("Dunning Process is Applicable to the customer and done Successfully ");
 				Status = "PASS";
 			} else {
 				Test_OutPut += "Dunning Process Failed" + ",";
@@ -6328,32 +6303,154 @@ public class Keyword_CRM extends Driver {
 	 * Last Modified Date 	: 25-Jan-2018
 	--------------------------------------------------------------------------------------------------------*/
 	public String DunningAction() {
-		// 10 min wait time
 		String Test_OutPut = "", Status = "";
-		Result.fUpdateLog("------Credit Alerts Process Initiated------");
+		Result.fUpdateLog("------Dunning Action Process Initiated------");
 		try {
-			int Row = 2, RowCount, Col;
-			String AccountNumber, ActionType, DueDate, Order_Status, BillingProfile = "";
+			int Row = 2, RowCount, Col,CreditScore=0;double AmtOwed=0.00;
+			String AccountNumber, ActionType, DueDate, Order_Status,BillDate="",Segment,DunningAction,Amtdue,BillingProfile = "";
 
 			if (!(getdata("AccountNo").equals(""))) {
 				AccountNumber = getdata("AccountNo");
 			} else {
 				AccountNumber = pulldata("AccountNo");
 			}
+			
+			if (!(getdata("Action").equals(""))) {
+				DunningAction = getdata("Action");
+			} else {
+				DunningAction = pulldata("Action");
+			}
+			
+			
+			//Wait time for Dunning Action
+			int loop=0;
+			do{
+				Thread.sleep(7000);
+				cDriver.get().navigate().refresh();
+				loop++;
+			}while (loop<=40);
+			CO.waitforload();
+			
+			
+			DateFormat DF = new SimpleDateFormat("MM/dd/yyyy");
+			Date date;
+			Calendar c = Calendar.getInstance();
+			Calendar C_D = Calendar.getInstance();
+			
+			CO.CreditAlertQuery(AccountNumber);
+			CO.waitforload();
+			CO.scroll("CreditQuery", "WebButton");
+			RowCount = Browser.WebTable.getRowCount("CreditAlert");
+			if (RowCount >= 2)
+			{
+				
+				Col = CO.Select_Cell("CreditAlert", "Billing Profile");
+				Browser.WebTable.scroll("CreditAlert", Row, Col);
+				BillingProfile = Browser.WebTable.getCellData("CreditAlert", Row, Col);
+				Browser.WebTable.clickL("CreditAlert", Row, Col);
+				CO.waitforload();
+				CO.waitforload();
+				Amtdue = Browser.WebEdit.gettext("Due_Now").replaceAll("QR", "");
+				
+				RowCount = Browser.WebTable.getRowCount("Bills");
+				if (RowCount > 1) 
+				{
+					Result.fUpdateLog("Fetching Bill Cycle, Due Amount, Due Date ");
+					String BillPeriod;
+					Col = CO.Select_Cell("Bills", "Amount Due");
+					AmtOwed = Double.parseDouble(Amtdue);
+					Col = CO.Select_Cell("Bills", "Bill Period");
+					BillPeriod = Browser.WebTable.getCellData("Bills", Row, Col);
+					BillDate = BillPeriod.split("-")[1];
+					Col = CO.Select_Cell("Bills", "Due Date");
+				}
+				else
+				{
+					Continue.set(false);
+				}
+				if (Browser.WebButton.exist("CreditScore")) 
+				{
+					CO.scroll("ThirdLevelView", "WebButton");
+					Browser.WebButton.click("ThirdLevelView");
+					CO.waitforload();
+					Browser.WebButton.click("CreditScore");
+				} 
+				else 
+				{
+					CO.Text_Select("a", "Credit Score");
+				}
+				
+				CO.waitforload();
+				RowCount = Browser.WebTable.getRowCount("CreditScore");
+				if (RowCount == 2) {
+					String Score = Browser.WebTable.getCellData("CreditScore", RowCount,
+							Browser.WebTable.getColCount("CreditScore"));
+					CreditScore = Integer.parseInt(Score);
+					Result.fUpdateLog("Fetching Credit Score");
+					Result.takescreenshot("Fetching Credit Score");
+				} else {
+					Result.fUpdateLog("Unable to Fetch Credit Score -- No Records Found");
+					Result.takescreenshot("Unable to Fetch Credit Score -- No Records Found");
+					Continue.set(false);
+				}
 
-			// cDriver.get().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-			// Thread.sleep(120000);
+				CO.CreditAlertQuery(AccountNumber);
+				CO.waitforload();
+				Col = CO.Select_Cell("CreditAlert", "Account");
+				Browser.WebTable.clickL("CreditAlert", Row, Col);
+
+			CO.waitforload();
+			Result.fUpdateLog("Fetching Customer Segment");
+			Result.takescreenshot("Fetching Customer Segment");
+			CO.scroll("Customer_Segment", "WebEdit");
+			Segment = Browser.WebEdit.gettext("Customer_Segment");
+			CO.waitforload();
+			
+			CO.DunningCalendar(Segment, CreditScore, AmtOwed);
+			if (BillDate.isEmpty() == false) {
+				for (Entry<String, String> entry : DunningSchedule.entrySet()) {
+					String key = entry.getKey();
+					String Val = entry.getValue();
+					if (Val != null) {
+						date = DF.parse(BillDate);
+						c = Calendar.getInstance();
+						c.setTime(date); 
+						c.add(Calendar.DATE, Integer.parseInt(Val.toString())); // Adding the acquired date as per
+																				// actions
+						BillDate = DF.format(c.getTime());
+						BillSchedule.put(key, BillDate);
+						Result.fUpdateLog("Computed Date for " + key + " is " + BillSchedule.get(DunningAction));
+					}
+				}
+
+			} else {
+				Continue.set(false);
+				Result.fUpdateLog("Bill Date is Empty");
+			}
+
+			Result.fUpdateLog("Displaying the Computed Date " + BillSchedule.get(DunningAction));
+			
+			}
+			else
+			{
+				Continue.set(false);
+			}
+			
 			CO.CreditAlertQuery(AccountNumber);
 			CO.waitforload();
 			CO.scroll("CreditQuery", "WebButton");
 			RowCount = Browser.WebTable.getRowCount("CreditAlert");
 			if (RowCount >= 2) {
-				Col = CO.Select_Cell("CreditAlert", "Billing Profile");
-				BillingProfile = Browser.WebTable.getCellData("CreditAlert", Row, Col);
+				int Col_D = CO.Select_Cell("CreditAlert", "Due Date");
 				Col = CO.Select_Cell("CreditAlert", "Action Type");
-				for (int Iterate = 1; Iterate <= RowCount; Iterate++) {
-					ActionType = Browser.WebTable.getCellData("CreditAlert", Iterate + 1, Col);
-					CreditAlert.put("Action" + Iterate, ActionType);
+				for (int Iterate = 2; Iterate <= RowCount; Iterate++) {
+					ActionType = Browser.WebTable.getCellData("CreditAlert", Iterate, Col);
+					DueDate= Browser.WebTable.getCellData("CreditAlert", Iterate, Col_D);
+					if(BillSchedule.get(ActionType).equals(DueDate)==false){
+						Continue.set(false);
+						Result.fUpdateLog("Computed Due Date does not match the Due Date Generated");
+						Result.takescreenshot("Computed Due Date does not match the Due Date Generated");
+					}
 				}
 
 				Col = CO.Select_Cell("CreditAlert", "Account");
@@ -6363,19 +6460,10 @@ public class Keyword_CRM extends Driver {
 				if (Browser.WebButton.exist("CreditAlert") == true) {
 					CO.waitforload();
 					CO.TabNavigator("Credit Alerts");
-					// Browser.WebButton.click("ThirdLevelView");
 					CO.waitforload();
 					CO.waitforload();
-					// Browser.WebButton.click("AccountCreditAlert");
 					RowCount = Browser.WebTable.getRowCount("AccountCreditAlert");
 					Col = CO.Select_Cell("AccountCreditAlert", "Alert #");
-					/*
-					 * for (int Iterate = 1; Iterate <= RowCount; Iterate++) { if
-					 * (Browser.WebTable.getCellData("AccountCreditAlert", Iterate + 1, Col)
-					 * .equals(CreditAlert.get("Action" + Iterate)) == false) {
-					 * Result.takescreenshot("Expected data is not available");
-					 * Result.fUpdateLog("Expected data is not available"); Continue.set(false); } }
-					 */
 					Col = CO.Select_Cell("AccountCreditAlert", "Billing Profile");
 					BillingProfile = Browser.WebTable.getCellData("AccountCreditAlert", Row, Col);
 				} else {
@@ -6410,7 +6498,10 @@ public class Keyword_CRM extends Driver {
 				Result.takescreenshot("Billing Profile is not In Collection as expected");
 				Continue.set(false);
 			}
-
+			
+			
+			
+			
 			// OG Barring
 			Boolean OG_Flag = false, IG_Flag = false;
 			CO.CreditAlertQuery(AccountNumber);
@@ -6419,40 +6510,59 @@ public class Keyword_CRM extends Driver {
 			RowCount = Browser.WebTable.getRowCount("CreditAlert");
 			if (RowCount >= 2) {
 				Col = CO.Select_Cell("CreditAlert", "Action Type");
+				CO.scroll("CreditAlert_ShowMore", "WebButton");
+				Browser.WebButton.click("CreditAlert_ShowMore");
+				CO.waitforload();
 				for (int R = 2; R <= RowCount; R++) {
+					if(R%20==0)
+					{
+						int Col_S=CO.Select_Cell("CreditAlert", "Status");
+						Browser.WebTable.click("CreditAlert", R, Col_S);
+						CO.waitforload();
+					}
 					ActionType = Browser.WebTable.getCellData("CreditAlert", R, Col);
 					if (ActionType.equalsIgnoreCase("Outgoing Bar")) {
 
 						Browser.WebTable.click("CreditAlert", R, Col);
 						CO.waitforload();
-						Calendar c = Calendar.getInstance();
-
-						// Getting Current Date
-						DateFormat DF = new SimpleDateFormat("MM/dd/yyyy");
-						DueDate = DF.format(c.getTime());
+						DueDate = DF.format(C_D.getTime());
+						CO.scroll("Due_Date", "WebEdit");
 						Browser.WebEdit.Set("Due_Date", DueDate);
+						
+						//Wait time for Dunning Action
+						loop=0;
+						do{
+							Thread.sleep(7000);
+							cDriver.get().navigate().refresh();
+							loop++;
+						}while (loop<=40);
+						CO.waitforload();
 
-						Thread.sleep(10000000);
-
+						// To get fulfillment status col
 						CO.TraverseLatestOrder(AccountNumber);
-
-						Order_Status = Browser.WebEdit.gettext("Order_Status");
+						CO.scroll("Ful_Status", "WebButton");
+						Col = CO.Select_Cell("Line_Items", "Fulfillment Status");
+						if (CO.Col_Data(Col).equalsIgnoreCase("fulfillment status"))
+							COL_FUL_STATUS = Col;
+						int Row_Count = Browser.WebTable.getRowCount("Line_Items");
+						CO.scroll("Submit", "WebButton");
+						if (Row_Count <= 3) {
+							CO.scroll("Expand", "WebButton");
+							Browser.WebButton.click("Expand");
+						}
+						Order_Status = Browser.WebTable.getCellData("Line_Items", Row_Count, COL_FUL_STATUS);
 						if (Order_Status.equals("Complete") == false) {
 							Continue.set(false);
 							Result.fUpdateLog("Order is not Completed");
 							Result.takescreenshot("Order is not Completed");
 						}
-						int Row_Count = Browser.WebTable.getRowCount("Line_Items");
-						CO.scroll("Submit", "WebButton");
-						if (Row_Count <= 3) {
-							Browser.WebButton.waittillvisible("Expand");
-							Browser.WebButton.click("Expand");
-						}
+						
 						String OG_Product = "System Bar - Mobile Collection OG";
 						Boolean OGProduct_Flag = false;
 						Col = CO.Select_Cell("Line_Items", "Product");
 						Result.takescreenshot(
 								"OG Products are available in Line Items for OG Barring Order as expected with Action Add");
+						Row_Count = Browser.WebTable.getRowCount("Line_Items");
 						for (int LI_Row = 2; LI_Row <= Row_Count; LI_Row++) {
 
 							if (OG_Product.equalsIgnoreCase(Browser.WebTable.getCellData("Line_Items", LI_Row, Col))) {
@@ -6482,45 +6592,61 @@ public class Keyword_CRM extends Driver {
 					}
 				}
 			}
-
+			
 			// IG Barring Incoming Bar
-
+			if(DunningAction.equalsIgnoreCase("Incoming Bar"))
+			{
 			CO.CreditAlertQuery(AccountNumber);
 			CO.waitforload();
 			CO.scroll("CreditQuery", "WebButton");
 			RowCount = Browser.WebTable.getRowCount("CreditAlert");
 			if (RowCount >= 2) {
+				CO.scroll("CreditAlert_ShowMore", "WebButton");
+				Browser.WebButton.click("CreditAlert_ShowMore");
 				Col = CO.Select_Cell("CreditAlert", "Action Type");
 				for (int R = 2; R <= RowCount; R++) {
+					if(R%20==0)
+					{
+						int Col_S=CO.Select_Cell("CreditAlert", "Status");
+						Browser.WebTable.click("CreditAlert", R, Col_S);
+						CO.waitforload();
+					}
 					ActionType = Browser.WebTable.getCellData("CreditAlert", R, Col);
 					if (ActionType.equalsIgnoreCase("Incoming Bar")) {
 						Browser.WebTable.click("CreditAlert", R, Col);
 						CO.waitforload();
-						Calendar c = Calendar.getInstance();
-
-						// Getting Current Date
-						DateFormat DF = new SimpleDateFormat("MM/dd/yyyy");
-						DueDate = DF.format(c.getTime());
+						DueDate = DF.format(C_D.getTime());
 						Browser.WebEdit.Set("Due_Date", DueDate);
 
-						Thread.sleep(10000000);
+						//Wait time for Dunning Action
+						loop=0;
+						do{
+							Thread.sleep(7000);
+							cDriver.get().navigate().refresh();
+							loop++;
+						}while (loop<=40);
+						CO.waitforload();
+						
 						Boolean IGProduct_Flag = false, IGProduct = false;
 						CO.TraverseLatestOrder(AccountNumber);
-						Order_Status = Browser.WebEdit.gettext("Order_Status");
-						if (Order_Status.equals("Complete") == false) {
-							Continue.set(false);
-							Result.fUpdateLog("Order is not Completed");
-							Result.takescreenshot("Order is not Completed");
-						}
+						
+						
 						int Row_Count = Browser.WebTable.getRowCount("Line_Items");
 						CO.scroll("Submit", "WebButton");
 						if (Row_Count <= 3) {
 							Browser.WebButton.waittillvisible("Expand");
 							Browser.WebButton.click("Expand");
 						}
+						Order_Status = Browser.WebTable.getCellData("Line_Items", Row_Count, COL_FUL_STATUS);
+						if (Order_Status.equals("Complete") == false) {
+							Continue.set(false);
+							Result.fUpdateLog("Order is not Completed");
+							Result.takescreenshot("Order is not Completed");
+						}
 						Col = CO.Select_Cell("Line_Items", "Product");
 						Result.takescreenshot(
 								"IG Products are available in Line Items for OG Barring Order as expected with Action Delete");
+						Row_Count = Browser.WebTable.getRowCount("Line_Items");
 						for (int LI_Row = 2; LI_Row <= Row_Count; LI_Row++) {
 							String IG_Product = Browser.WebTable.getCellData("Line_Items", LI_Row, Col);
 							IGProduct_Flag = true;
@@ -6539,20 +6665,21 @@ public class Keyword_CRM extends Driver {
 						}
 
 						CO.TraverseLatestBeforeOrder(AccountNumber);
-						Order_Status = Browser.WebEdit.gettext("Order_Status");
+						CO.waitforload();
+						Row_Count = Browser.WebTable.getRowCount("Line_Items");
+						if (Row_Count <= 3) {
+							Browser.WebButton.waittillvisible("Expand");
+							Browser.WebButton.click("Expand");
+						}
+						Order_Status = Browser.WebTable.getCellData("Line_Items", Row_Count, COL_FUL_STATUS);
 						if (Order_Status.equals("Complete") == false) {
 							Continue.set(false);
 							Result.fUpdateLog("Order is not Completed");
 							Result.takescreenshot("Order is not Completed");
 						}
-						Row_Count = Browser.WebTable.getRowCount("Line_Items");
-						CO.scroll("Submit", "WebButton");
-						if (Row_Count <= 3) {
-							Browser.WebButton.waittillvisible("Expand");
-							Browser.WebButton.click("Expand");
-						}
 						String OG_Product = "System Bar - Mobile Collection OG";
 						Col = CO.Select_Cell("Line_Items", "Product");
+						Row_Count = Browser.WebTable.getRowCount("Line_Items");
 						for (int LI_Row = 2; LI_Row <= Row_Count; LI_Row++) {
 
 							if (OG_Product.equalsIgnoreCase(Browser.WebTable.getCellData("Line_Items", LI_Row, Col))) {
@@ -6582,15 +6709,18 @@ public class Keyword_CRM extends Driver {
 						break;
 					}
 				}
-			}
+			}}
+			else
+			{IG_Flag = true;}
+			
 			if (Continue.get() & IG_Flag & OG_Flag) {
-				Test_OutPut += "Credit Alerts Process is done Successfully " + ",";
-				Result.fUpdateLog("Credit Alerts Process is done Successfully ");
+				Test_OutPut += "Dunning Action Process is done Successfully " + ",";
+				Result.fUpdateLog("Dunning Action Process is done Successfully ");
 				Status = "PASS";
 			} else {
-				Test_OutPut += "Credit Alerts Process Failed" + ",";
-				Result.takescreenshot("Credit Alerts Process Failed");
-				Result.fUpdateLog("Credit Alerts Process Failed");
+				Test_OutPut += "Dunning Action Process Failed" + ",";
+				Result.takescreenshot("Dunning Action Process Failed");
+				Result.fUpdateLog("Dunning Action Process Failed");
 				Status = "FAIL";
 			}
 		} catch (Exception e) {
@@ -6600,23 +6730,27 @@ public class Keyword_CRM extends Driver {
 			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
 			e.printStackTrace();
 		}
-		Result.fUpdateLog("------Credit Alerts Process Details - Completed------");
+		Result.fUpdateLog("------Dunning Action Process Details - Completed------");
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
 
-	/*---------------------------------------------------------------------------------------------------------
-	 * Method Name			: ExitCriteria
+
+
+
+
+/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: CollectionExit
 	 * Arguments			: None
 	 * Use 					: 
 	 * Designed By			: Vinodhini Raviprasad
 	 * Last Modified Date 	: 02-Feb-2018
 	--------------------------------------------------------------------------------------------------------*/
-	public String ExitCriteria() {
+	public String CollectionExit() {
 		String Test_OutPut = "", Status = "";
-
+		Result.fUpdateLog("------Collection Exit Process Initiated------");
 		try {
 			int Row = 2, RowCount, Col, Row_Count, Col_P, Col_S;
-			String AccountNumber, BillAmt, BillingProfile = "", Channel;
+			String AccountNumber,Reference, BillAmt, BillingProfile = "", Channel;
 
 			if (!(getdata("AccountNo").equals(""))) {
 				AccountNumber = getdata("AccountNo");
@@ -6632,9 +6766,18 @@ public class Keyword_CRM extends Driver {
 			if (!(getdata("Channel").equals(""))) {
 				Channel = getdata("Channel");
 			} else {
-				Channel = "Cash";
+				Channel = pulldata("Channel");
 			}
-
+		
+			if (!(getdata("Reference").equals(""))) {
+				Reference = getdata("Reference");
+			} else if (!(pulldata("Reference").equals(""))) {
+				Reference = pulldata("Reference");
+			}else {
+				Reference=R.nextInt(10000)+"VFQA_Test"+R.nextInt(10000000);
+			}
+			
+		
 			CO.Account_Search(AccountNumber);
 			CO.waitforload();
 
@@ -6652,6 +6795,7 @@ public class Keyword_CRM extends Driver {
 					Result.fUpdateLog("Proceeding to RTB Screen " + BillingProfile);
 					Result.takescreenshot("Proceeding to RTB Screen " + BillingProfile);
 					BillingProfile = Browser.WebTable.getCellData("Bill_Prof", Row, Col);
+					Browser.WebTable.clickL("Bill_Prof", Row, Col);
 					Utlities.StoreValue("BillingProfileName", BillingProfile);
 				} else {
 					Result.fUpdateLog("Billing Profile Not Found");
@@ -6668,6 +6812,7 @@ public class Keyword_CRM extends Driver {
 						BillingProfile = Browser.WebTable.getCellData("Bill_Prof", i, Col);
 						Result.fUpdateLog("Proceeding to RTB Screen " + BillingProfile);
 						Result.takescreenshot("Proceeding to RTB Screen " + BillingProfile);
+						Browser.WebTable.clickL("Bill_Prof", Row, Col);
 						Utlities.StoreValue("BillingProfileName", BillingProfile);
 						flag = true;
 						break;
@@ -6684,25 +6829,16 @@ public class Keyword_CRM extends Driver {
 			}
 
 			CO.waitforload();
-			CO.Link_Select("Profiles");
-			CO.waitforload();
-			Browser.WebButton.click("Profile_Query");
-			Col_P = CO.Select_Cell("Bill_Prof", "Name");
-			Col = CO.Select_Cell("Bill_Prof", "Status");
-			Browser.WebTable.SetData("Bill_Prof", Row, Col_P, "Name", BillingProfile);
-			CO.waitforload();
-			CO.waitforload();
-			if (Browser.WebTable.getRowCount("Bill_Prof") >= 2) {
-				Browser.WebTable.click("Bill_Prof", Row, Col);
-				Browser.WebTable.clickL("Bill_Prof", Row, Col_P);
-			} else
-				Continue.set(false);
-
-			CO.waitforload();
 			BillAmt = Browser.WebEdit.gettext("Balance");
 			Test_OutPut += "Balance: " + BillAmt + ",";
 			Result.takescreenshot("Getting Outstanding Balance" + BillAmt);
 
+			if(Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
+			CO.waitforload();
+			if(Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
+			
 			CO.Account_Search(AccountNumber);
 			CO.waitforload();
 
@@ -6713,7 +6849,7 @@ public class Keyword_CRM extends Driver {
 			Col_P = CO.Select_Cell("AccountPayment", "Billing Profile");
 			int Col_C = CO.Select_Cell("AccountPayment", "Payment_Method");
 			int Col_A = CO.Select_Cell("AccountPayment", "Payment_Amount");
-			CO.waitforobj("Pay_Add", "WebButton");
+			CO.scroll("Pay_Add", "WebButton");
 			Browser.WebButton.click("Pay_Add");
 			String Bill_Status = "";
 			Row = 2;
@@ -6736,9 +6872,18 @@ public class Keyword_CRM extends Driver {
 			CO.isAlertExist();
 			if (Channel.equalsIgnoreCase("cash")) {
 				CO.scroll("Reference_Number", "WebEdit");
-				Browser.WebEdit.Set("Reference_Number", "VFQA" + R.nextInt(100000000));
-			}
+				Browser.WebEdit.Set("Reference_Number", Reference);
+			} else if (Channel.equalsIgnoreCase("cheque")) {
+				Browser.WebEdit.Set("Cheque_Number", getdata("Cheque_Number"));
+				Browser.WebEdit.Set("Bank_Name", getdata("Bank_Name"));
 
+			} else if (Channel.equalsIgnoreCase("online")) {
+				Browser.WebEdit.Set("Voucher_Number", getdata("Voucher_Number"));
+				Browser.WebEdit.Set("Reference_Number", Reference);
+			} else if (Channel.equalsIgnoreCase("voucher")) {
+				Browser.WebEdit.Set("Voucher_Number", getdata("Voucher_Number"));
+				Browser.WebEdit.Set("Reference_Number", Reference);
+			}
 			Col_S = CO.Select_Cell("AccountPayment", "Channel Transaction #");
 			String Txn = Browser.WebTable.getCellData("AccountPayment", Row, Col_S);
 
@@ -6774,7 +6919,16 @@ public class Keyword_CRM extends Driver {
 				Continue.set(true);
 			} else
 				Continue.set(false);
-
+			
+			//Wait time for Activation
+			int loop=0;
+			do{
+				Thread.sleep(7000);
+				cDriver.get().navigate().refresh();
+				loop++;
+			}while (loop<=10);
+			CO.waitforload();
+			
 			CO.CreditAlertQuery(AccountNumber);
 			CO.waitforload();
 			CO.scroll("CreditQuery", "WebButton");
@@ -6782,10 +6936,14 @@ public class Keyword_CRM extends Driver {
 			Boolean flag = false;
 			if (RowCount >= 2) {
 				Col_S = CO.Select_Cell("CreditAlert", "Status");
-				// BillingProfile=Browser.WebTable.getCellData("CreditAlert", Row, Col);
+				Browser.WebButton.click("CreditAlert_ShowMore");
 				Col = CO.Select_Cell("CreditAlert", "Alert #");
 				String AlertStatus, Alert;
 				for (int Iterate = 2; Iterate <= RowCount; Iterate++) {
+					if(Iterate%20==0){
+						Browser.WebTable.click("CreditAlert", Iterate, Col_S);
+						CO.waitforload();
+					}
 					Alert = Browser.WebTable.getCellData("CreditAlert", Iterate, Col);
 					AlertStatus = Browser.WebTable.getCellData("CreditAlert", Iterate, Col_S);
 					if (AlertStatus.equalsIgnoreCase("cancelled") == false
@@ -6795,7 +6953,7 @@ public class Keyword_CRM extends Driver {
 						Continue.set(false);
 						break;
 					}
-					if (Alert.contains("Exist collection")) {
+					if (Alert.contains("Exited collections")) {
 						Result.takescreenshot("Exit Collection Record Found in the table");
 						Result.fUpdateLog("Exit Collection Record Found in the table");
 						Row = 2;
@@ -6808,14 +6966,22 @@ public class Keyword_CRM extends Driver {
 				String Order_Status;
 				flag = false;
 				CO.TraverseLatestOrder(AccountNumber);
-				Order_Status = Browser.WebEdit.gettext("Order_Status");
+				Row_Count = Browser.WebTable.getRowCount("Line_Items");
+				if (Row_Count <= 3) {
+					Browser.WebButton.waittillvisible("Expand");
+					Browser.WebButton.click("Expand");
+				}
+				CO.scroll("Ful_Status", "WebButton");
+				Col = CO.Select_Cell("Line_Items", "Fulfillment Status");
+				if (CO.Col_Data(Col).equalsIgnoreCase("fulfillment status"))
+					COL_FUL_STATUS = Col;
+				Order_Status = Browser.WebTable.getCellData("Line_Items", Row_Count, COL_FUL_STATUS);
 				if (Order_Status.equals("Complete") == false) {
 					Continue.set(false);
 					Result.fUpdateLog("Order is not Completed");
 					Result.takescreenshot("Order is not Completed");
 				}
 				Row_Count = Browser.WebTable.getRowCount("Line_Items");
-				CO.scroll("Submit", "WebButton");
 				if (Row_Count <= 3) {
 					Browser.WebButton.waittillvisible("Expand");
 					Browser.WebButton.click("Expand");
@@ -6834,15 +7000,40 @@ public class Keyword_CRM extends Driver {
 				}
 
 			}
+			CO.Account_Search(AccountNumber);
+			CO.waitforload();
+			CO.Text_Select("a", "Profiles");
+			Browser.WebButton.click("Profile_Query");
+			CO.waitforload();
+			Col=CO.Select_Cell("Bill_Prof", "Name");
+			Browser.WebTable.SetData("Bill_Prof", Row, Col, "Name", BillingProfile);
+			CO.waitforload();
+			RowCount = Browser.WebTable.getRowCount("Bill_Prof");
+			Col=CO.Select_Cell("Bill_Prof", "Billing Profile Status");
+			Browser.WebTable.click("Bill_Prof", RowCount, Col+1);
+			CO.waitforload();
+			String BillStatus=Browser.WebTable.getCellData("Bill_Prof", RowCount, Col);
+			if (RowCount == 2 & BillStatus.contains("Active")) {
+				//Status
+				Result.fUpdateLog("Billing Profile is Activated " + BillingProfile);
+				Result.takescreenshot("Billing Profile is Activated " + BillingProfile);
+				
+				
+			}else
+			{
+				//flag=false;
+				Result.fUpdateLog("Billing Profile is not Activated " + BillingProfile);
+				Result.takescreenshot("Billing Profile is not Activated " + BillingProfile);
+			}
 
-			if (Continue.get() & flag) {
-				Test_OutPut += "ExitCriteria Process is done Successfully " + ",";
-				Result.fUpdateLog("ExitCriteria Process is done Successfully ");
+			if (Continue.get() ){//& flag) {
+				Test_OutPut += "CollectionExit Process is done Successfully " + ",";
+				Result.fUpdateLog("CollectionExit Process is done Successfully ");
 				Status = "PASS";
 			} else {
-				Test_OutPut += "ExitCriteria Process Failed" + ",";
-				Result.takescreenshot("ExitCriteria Process Failed");
-				Result.fUpdateLog("ExitCriteria Process Failed");
+				Test_OutPut += "CollectionExit Process Failed" + ",";
+				Result.takescreenshot("CollectionExit Process Failed");
+				Result.fUpdateLog("CollectionExit Process Failed");
 				Status = "FAIL";
 			}
 		} catch (Exception e) {
@@ -6852,8 +7043,7 @@ public class Keyword_CRM extends Driver {
 			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
 			e.printStackTrace();
 		}
-
+		Result.fUpdateLog("------Collection Exit Process Details - Completed------");
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
-
 }

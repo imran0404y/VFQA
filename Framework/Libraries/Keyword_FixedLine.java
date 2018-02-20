@@ -557,12 +557,13 @@ public class Keyword_FixedLine extends Driver {
 				int Inst_RowCount = Browser.WebTable.getRowCount("Acc_Installed_Assert");
 				int Col_P = CO.Select_Cell("Acc_Installed_Assert", "Product");
 				int Col_SID = CO.Select_Cell("Acc_Installed_Assert", "Service ID");
+				int Col_SR = CO.Actual_Cell("Acc_Installed_Assert", "Status");
 
 				for (int i = 2; i <= Inst_RowCount; i++)
 					if (Browser.WebTable.getCellData("Acc_Installed_Assert", i, Col_P).equalsIgnoreCase(GetData)
 							& Browser.WebTable.getCellData("Acc_Installed_Assert", i, Col_SID)
 									.equalsIgnoreCase(MSISDN)) {
-						Browser.WebTable.click("Acc_Installed_Assert", i, Col_P + 1);
+						Browser.WebTable.click("Acc_Installed_Assert", i, Col_SR);
 						break;
 					}
 				do {
@@ -694,8 +695,8 @@ public class Keyword_FixedLine extends Driver {
 		String Test_OutPut = "", Status = "";
 		int Row = 2, Col;
 		try {
-			String Sales_Od = SalesOrder_No.get();
-			//String Sales_Od = "1-10247756444";
+		//String Sales_Od = SalesOrder_No.get();
+		String Sales_Od = "1-10518905394";
 			Result.takescreenshot("Searching Order in Seibel");
 			Browser.WebLink.click("SalesOrder");
 			Browser.WebLink.click("All_Orders");
