@@ -196,7 +196,9 @@ public class Keyword_Putty extends Driver {
 
 			Date today = new Date();
 			x = today.toString();
-			x = x.substring(4, 13).replace("0", " ");
+			x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
+					.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
+					.replace("09", "9");
 			Result.fUpdateLog(x);
 
 			if (str_FileContent.contains(x)) {
@@ -216,7 +218,9 @@ public class Keyword_Putty extends Driver {
 
 				Date today1 = new Date();
 				x = today1.toString();
-				x = x.substring(4, 13).replace("0", " ");
+				x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
+						.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
+						.replace("09", "9");
 				Result.fUpdateLog(x);
 
 				if (str_FileContent1.contains(x)) {
@@ -258,7 +262,9 @@ public class Keyword_Putty extends Driver {
 
 				Date today5 = new Date();
 				x = today5.toString();
-				x = x.substring(4, 13).replace("0", " ");
+				x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
+						.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
+						.replace("09", "9");
 				// x = "Jan 25 09:45";
 				Result.fUpdateLog(x);
 
@@ -277,7 +283,9 @@ public class Keyword_Putty extends Driver {
 
 					Date today2 = new Date();
 					x = today2.toString();
-					x = x.substring(4, 13).replace("0", " ");
+					x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
+							.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
+							.replace("09", "9");
 					Result.fUpdateLog(x);
 					if (str_FileContent3.contains(x)) {
 						Result.fUpdateLog("PVT set as Normal");
@@ -348,7 +356,9 @@ public class Keyword_Putty extends Driver {
 
 			Date today = new Date();
 			String x = today.toString();
-			x = x.substring(4, 13).replace("0", " ");
+			x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
+					.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
+					.replace("09", "9");
 			Result.fUpdateLog(x);
 
 			if (str_FileContent.contains(x)) {
