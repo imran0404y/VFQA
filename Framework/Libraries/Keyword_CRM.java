@@ -2518,6 +2518,7 @@ public class Keyword_CRM extends Driver {
 			}
 			CO.waitforload();
 			CO.RTBScreen(MSISDN, "Active");
+			CO.Title_Select("a", "Home");
 		} catch (Exception e) {
 			Status = "FAIL";
 			Test_OutPut += "Exception occurred" + ",";
