@@ -5832,7 +5832,17 @@ public class Keyword_CRM extends Driver {
 						Browser.WebTable.click("Acc_Installed_Assert", i, Col_SR);
 						break;
 					}
-				Browser.WebButton.click("Assert_Modify");
+				do {
+					Browser.WebButton.click("Assert_Modify");
+					String x = Browser.WebEdit.gettext("Due_Date");
+					if (!x.contains("/")) {
+						Browser.WebButton.click("Date_Cancel");
+						CO.waitforload();
+						Browser.WebButton.click("Assert_Modify");
+					}
+					CO.waitforload();
+				} while (!Browser.WebButton.waitTillEnabled("Date_Continue"));
+		
 
 			} else
 				CO.InstalledAssertChange("Modify");
@@ -5840,12 +5850,12 @@ public class Keyword_CRM extends Driver {
 
 			CO.scroll("Date_Continue", "WebButton");
 			Browser.WebButton.click("Date_Continue");
-			CO.waitforload();
+			CO.waitmoreforload();
 
 			CO.Link_Select("Barring Options");
 
 			CO.Radio_Select(BarringOption);
-
+			CO.waitforload();
 			CO.waitforload();
 			CO.Text_Select("button", "Verify");
 			CO.isAlertExist();
@@ -5857,7 +5867,6 @@ public class Keyword_CRM extends Driver {
 
 			Browser.WebButton.waittillvisible("Validate");
 			Test_OutPut += OrderSubmission().split("@@")[1];
-			;
 
 			CO.ToWait();
 			if (Continue.get()) {
@@ -5880,7 +5889,6 @@ public class Keyword_CRM extends Driver {
 		Result.fUpdateLog("------Barring Services Details - Completed------");
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
-
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: UnBarring
 	 * Arguments			: None
