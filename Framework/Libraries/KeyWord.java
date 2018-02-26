@@ -14,6 +14,9 @@ public class KeyWord {
 	Keyword_CRM KC = new Keyword_CRM();
 	Keyword_API KA = new Keyword_API();
 	Keyword_SIPT KS = new Keyword_SIPT();
+	Keyword_ETHERNET KM = new Keyword_ETHERNET();
+	Keyword_LEASEDLINE KL = new Keyword_LEASEDLINE();
+	Keyword_IPLC KI = new Keyword_IPLC();
 	Keyword_Validations KV = new Keyword_Validations();
 	Keyword_Putty KP = new Keyword_Putty();
 	Keyword_Guided KG = new Keyword_Guided();
@@ -231,6 +234,30 @@ public class KeyWord {
 
 	// ---------------------Keyword SIPT------------------------//
 
+	// ---------------------Keyword ETHERNET------------------------//
+
+	public String ETHERNET() {
+		return KM.ETHERNET();
+	}
+
+	// ---------------------Keyword ETHERNET------------------------//
+
+	// ---------------------Keyword LEASEDLINE------------------------//
+
+	public String LEASEDLINE() {
+		return KL.LEASEDLINE();
+	}
+
+	// ---------------------Keyword LEASEDLINE------------------------//
+
+	// ---------------------Keyword LEASEDLINE------------------------//
+
+	public String IPLC() {
+		return KI.IPLC();
+	}
+
+	// ---------------------Keyword LEASEDLINE------------------------//
+
 	// ---------------------Keyword Putty------------------------//
 
 	public String LoginSSH() {
@@ -263,16 +290,17 @@ public class KeyWord {
 	public String PlanSelection_FL_ENT() {
 		return KF.PlanSelection_FL_ENT();
 	}
+
 	public String FL_ONT_CPE_Replacement() {
 		return KF.FL_ONT_CPE_Replacement();
 	}
+
 	public String OrderVerfication() {
 		return KF.OrderVerfication();
 	}
 
 	// ---------------------Keyword_FixedLine------------------------//
 	// ---------------------Keyword_OSM------------------------//
-	
 
 	public String OSM_Login() {
 		return KO.OSM_Login();
@@ -287,6 +315,14 @@ public class KeyWord {
 	// ---------------------Mobile Usages------------------------//
 	public String Dialer() {
 		return KDialers.Dialer();
+	}
+
+	public String CheckUnBarringCall() {
+		return KDialers.CheckUnBarringCall();
+	}
+
+	public String CheckBarringCall() {
+		return KDialers.CheckBarringCall();
 	}
 
 	public String smsSender() {
@@ -383,7 +419,8 @@ public class KeyWord {
 
 	public String CheckOrder() {
 		return KSiebel.CheckOrder();
-	}// ---------------------Mobile Usages------------------------//
+	}
+	// ---------------------Mobile Usages------------------------//
 
 	// ---------------------Keyword CRM/BRM DB------------------------//
 	public String DBConnection() {

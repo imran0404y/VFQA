@@ -200,7 +200,7 @@ public class Keyword_OSM extends Driver {
 
 							do {
 								LData = Browser.WebTable.getCellData("OSM_QueryRes", i, Col);
-								System.out.println("OSM Status" + " " + LData);
+								Result.fUpdateLog("OSM Status" + " " + LData);
 								if (LData.equalsIgnoreCase("Completed")) {
 									Result.fUpdateLog("OSM New_Order Status has Sucesfully Updated ");
 									Wait = 101;
@@ -259,7 +259,7 @@ public class Keyword_OSM extends Driver {
 
 								do {
 									LData = Browser.WebTable.getCellData("OSM_QueryRes", i, Col);
-									System.out.println("OSM Status" + " " + LData);
+									Result.fUpdateLog("OSM Status" + " " + LData);
 									if (LData.equalsIgnoreCase("Completed")) {
 										Result.fUpdateLog("OSM Order_No Status has Sucesfully Updated ");
 										Wait = 101;

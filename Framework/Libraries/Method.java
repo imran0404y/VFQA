@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
  * Last Modified Date 	: 25-Apr-2016
  --------------------------------------------------------------------------------------------------------*/
 public class Method extends Driver {
-	
+
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: waitForPageToLoad
 	 * Arguments			: webcDriver.get() and timeout in seconds
@@ -299,7 +299,7 @@ public class Method extends Driver {
 
 		}
 	}
-	
+
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: clickTD
 	 * Arguments			: identifier
@@ -562,7 +562,7 @@ public class Method extends Driver {
 				break;
 			}
 		}
-		if(vis == "false") {
+		if (vis == "false") {
 			Continue.set(false);
 		}
 	}
@@ -689,9 +689,9 @@ public class Method extends Driver {
 				break;
 			}
 		}
-		if(vis == "false") {
+		if (vis == "false") {
 			return false;
-		}else {
+		} else {
 			return true;
 		}
 	}

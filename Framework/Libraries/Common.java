@@ -285,6 +285,13 @@ public class Common extends Driver {
 			Continue.set(false);
 	}
 
+	public void Radio_Select1(String Text) {
+
+		String cellXpath = "//input[@value='" + Text + "']";
+		cDriver.get().findElement(By.xpath(cellXpath)).click();
+
+	}
+
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: Radio_None
 	 * Use 					: To select a spectific None Radio Button or to uncheck the check box
@@ -558,7 +565,7 @@ public class Common extends Driver {
 				scroll("ServicePoi_Menu", "WebButton");
 				Browser.WebButton.click("ServicePoi_Menu");
 
-			}  else if (Browser.WebButton.exist("CreditAlert_Menu")) {
+			} else if (Browser.WebButton.exist("CreditAlert_Menu")) {
 				scroll("CreditAlert_Menu", "WebButton");
 				Browser.WebButton.click("CreditAlert_Menu");
 
@@ -771,7 +778,7 @@ public class Common extends Driver {
 	public void RTBScreen(String MSISDN, String Status) {
 		try {
 			waitforload();
-			int Row = 2, Col,flag=1,Count=1;
+			int Row = 2, Col, flag = 1, Count = 1;
 			String Pay_Type = "";
 
 			Title_Select("a", "Home");
@@ -834,7 +841,7 @@ public class Common extends Driver {
 				} while (!Browser.WebButton.waitTillEnabled("Bill_Valid_Name"));
 				waitforload();
 				do {
-					//TabNavigator("Unbilled Usage");
+					// TabNavigator("Unbilled Usage");
 					Browser.WebButton.click("UnbilledUsage_Button");
 
 					Result.takescreenshot("Unbilled Usage");
@@ -846,8 +853,7 @@ public class Common extends Driver {
 				Browser.WebButton.waittillvisible("RTB_Valid_Name");
 				scroll("RTB_Valid_Name", "WebButton");
 				Result.takescreenshot("Real Time Balance");
-				
-				
+
 			} else if (Pay_Type.equalsIgnoreCase("Prepaid")) {
 
 				do {
@@ -862,26 +868,24 @@ public class Common extends Driver {
 
 			}
 			// Text_Select("a", "Unbilled Usage");
-			
-			do
-			{
-			String y=cDriver.get().findElement(By.xpath("//div[.='Real Time Balance']/..//span[2]")).getText();
-			String[] b=(y.split("-")[1]).split(" of ");
-			if((b[0].trim()).equalsIgnoreCase(b[1].trim())) {
-				Result.takescreenshot("Real Time Balance"+Count);
-				flag=2;
-				
-			}else {
-				
-				Result.takescreenshot("Real Time Balance"+Count);
-				Browser.WebButton.click("Rowcounter_next");
-				Count =Count+1;
 
-			}
-		
-			
-			} while(flag==1);
-			
+			do {
+				String y = cDriver.get().findElement(By.xpath("//div[.='Real Time Balance']/..//span[2]")).getText();
+				String[] b = (y.split("-")[1]).split(" of ");
+				if ((b[0].trim()).equalsIgnoreCase(b[1].trim())) {
+					Result.takescreenshot("Real Time Balance" + Count);
+					flag = 2;
+
+				} else {
+
+					Result.takescreenshot("Real Time Balance" + Count);
+					Browser.WebButton.click("Rowcounter_next");
+					Count = Count + 1;
+
+				}
+
+			} while (flag == 1);
+
 			waitforload();
 
 		} catch (Exception e) {
@@ -917,14 +921,12 @@ public class Common extends Driver {
 				Continue.set(false);
 			// to be commented for QA6
 			if (Browser.WebLink.exist("Acc_Portal")) {
-				
+
 				waitforload();
 				Browser.WebLink.click("Acc_Portal");
 			}
 			Browser.WebLink.waittillvisible("Inst_Assert_ShowMore");
 			Result.fUpdateLog("Installed Assert");
-			
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1055,7 +1057,7 @@ public class Common extends Driver {
 				System.out.println("----------------------------");
 				for (int temp = 0; temp < nList.getLength(); temp++) {
 					Node nNode = nList.item(temp);
-					System.out.println("\nCurrent Element :" + nNode.getNodeName());
+					Result.fUpdateLog("\nCurrent Element :" + nNode.getNodeName());
 					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 						Element eElement = (Element) nNode;
 						eElement.getElementsByTagName(TagArray[1]).item(0).setTextContent(ValueArray[temp]);
@@ -1086,7 +1088,7 @@ public class Common extends Driver {
 				System.out.println("----------------------------");
 				for (int temp = 0; temp < nList.getLength(); temp++) {
 					Node nNode = nList.item(temp);
-					System.out.println("\nCurrent Element :" + nNode.getNodeName());
+					Result.fUpdateLog("\nCurrent Element :" + nNode.getNodeName());
 					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 						Element eElement = (Element) nNode;
 						ReturnValue = ReturnValue + eElement.getElementsByTagName(TagArray[1]).item(i).getTextContent()
@@ -1115,7 +1117,7 @@ public class Common extends Driver {
 			// Establish SOAP Connection and send request to End Point URL
 			SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
 			SOAPConnection soapConnection = soapConnectionFactory.createConnection();
-			System.out.println("Connection Established");
+			Result.fUpdateLog("Connection Established");
 			soapResponse = soapConnection.call(message, URL);
 
 			// CF.printSOAPResponse(soapResponse);
@@ -1267,7 +1269,7 @@ public class Common extends Driver {
 				Double truncatedDouble = new BigDecimal(toBeTruncated).setScale(1, BigDecimal.ROUND_HALF_UP)
 						.doubleValue();
 				pro = String.format("%.2f", truncatedDouble);
-				System.out.println(String.format("%.2f", truncatedDouble));
+				Result.fUpdateLog(String.format("%.2f", truncatedDouble));
 			} else {
 				int i = (int) Math.ceil(Prorateq);
 				pro = i + "";
@@ -1468,7 +1470,7 @@ public class Common extends Driver {
 					.xpath("//div[@class='NotSelected siebui-ecfg-module']//table//button[@class='siebui-ctrl-btn ']"));
 			List<WebElement> Label_Search = cDriver.get().findElements(
 					By.xpath("//div[@class='siebui-ecfg-header-title']//div[@class='siebui-ecfg-header-label']"));
-			System.out.println(Label_Search.size() + "  " + Option_Search.size() + " " + input_Search.size() + " "
+			Result.fUpdateLog(Label_Search.size() + "  " + Option_Search.size() + " " + input_Search.size() + " "
 					+ button_Search.size());
 			for (int i = 0; i < Label_Search.size(); i++) {
 				if (Label_Search.get(i).getText().contains(Option)) {
@@ -1658,7 +1660,7 @@ public class Common extends Driver {
 
 		} catch (Exception e) {
 			Driver.Continue.set(false);
-			System.out.println("Failed to Upload");
+			Result.fUpdateLog("Failed to Upload");
 		}
 
 	}
@@ -2015,7 +2017,7 @@ public class Common extends Driver {
 				Result.fUpdateLog("Bill Action " + BillDays);
 				Connection ORconn = fillo.getConnection(Dunning.get());
 				Recordset rs = ORconn.executeQuery("Select ActionType," + BillDays + " from CreditAlerts");
-				//Recordset rs = ORconn.executeQuery("Select ActionType from CreditAlerts;");
+				// Recordset rs = ORconn.executeQuery("Select ActionType from CreditAlerts;");
 				while (rs.next()) {
 					ActionType = rs.getField("ActionType");
 					DueDate = rs.getField(BillDays);
@@ -2124,10 +2126,10 @@ public class Common extends Driver {
 	public void TraverseLatestOrder(String AccountNumber) {
 		try {
 			int Tgt_Row = 2;
-			if(Browser.WebButton.exist("Scroll_Left"))
+			if (Browser.WebButton.exist("Scroll_Left"))
 				Browser.WebButton.click("Scroll_Left");
 			waitforload();
-			if(Browser.WebButton.exist("Scroll_Left"))
+			if (Browser.WebButton.exist("Scroll_Left"))
 				Browser.WebButton.click("Scroll_Left");
 			Account_Search(AccountNumber);
 			waitforload();
@@ -2141,8 +2143,8 @@ public class Common extends Driver {
 			String temp;
 			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
 				waitforload();
-				temp=Browser.WebTable.getCellData("Order_Table", O_Row, Col);
-				tempDate= OD_Format.parse(temp);
+				temp = Browser.WebTable.getCellData("Order_Table", O_Row, Col);
+				tempDate = OD_Format.parse(temp);
 				Calendar cal1 = Calendar.getInstance();
 				Calendar cal2 = Calendar.getInstance();
 				cal1.setTime(OrderDate);
@@ -2161,7 +2163,6 @@ public class Common extends Driver {
 		}
 	}
 
-
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: TraverseLatestBeforeOrder
 	 * Arguments			: AccountNumber
@@ -2172,10 +2173,10 @@ public class Common extends Driver {
 	public void TraverseLatestBeforeOrder(String AccountNumber) {
 		try {
 			int Tgt_Row = 2;
-			if(Browser.WebButton.exist("Scroll_Left"))
+			if (Browser.WebButton.exist("Scroll_Left"))
 				Browser.WebButton.click("Scroll_Left");
 			waitforload();
-			if(Browser.WebButton.exist("Scroll_Left"))
+			if (Browser.WebButton.exist("Scroll_Left"))
 				Browser.WebButton.click("Scroll_Left");
 			Account_Search(AccountNumber);
 			waitforload();
@@ -2198,7 +2199,7 @@ public class Common extends Driver {
 				}
 			}
 			Date BeforeOrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", 2, Col));
-			
+
 			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
 				if (Tgt_Row != O_Row) {
 					Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
@@ -2220,9 +2221,5 @@ public class Common extends Driver {
 			Continue.set(false);
 		}
 	}
-
-	
-	
-	
 
 }

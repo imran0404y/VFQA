@@ -11,7 +11,6 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-
 public class DesktopWebBrow extends Driver implements NewDriver {
 
 	WebDriver remoteDriver = null;
@@ -30,8 +29,8 @@ public class DesktopWebBrow extends Driver implements NewDriver {
 		case "chrome":
 			System.setProperty("webdriver.chrome.driver", WorkingDir.get() + "/Drivers/chromedriver.exe");
 			Map<String, Object> prefs = new HashMap<String, Object>();
-            
-            // Set the notification setting it will override the default setting
+
+			// Set the notification setting it will override the default setting
 			prefs.put("profile.default_content_setting_values.notifications", 2);
 			ChromeOptions options = new ChromeOptions();
 			options.setExperimentalOption("useAutomationExtension", false);
@@ -43,8 +42,9 @@ public class DesktopWebBrow extends Driver implements NewDriver {
 			System.setProperty("webdriver.gecko.driver", WorkingDir.get() + "/Drivers/geckodriver.exe");
 			// System.setProperty("webdriver.Firefoxdriver", Driver.basepth.get() +
 			// "/geckodriver.exe");
-			//File pathToBinary = new File("C:\\Users\\ImranH2\\AppData\\Local\\Mozilla Firefox\\firefox.exe");
-			//FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
+			// File pathToBinary = new File("C:\\Users\\ImranH2\\AppData\\Local\\Mozilla
+			// Firefox\\firefox.exe");
+			// FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
 			FirefoxProfile firefoxProfile = new FirefoxProfile();
 			firefoxProfile.setPreference("network.proxy.type", 0);
 			firefoxProfile.setAcceptUntrustedCertificates(true);

@@ -7,9 +7,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import Libraries.Driver;
 import Libraries.Result;
 
-public class Dialers {
+public class Dialers extends Driver {
 	public String MobileNumber;
 
 	public String Dialer() {
@@ -113,16 +114,16 @@ public class Dialers {
 	}
 
 	public String RechargeDialer() {
-		String Test_OutPut = "", Status = "",RechargePIN;
+		String Test_OutPut = "", Status = "", RechargePIN;
 		try {
 			System.out.println("*** Dialing Balance Check Code on Mobiles ***");
 			RechargePIN = utils.fetchData("RechargePIN");
 			SetCapabilities.dr.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			SetCapabilities.dr.findElement(By.id("com.android.dialer:id/floating_action_button")).click();
 			SetCapabilities.dr.findElement(By.id("com.android.dialer:id/digits")).click();
-			SetCapabilities.dr.findElement(By.id("com.android.dialer:id/digits")).sendKeys("*127*"+RechargePIN+"#");
+			SetCapabilities.dr.findElement(By.id("com.android.dialer:id/digits")).sendKeys("*127*" + RechargePIN + "#");
 			Result.fUpdateLog("Recharge PIN used is: " + RechargePIN);
-			Test_OutPut += "Recharge PIN used is: " + RechargePIN+"</br>";
+			Test_OutPut += "Recharge PIN used is: " + RechargePIN + "</br>";
 			SetCapabilities.dr.findElement(By.id("com.android.dialer:id/dialpad_floating_action_button")).click();
 			utils.takeScreenShot();
 			try {
@@ -143,5 +144,92 @@ public class Dialers {
 		}
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
-	
+
+	public String CheckBarringCall() {
+		String Test_OutPut = "", Status = "";
+		Result.fUpdateLog("------OG Bar Call Event Details------");
+		try {
+			String RTB = Validatedata("OGBar_Call");
+			if (RTB.equalsIgnoreCase("yes")) {
+				String DeviceName = getdata("DeviceName");
+				Result.fUpdateLog("Device Name is set to " + DeviceName);
+				SetCapabilities.setDialerCapabilities1(DeviceName);
+				System.out.println("** Dialing Number on Mobiles **");
+				MobileNumber = utils.fetchData("CallingNumber");
+				SetCapabilities.dr.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/floating_action_button")).click();
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/digits")).click();
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/digits")).sendKeys(MobileNumber);
+				Result.fUpdateLog("Dialing on Mobile Number: " + MobileNumber);
+				Test_OutPut += "Dailed Number is: " + MobileNumber;
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/dialpad_floating_action_button")).click();
+				utils.takeScreenShot();
+				try {
+					WebDriverWait wait = new WebDriverWait(SetCapabilities.dr, 30);
+					wait.until(ExpectedConditions
+							.visibilityOfElementLocated(By.id("com.android.incallui:id/elapsedTime")));
+					Result.fUpdateLog("** Call Was Successful **");
+					Thread.sleep(2000);
+					SetCapabilities.dr.findElement(By.id("com.android.incallui:id/floating_end_call_action_button"))
+							.click();
+					SetCapabilities.dr.quit();
+					Test_OutPut += "Call was successful";
+					Result.fUpdateLog("Call was successful");
+					Status = "FAIL";
+				} catch (Exception e) {
+					Status = "PASS";
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			Status = "FAIL";
+		}
+		Result.fUpdateLog("------OG Bar Call Event Details------");
+		return Status + "@@" + Test_OutPut + "";
+	}
+
+	public String CheckUnBarringCall() {
+		String Test_OutPut = "", Status = "";
+		Result.fUpdateLog("------OG Bar Call Event Details------");
+		try {
+			String RTB = Validatedata("OGUnBar_Call");
+			if (RTB.equalsIgnoreCase("yes")) {
+				String DeviceName = getdata("DeviceName");
+				Result.fUpdateLog("Device Name is set to " + DeviceName);
+				SetCapabilities.setDialerCapabilities1(DeviceName);
+				System.out.println("** Dialing Number on Mobiles **");
+				MobileNumber = utils.fetchData("CallingNumber");
+				SetCapabilities.dr.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/floating_action_button")).click();
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/digits")).click();
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/digits")).sendKeys(MobileNumber);
+				Result.fUpdateLog("Dialing on Mobile Number: " + MobileNumber);
+				Test_OutPut += "Dailed Number is: " + MobileNumber;
+				SetCapabilities.dr.findElement(By.id("com.android.dialer:id/dialpad_floating_action_button")).click();
+				utils.takeScreenShot();
+				try {
+					WebDriverWait wait = new WebDriverWait(SetCapabilities.dr, 30);
+					wait.until(ExpectedConditions
+							.visibilityOfElementLocated(By.id("com.android.incallui:id/elapsedTime")));
+					Result.fUpdateLog("** Call Was Successful **");
+					Thread.sleep(2000);
+					SetCapabilities.dr.findElement(By.id("com.android.incallui:id/floating_end_call_action_button"))
+							.click();
+					SetCapabilities.dr.quit();
+					Test_OutPut += "Call was successful";
+					Result.fUpdateLog("Call was successful");
+					Status = "PASS";
+				} catch (Exception e) {
+					Status = "PASS";
+					Status = "FAIL";
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			Status = "FAIL";
+		}
+		Result.fUpdateLog("------OG Bar Call Event Details------");
+		return Status + "@@" + Test_OutPut + "";
+	}
+
 }

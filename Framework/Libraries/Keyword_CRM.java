@@ -1190,7 +1190,7 @@ public class Keyword_CRM extends Driver {
 						CO.scroll("Submit", "WebButton");
 						CO.scroll("Ful_Status", "WebButton");
 						OS_Status = Browser.WebTable.getCellData("Line_Items", i, Col);
-						System.out.println("Round" + (i - 1) + " " + OS_Status);
+						Result.fUpdateLog("Round" + (i - 1) + " " + OS_Status);
 						// To Find the Complete Status
 						if (EStatus.equalsIgnoreCase(OS_Status)) {
 							Complete_Status = Complete_Status + 1;
@@ -1678,7 +1678,7 @@ public class Keyword_CRM extends Driver {
 			CO.Text_Select("button", "Done");
 			if (CO.isAlertExist()) {
 				Continue.set(false);
-				System.out.println("Error On Clicking Done Button");
+				Result.fUpdateLog("Error On Clicking Done Button");
 				System.exit(0);
 			}
 			/*
@@ -1912,7 +1912,7 @@ public class Keyword_CRM extends Driver {
 			CO.Text_Select("button", "Done");
 			if (CO.isAlertExist()) {
 				Continue.set(false);
-				System.out.println("Error On Clicking Done Button");
+				Result.fUpdateLog("Error On Clicking Done Button");
 				System.exit(0);
 			}
 
@@ -2626,7 +2626,7 @@ public class Keyword_CRM extends Driver {
 				CO.Text_Select("button", "Done");
 				if (CO.isAlertExist()) {
 					Continue.set(false);
-					System.out.println("Error On Clicking Done Button");
+					Result.fUpdateLog("Error On Clicking Done Button");
 					System.exit(0);
 				}
 				Result.takescreenshot("");
@@ -4864,11 +4864,41 @@ public class Keyword_CRM extends Driver {
 				Test_OutPut += "Activity Timeline is not Enabled" + ",";
 			}
 
+			if (Browser.WebLink.exist("Activity_timeline_link")) {
+				Browser.WebLink.click("Activity_timeline_link");
+				Result.takescreenshot("Activity Timeline link is clicked");
+				Result.fUpdateLog("Activity Timeline link is clicked");
+				Test_OutPut += "Activity Timeline link is clicked" + ",";
+				if (Browser.WebLink.exist("Activities")) {
+					Result.fUpdateLog("Activities are Displayed");
+					Test_OutPut += "Activities are Displayed" + ",";
+					CO.waitforload();
+					cDriver.get().navigate().back();
+				}
+			} else {
+				Result.takescreenshot("Activity Timeline link is not Enabled");
+				Result.fUpdateLog("Activity Timeline link is not Enabled");
+			}
+
 			// All Orders
+			Browser.WebEdit.waitTillEnabled("All_Orders");
 			if (Browser.WebEdit.exist("All_Orders")) {
 				Result.takescreenshot("Orders are Enabled ");
 				Result.fUpdateLog("Orders are Enabled ");
 				Test_OutPut += "Orders are Enabled" + ",";
+				if (Browser.WebLink.exist("Sales_order_link")) {
+					Browser.WebLink.waittillvisible("Sales_order_link");
+					Browser.WebLink.click("Sales_order_link");
+					Result.takescreenshot("Sales order link is clicked ");
+					Result.fUpdateLog("Sales order link is clicked");
+					CO.waitforload();
+					CO.scroll("Sales_order_no", "WebLink");
+					if (Browser.WebLink.exist("Sales_order_no")) {
+						Result.fUpdateLog("Sales order page is Displayed");
+						CO.waitforload();
+						cDriver.get().navigate().back();
+					}
+				}
 			} else {
 				Result.takescreenshot("Orders are not Enabled");
 				Result.fUpdateLog("Orders are not Enabled");
@@ -4887,6 +4917,16 @@ public class Keyword_CRM extends Driver {
 				Result.fUpdateLog(" Open Orders are not Enabled");
 				Test_OutPut += "Open Orders are not Enabled" + ",";
 			}
+			CO.waitforload();
+			if (Browser.WebLink.exist("open_orders_link")) {
+				Browser.WebLink.click("open_orders_link");
+				Result.takescreenshot("Open order link is clicked ");
+				Result.fUpdateLog("Open order link is clicked");
+				CO.waitforload();
+				Result.fUpdateLog("Open order page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+			}
 
 			// Suspended Orders
 			CO.waitforload();
@@ -4899,6 +4939,19 @@ public class Keyword_CRM extends Driver {
 				Result.takescreenshot("Suspeneded Orders are not Enabled");
 				Result.fUpdateLog("Suspeneded Orders are not Enabled");
 				Test_OutPut += "Suspeneded Orders are not Enabled" + ",";
+			}
+			CO.waitforload();
+			if (Browser.WebLink.exist("suspeneded_orders_link")) {
+				Browser.WebLink.click("suspeneded_orders_link");
+				Result.takescreenshot("suspended order link is clicked ");
+				Result.fUpdateLog("suspended order link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("suspended order page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+
 			}
 
 			// Trouble Ticket
@@ -4913,6 +4966,19 @@ public class Keyword_CRM extends Driver {
 				Result.fUpdateLog("Trouble tickets are not Enabled");
 				Test_OutPut += "Trouble tickets are not Enabled" + ",";
 			}
+			CO.waitforload();
+			Browser.WebLink.waittillvisible("Trouble_ticket_link");
+			if (Browser.WebLink.exist("Trouble_ticket_link")) {
+				Browser.WebLink.click("Trouble_ticket_link");
+				Result.takescreenshot("Trouble ticket link is clicked ");
+				Result.fUpdateLog("Trouble ticket link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("Trouble ticket page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+			}
 
 			// Open Ticket
 			CO.waitforload();
@@ -4925,6 +4991,19 @@ public class Keyword_CRM extends Driver {
 				Result.takescreenshot("Open Tickets are not Enabled");
 				Result.fUpdateLog("Open Tickets are not Enabled");
 				Test_OutPut += "Open Tickets are not Enabled" + ",";
+			}
+			CO.waitforload();
+			Browser.WebLink.waittillvisible("open_ticket_link");
+			if (Browser.WebLink.exist("open_ticket_link")) {
+				Browser.WebLink.click("open_ticket_link");
+				Result.takescreenshot("Open ticket link is clicked ");
+				Result.fUpdateLog("Open ticket link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("Open ticket page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
 			}
 
 			// High priority Ticket
@@ -4939,6 +5018,20 @@ public class Keyword_CRM extends Driver {
 				Result.fUpdateLog("High priority Tickets are not Enabled");
 				Test_OutPut += "High priority Tickets are not Enabled" + ",";
 			}
+			CO.waitforload();
+			Browser.WebLink.waittillvisible("High_priority_link");
+			if (Browser.WebLink.exist("High_priority_link")) {
+				Browser.WebLink.click("High_priority_link");
+				Result.takescreenshot("High priority link is clicked ");
+				Result.fUpdateLog("High priority link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("High priority page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+
+			}
 
 			// Installed Asset
 			CO.waitforload();
@@ -4951,6 +5044,45 @@ public class Keyword_CRM extends Driver {
 				Result.takescreenshot("Installed Asset are not Enabled");
 				Result.fUpdateLog("Installed Asset are not Enabled");
 				Test_OutPut += "Installed Assets are not Enabled" + ",";
+			}
+			CO.waitforload();
+			Browser.WebLink.waittillvisible("Installed_Asset_link");
+			if (Browser.WebLink.exist("Installed_Asset_link")) {
+				Browser.WebLink.click("Installed_Asset_link");
+				Result.takescreenshot("Installed Asset link is clicked ");
+				Result.fUpdateLog("Installed Asset link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("Installed Asset page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+
+			}
+
+			// Billing Profile
+			CO.waitforload();
+			Browser.WebLink.click("Billing_profile");
+			if (Browser.WebEdit.exist("All_Billing_profile")) {
+				Result.takescreenshot(" Billing profiles are Enabled ");
+				Result.fUpdateLog(" Billing profiles are Enabled ");
+			} else {
+
+				Result.takescreenshot("Billing profiles are not Enabled");
+				Result.fUpdateLog("Billing profiles are not Enabled");
+			}
+			CO.waitforload();
+			if (Browser.WebLink.exist("Billing_profile_link")) {
+				Browser.WebLink.click("Billing_profile_link");
+				Result.takescreenshot(" Billing profile link is clicked ");
+				Result.fUpdateLog("Billing profile link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("Billing profile page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+
 			}
 
 			// Active Billing profiles
@@ -4965,6 +5097,19 @@ public class Keyword_CRM extends Driver {
 				Result.fUpdateLog("Active Billing profiles are not Enabled");
 				Test_OutPut += "Active Billing profiles are not Enabled" + ",";
 			}
+			CO.waitforload();
+			if (Browser.WebLink.exist("Active_billing_link")) {
+				Browser.WebLink.click("Active_billing_link");
+				Result.takescreenshot("Active Billing link is clicked ");
+				Result.fUpdateLog("Active Billing link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("Active Billing page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+
+			}
 
 			// Suspended Billing profiles
 			CO.waitforload();
@@ -4977,6 +5122,19 @@ public class Keyword_CRM extends Driver {
 				Result.takescreenshot(" Suspended Billing profiles are not Enabled ");
 				Result.fUpdateLog(" Suspended Billing profiles are not Enabled ");
 				Test_OutPut += "Suspended Billing profiles are not Enabled" + ",";
+			}
+			CO.waitforload();
+			if (Browser.WebLink.exist("suspended_billing_profile_link")) {
+				Browser.WebLink.click("suspended_billing_profile_link");
+				Result.takescreenshot(" Suspended Billing profile link is clicked ");
+				Result.fUpdateLog("Suspended Billing profile link is clicked");
+
+				CO.waitforload();
+
+				Result.fUpdateLog("Suspended Billing profile page is Displayed");
+				CO.waitforload();
+				cDriver.get().navigate().back();
+
 			}
 
 			// Account Summary
@@ -5746,7 +5904,7 @@ public class Keyword_CRM extends Driver {
 			CO.Text_Select("button", "Done");
 			if (CO.isAlertExist()) {
 				Continue.set(false);
-				System.out.println("Error On Clicking Done Button");
+				Result.fUpdateLog("Error On Clicking Done Button");
 				System.exit(0);
 			}
 			Result.takescreenshot("");
@@ -6375,7 +6533,7 @@ public class Keyword_CRM extends Driver {
 				RowCount = Browser.WebTable.getRowCount("Bills");
 				if (RowCount > 1) {
 					Result.fUpdateLog("Fetching Bill Cycle, Due Amount, Due Date ");
-				//	String BillPeriod;
+					// String BillPeriod;
 					Col = CO.Select_Cell("Bills", "Amount Due");
 					AmtOwed = Double.parseDouble(Amtdue);
 					Col = CO.Select_Cell("Bills", "Due Date");
@@ -6432,7 +6590,7 @@ public class Keyword_CRM extends Driver {
 							c.add(Calendar.DATE, Integer.parseInt(Val.toString())); // Adding the acquired date as per
 																					// actions
 							String BillDate1 = DF.format(c.getTime());
-							//String x[] = BillDate1.split("/");
+							// String x[] = BillDate1.split("/");
 							BillDate1 = BillDate1.replaceAll("01", "1").replaceAll("02", "2").replaceAll("03", "3")
 									.replaceAll("04", "4").replaceAll("05", "5").replaceAll("06", "6")
 									.replaceAll("07", "7").replaceAll("08", "8").replaceAll("09", "9")

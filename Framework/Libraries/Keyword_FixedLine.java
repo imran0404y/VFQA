@@ -489,7 +489,7 @@ public class Keyword_FixedLine extends Driver {
 			CO.Text_Select("button", "Done");
 			if (CO.isAlertExist()) {
 				Continue.set(false);
-				System.out.println("Error On Clicking Done Button");
+				Result.fUpdateLog("Error On Clicking Done Button");
 				System.exit(0);
 			}
 
@@ -611,7 +611,7 @@ public class Keyword_FixedLine extends Driver {
 			CO.Text_Select("button", "Done");
 			if (CO.isAlertExist()) {
 				Continue.set(false);
-				System.out.println("Error On Clicking Done Button");
+				Result.fUpdateLog("Error On Clicking Done Button");
 				System.exit(0);
 			}
 			Result.takescreenshot("");

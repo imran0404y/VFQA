@@ -231,14 +231,14 @@ public class Utlities extends Driver {
 			rs.moveNext();
 			for (int readloop = 0; readloop < noOfColumns; readloop++) {
 				String colname = fieldnames.get(readloop);
-				//if (!colname.equals("Application_Details")) {
-					String dat = rs.getField(readloop).value();
-					if (dat == null) {
-						dict.put(colname, "");
-					} else {
-						dict.put(colname, dat);
-					}
-				//}
+				// if (!colname.equals("Application_Details")) {
+				String dat = rs.getField(readloop).value();
+				if (dat == null) {
+					dict.put(colname, "");
+				} else {
+					dict.put(colname, dat);
+				}
+				// }
 			}
 			rs.close();
 			connection.close();
@@ -356,11 +356,12 @@ public class Utlities extends Driver {
 			Fillo fillo = new Fillo();
 			Connection connection = fillo.getConnection(StoreDBpth);
 
-			/*Planname.set("Postpaid Basic Promotion");
-			LineItemData.put("0", "Mobile Service Bundle");
-			LineItemData.put("1", "Postpaid Basic");
-			LineItemData.put("2", "SIM Card");
-			LineItemData.put("3", "Vodafone Passport");*/
+			/*
+			 * Planname.set("Postpaid Basic Promotion"); LineItemData.put("0",
+			 * "Mobile Service Bundle"); LineItemData.put("1", "Postpaid Basic");
+			 * LineItemData.put("2", "SIM Card"); LineItemData.put("3",
+			 * "Vodafone Passport");
+			 */
 			// LineItemData.put("5", "Unlimited Family Calls");
 			// LineItemData.put("6", "Bill Manager");
 			// LineItemData.put("7", "Smart Limit");
@@ -383,7 +384,7 @@ public class Utlities extends Driver {
 						Recordset rs = connection.executeQuery(StrQuery);
 						rs.moveNext();
 						for (int currs = 1; currs <= rs.getCount(); currs++) {
-							if (!rs.getField("Siebel_Description").isEmpty()){
+							if (!rs.getField("Siebel_Description").isEmpty()) {
 								if (!rs.getField("Siebel_Description").contains("Dummy")) {
 									BundleID = rs.getField("BundleID");
 									if (BundleID.isEmpty())

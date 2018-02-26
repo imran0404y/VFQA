@@ -20,7 +20,7 @@ import com.jcraft.jsch.Session;
 
 @SuppressWarnings("rawtypes")
 public class Driver {
- 
+
 	public static ThreadLocal<String> WorkingDir = new ThreadLocal<String>();
 	public static ThreadLocal<String> Base_Path = new ThreadLocal<String>();
 	public static ThreadLocal<String> Storage_FLD = new ThreadLocal<String>();
@@ -66,17 +66,17 @@ public class Driver {
 	public static ThreadLocal<String> OrderDate = new ThreadLocal<String>();
 	public static ThreadLocal<String> billDate = new ThreadLocal<String>();
 	public static ThreadLocal<String> Def_Smart_limit = new ThreadLocal<String>();
-	public static ThreadLocal<ChannelShell> nchannel  = new ThreadLocal<ChannelShell>();
-	public static ThreadLocal<Channel> channel  = new ThreadLocal<Channel>();
-	public static ThreadLocal<Session> nsession  = new ThreadLocal<Session>();
-	public static ThreadLocal<FileOutputStream> tergetFile  = new ThreadLocal<FileOutputStream>();
+	public static ThreadLocal<ChannelShell> nchannel = new ThreadLocal<ChannelShell>();
+	public static ThreadLocal<Channel> channel = new ThreadLocal<Channel>();
+	public static ThreadLocal<Session> nsession = new ThreadLocal<Session>();
+	public static ThreadLocal<FileOutputStream> tergetFile = new ThreadLocal<FileOutputStream>();
 	public static ThreadLocal<String> TCscreenfile = new ThreadLocal<String>();
 	public static ThreadLocal<String> SalesOrder_No = new ThreadLocal<String>();
 	public static ThreadLocal<String> contact = new ThreadLocal<String>();
 	public static ThreadLocal<String> New_Account = new ThreadLocal<String>();
 	public static ThreadLocal<String> InvoiceZip = new ThreadLocal<String>();
 	public static ThreadLocal<String> Dunning = new ThreadLocal<String>();
-	
+
 	public static ThreadLocal<Dictionary> TestData = new ThreadLocal<Dictionary>();
 	public static ThreadLocal<Dictionary> ValidateDT = new ThreadLocal<Dictionary>();
 	public static ThreadLocal<Dictionary> database = new ThreadLocal<Dictionary>();
@@ -84,14 +84,14 @@ public class Driver {
 	public static HashMap<String, String> RTBOutputData = new HashMap<String, String>();
 	public static HashMap<String, String> LineItemData = new HashMap<String, String>();
 	// static String[] LineItemData = new String[15]; ;
-	
+
 	public static Map<String, String> DunningSchedule = new HashMap<String, String>();
 	public static Map<String, String> BillSchedule = new HashMap<String, String>();
 	// public static ThreadLocal<String> Billprofile_No = new ThreadLocal<String>();
 	public static Map<String, String> CreditAlert = new HashMap<String, String>();
 
 	public static void main(String[] args) throws IOException {
-		System.out.println("Intialization");
+		Result.fUpdateLog("Intialization");
 		killexeTask();
 
 		WorkingDir.set(System.getProperty("user.dir").replace("\\", "/"));
@@ -114,7 +114,7 @@ public class Driver {
 		Calendar cal = Calendar.getInstance();
 		String SRT_Time = For.format(cal.getTime()).toString();
 		ExecutionStarttimestr.set(SRT_Time);
-		System.out.println("Execution initiated at --- " + SRT_Time);
+		Result.fUpdateLog("Execution initiated at --- " + SRT_Time);
 
 		ArrayList<String[]> addUsecase = Utlities.floadUseCases();
 		String[] IDP = addUsecase.get(0);
@@ -154,7 +154,7 @@ public class Driver {
 				Continue.set(false);
 				TestOutput = "******* Interdependant Failure Blocked*******" + "<br/>";
 				Result.fUpdateLog("******* Interdependant Failure Blocked******");
-			}else if (DP.equalsIgnoreCase("DP") && currUCstatus.get().equalsIgnoreCase("PartiallyPass")){
+			} else if (DP.equalsIgnoreCase("DP") && currUCstatus.get().equalsIgnoreCase("PartiallyPass")) {
 				Continue.set(true);
 				currUCstatus.set("PartiallyPass");
 				database.set((Dictionary<?, ?>) Utlities.fdatabase(UseCaseName.get()));
@@ -199,7 +199,7 @@ public class Driver {
 						if (ResultandDes[0].equalsIgnoreCase("FAIL")) {
 							currKWstatus.set("Fail");
 							Continue.set(false);
-						}else if (ResultandDes[0].equalsIgnoreCase("PartiallyPass")) {
+						} else if (ResultandDes[0].equalsIgnoreCase("PartiallyPass")) {
 							currKWstatus.set("PartiallyPass");
 							Continue.set(true);
 						} else {
@@ -229,7 +229,7 @@ public class Driver {
 			Calendar cal1 = Calendar.getInstance();
 			String End_Time = For.format(cal1.getTime()).toString();
 			ExecutionEndtimestr.set(End_Time);
-			System.out.println("Execution Completed at --- " + End_Time);
+			Result.fUpdateLog("Execution Completed at --- " + End_Time);
 			Result.fcreateMasterHTML();
 		}
 		Result.DisplayHTMLReport();
@@ -272,10 +272,10 @@ public class Driver {
 		try {
 			Runtime.getRuntime().exec("taskkill /im chrome.exe /f");
 			Runtime.getRuntime().exec("taskkill /im chromedriver.exe /f");
-			//Runtime.getRuntime().exec("taskkill /im conhost.exe /f");
+			// Runtime.getRuntime().exec("taskkill /im conhost.exe /f");
 			Runtime.getRuntime().exec("taskkill /im geckodriver.exe /f");
 			Runtime.getRuntime().exec("taskkill /im IEDriverServer.exe /f");
-			//Runtime.getRuntime().exec("taskkill /im iexplore.exe /f");
+			// Runtime.getRuntime().exec("taskkill /im iexplore.exe /f");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

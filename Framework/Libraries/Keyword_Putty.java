@@ -24,7 +24,6 @@ import com.jcraft.jsch.Session;
 public class Keyword_Putty extends Driver {
 	// private static ChannelShell channel;
 
-
 	public String LoginSSH() {
 		String Test_OutPut = "", Status = "";
 		Result.fUpdateLog("------BRM Putty Login Event Details------");
@@ -137,8 +136,7 @@ public class Keyword_Putty extends Driver {
 			Date today = new Date();
 			String x = today.toString();
 			x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
-					.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
-					.replace("09", "9");
+					.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8").replace("09", "9");
 			Result.fUpdateLog(x);
 
 			if (str_FileContent.contains(x)) {
@@ -197,8 +195,7 @@ public class Keyword_Putty extends Driver {
 			Date today = new Date();
 			x = today.toString();
 			x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
-					.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
-					.replace("09", "9");
+					.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8").replace("09", "9");
 			Result.fUpdateLog(x);
 
 			if (str_FileContent.contains(x)) {
@@ -219,8 +216,7 @@ public class Keyword_Putty extends Driver {
 				Date today1 = new Date();
 				x = today1.toString();
 				x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
-						.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
-						.replace("09", "9");
+						.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8").replace("09", "9");
 				Result.fUpdateLog(x);
 
 				if (str_FileContent1.contains(x)) {
@@ -263,8 +259,7 @@ public class Keyword_Putty extends Driver {
 				Date today5 = new Date();
 				x = today5.toString();
 				x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
-						.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
-						.replace("09", "9");
+						.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8").replace("09", "9");
 				// x = "Jan 25 09:45";
 				Result.fUpdateLog(x);
 
@@ -329,70 +324,69 @@ public class Keyword_Putty extends Driver {
 	public String Collections() {
 		String Test_OutPut = "", Status = "";
 		if (Continue.get()) {
-		Result.fUpdateLog("------Collections Event Details------");
-		String Coll = "", pvt = "", str_FileContent = "";
-		try {
-			// date neet to be pick for the StoreDB
-			String PoID = Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(), "BillPoID");
+			Result.fUpdateLog("------Collections Event Details------");
+			String Coll = "", pvt = "", str_FileContent = "";
+			try {
+				// date neet to be pick for the StoreDB
+				String PoID = Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(), "BillPoID");
 
-			pvt = "pvt -m2 " + Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(), "DueDate");
+				pvt = "pvt -m2 " + Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(), "DueDate");
 
-			Coll = "pin_collections_process -billinfo " + PoID + " -verbose";
+				Coll = "pin_collections_process -billinfo " + PoID + " -verbose";
 
-			List<String> commands = new ArrayList<String>();
-			commands.add("test");
-			commands.add(pvt);
-			commands.add("pvt");
+				List<String> commands = new ArrayList<String>();
+				commands.add("test");
+				commands.add(pvt);
+				commands.add("pvt");
 
-			commands.add("apps");
-			commands.add("cd pin_collections");
-			commands.add(Coll);
-			commands.add("test");
-			commands.add("pvt -m0");
-			commands.add("pvt");
+				commands.add("apps");
+				commands.add("cd pin_collections");
+				commands.add(Coll);
+				commands.add("test");
+				commands.add("pvt -m0");
+				commands.add("pvt");
 
-			// commands.add("history");
+				// commands.add("history");
 
-			str_FileContent = Executecmd(nsession.get(), commands, "");
+				str_FileContent = Executecmd(nsession.get(), commands, "");
 
-			Date today = new Date();
-			String x = today.toString();
-			x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
-					.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8")
-					.replace("09", "9");
-			Result.fUpdateLog(x);
+				Date today = new Date();
+				String x = today.toString();
+				x = x.substring(4, 13).replace("01", "1").replace("02", "2").replace("03", "3").replace("04", "4")
+						.replace("05", "5").replace("06", "6").replace("07", "7").replace("08", "8").replace("09", "9");
+				Result.fUpdateLog(x);
 
-			if (str_FileContent.contains(x)) {
-				Result.fUpdateLog("PVT set as Normal");
-				Test_OutPut += "PVT set as Normal" + ",";
-				Continue.set(true);
-			} else {
-				Result.fUpdateLog("Fail to set PVT Normal");
-				Test_OutPut += "Fail to set PVT Normal" + ",";
-				Continue.set(false);
+				if (str_FileContent.contains(x)) {
+					Result.fUpdateLog("PVT set as Normal");
+					Test_OutPut += "PVT set as Normal" + ",";
+					Continue.set(true);
+				} else {
+					Result.fUpdateLog("Fail to set PVT Normal");
+					Test_OutPut += "Fail to set PVT Normal" + ",";
+					Continue.set(false);
+				}
+
+				CopytoDoc(str_FileContent);
+
+				if (str_FileContent.contains("logout") && Continue.get()) {
+					Test_OutPut += "Commands Executed Successfully" + ",";
+					Result.fUpdateLog(str_FileContent);
+					Status = "PASS";
+				} else {
+					Test_OutPut += "Failed to Execute the commands" + ",";
+					Result.fUpdateLog(str_FileContent);
+					Status = "Fail";
+				}
+
+			} catch (Exception e) {
+				Test_OutPut += "Failed to disconnect session" + ",";
+				Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+				Status = "FAIL";
+				e.printStackTrace();
 			}
+			Result.fUpdateLog("------Collections Event Details - Completed------");
 
-			CopytoDoc(str_FileContent);
-
-			if (str_FileContent.contains("logout") && Continue.get()) {
-				Test_OutPut += "Commands Executed Successfully" + ",";
-				Result.fUpdateLog(str_FileContent);
-				Status = "PASS";
-			} else {
-				Test_OutPut += "Failed to Execute the commands" + ",";
-				Result.fUpdateLog(str_FileContent);
-				Status = "Fail";
-			}
-
-		} catch (Exception e) {
-			Test_OutPut += "Failed to disconnect session" + ",";
-			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
-			Status = "FAIL";
-			e.printStackTrace();
-		}
-		Result.fUpdateLog("------Collections Event Details - Completed------");
-		
-		}else {
+		} else {
 
 			Status = "FAIL";
 		}
@@ -454,9 +448,9 @@ public class Keyword_Putty extends Driver {
 			try {
 				nchannel.set((ChannelShell) obj_Session.openChannel("shell"));
 				nchannel.get().connect();
-				System.out.println("channel opened!");
+				Result.fUpdateLog("channel opened!");
 			} catch (Exception e) {
-				System.out.println("Error while opening channel: " + e);
+				Result.fUpdateLog("Error while opening channel: " + e);
 			}
 		}
 		return nchannel.get();

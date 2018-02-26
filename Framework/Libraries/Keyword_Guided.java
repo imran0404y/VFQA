@@ -377,7 +377,7 @@ public class Keyword_Guided extends Driver
 			// CO.waitforload();
 			CO.waitforobj("SP_Resrv_Continue", "WebButton");
 			Row_Count = Browser.WebTable.getRowCount("Reserved");
-			System.out.println("Guided : Unreserved" + Row_Count);
+			Result.fUpdateLog("Guided : Unreserved" + Row_Count);
 			if (Row_Count > 1)
 				Result.takescreenshot("MSISDN Reserved " + Number);
 			else {
@@ -577,7 +577,7 @@ public class Keyword_Guided extends Driver
 					CO.scroll("Ful_Status", "WebButton");
 
 					OS_Status = Browser.WebTable.getCellData("Line_Items", i, Col);
-					System.out.println("Round" + (i - 1) + " " + OS_Status);
+					Result.fUpdateLog("Round" + (i - 1) + " " + OS_Status);
 					// To Find the Complete Status
 					if (EStatus.equalsIgnoreCase(OS_Status)) {
 						Complete_Status = Complete_Status + 1;

@@ -367,7 +367,7 @@ public class Browser extends Driver {
 		public static void scroll(String objname, int rownum, int columnnum) {
 			try {
 				String[] objprop = Utlities.FindObject(objname, "WebTable");
-				String cellXpath = objprop[0] + "//tr[" + rownum + "]/td[" + (columnnum+1) + "]";
+				String cellXpath = objprop[0] + "//tr[" + rownum + "]/td[" + (columnnum + 1) + "]";
 				cDriver.get().findElement(By.xpath(cellXpath)).click();
 				WebElement scr1 = (WebElement) cDriver.get().findElement(By.xpath(cellXpath));
 				((RemoteWebDriver) cDriver.get()).executeScript("arguments[0].scrollIntoView(true)", scr1);
@@ -375,6 +375,7 @@ public class Browser extends Driver {
 				System.out.println(e);
 			}
 		}
+
 		/*------------------------------------------------------------------------------------------------------
 		* Function Name: getRowCount
 		* Use :	returns the total number of rows in the webtable
