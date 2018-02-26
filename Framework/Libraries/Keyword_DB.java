@@ -64,36 +64,45 @@ public class Keyword_DB extends Driver {
 
 	public String BillPoID() {
 		String Test_OutPut = "", Status = "", AccountNo = "";
-		String BillingProfileName = "";
-		Result.fUpdateLog("------BillPoID Event Details------");
-		
-		AccountNo = getdata("AccountNo");
-		
-		if (!(getdata("BillingProfileName").equals(""))) {
-			BillingProfileName = getdata("BillingProfileName");	
-		} else {
-			BillingProfileName = Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(), "BillingProfileName");
-		}
-		
-		try {
-			Statement statement = con.get().createStatement();
-			String queryString = "Select a.account_no,b.poid_id0,b.bill_info_id from pin.account_t a,pin.billinfo_t b where a.account_no in '"
-					+ AccountNo + "' and b.account_obj_id0=a.poid_id0 and b.bill_info_id='"+BillingProfileName+"'";
-			
-			ResultSet rs = statement.executeQuery(queryString);
-			while (rs.next()) {
-				Test_OutPut = "BillPoID: " +rs.getString(2)+" BillingProfileName: "+ rs.getString(3) +",";
-				Utlities.StoreValue("BillPoID", rs.getString(2));
+		if (Continue.get()) {
+
+			String BillingProfileName = "";
+			Result.fUpdateLog("------BillPoID Event Details------");
+
+			AccountNo = getdata("AccountNo");
+
+			if (!(getdata("BillingProfile").equals(""))) {
+				BillingProfileName = getdata("BillingProfile");
+			} else {
+				BillingProfileName = Utlities.FetchStoredValue(UseCaseName.get(), TestCaseN.get(),
+						"BillingProfileName");
 			}
-			Status = "PASS";
-		} catch (Exception e) {
-			Test_OutPut += "Failed to BillPoID" + ",";
-			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+			try {
+				Statement statement = con.get().createStatement();
+				String queryString = "Select a.account_no,b.poid_id0,b.bill_info_id from pin.account_t a,pin.billinfo_t b where a.account_no in '"
+						+ AccountNo + "' and b.account_obj_id0=a.poid_id0 and b.bill_info_id='" + BillingProfileName
+						+ "'";
+
+				ResultSet rs = statement.executeQuery(queryString);
+				while (rs.next()) {
+					Test_OutPut = "BillPoID: " + rs.getString(2) + " BillingProfileName: " + rs.getString(3) + ",";
+					Utlities.StoreValue("BillPoID", rs.getString(2));
+				}
+				Status = "PASS";
+
+			} catch (Exception e) {
+				Test_OutPut += "Failed to BillPoID" + ",";
+				Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+				Status = "FAIL";
+				e.printStackTrace();
+			}
+			Result.fUpdateLog("------BillPoID Event Details - Completed------");
+		} else {
+
 			Status = "FAIL";
-			e.printStackTrace();
 		}
-		Result.fUpdateLog("------BillPoID Event Details - Completed------");
 		return Status + "@@" + Test_OutPut + "<br/>";
+
 	}
 
 }

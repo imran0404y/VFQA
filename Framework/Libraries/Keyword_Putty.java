@@ -24,8 +24,6 @@ import com.jcraft.jsch.Session;
 public class Keyword_Putty extends Driver {
 	// private static ChannelShell channel;
 
-	public Keyword_Putty() {
-	}
 
 	public String LoginSSH() {
 		String Test_OutPut = "", Status = "";
@@ -330,6 +328,7 @@ public class Keyword_Putty extends Driver {
 
 	public String Collections() {
 		String Test_OutPut = "", Status = "";
+		if (Continue.get()) {
 		Result.fUpdateLog("------Collections Event Details------");
 		String Coll = "", pvt = "", str_FileContent = "";
 		try {
@@ -392,6 +391,11 @@ public class Keyword_Putty extends Driver {
 			e.printStackTrace();
 		}
 		Result.fUpdateLog("------Collections Event Details - Completed------");
+		
+		}else {
+
+			Status = "FAIL";
+		}
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
 

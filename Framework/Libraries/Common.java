@@ -558,6 +558,10 @@ public class Common extends Driver {
 				scroll("ServicePoi_Menu", "WebButton");
 				Browser.WebButton.click("ServicePoi_Menu");
 
+			}  else if (Browser.WebButton.exist("CreditAlert_Menu")) {
+				scroll("CreditAlert_Menu", "WebButton");
+				Browser.WebButton.click("CreditAlert_Menu");
+
 			} else {
 				scroll("Prod_Serv_Menu", "WebButton");
 				Browser.WebButton.click("Prod_Serv_Menu");
@@ -2011,19 +2015,22 @@ public class Common extends Driver {
 				Result.fUpdateLog("Bill Action " + BillDays);
 				Connection ORconn = fillo.getConnection(Dunning.get());
 				Recordset rs = ORconn.executeQuery("Select ActionType," + BillDays + " from CreditAlerts");
+				//Recordset rs = ORconn.executeQuery("Select ActionType from CreditAlerts;");
 				while (rs.next()) {
-					DueDate = rs.getField(1).value();
-					ActionType = rs.getField(0).value();
+					ActionType = rs.getField("ActionType");
+					DueDate = rs.getField(BillDays);
 					if (!DueDate.isEmpty()) {
 						DunningSchedule.put(ActionType, DueDate);
 					}
 				}
+				waitforload();
 				Result.fUpdateLog("Dunning Calendar Updated");
 				rs.close();
 				ORconn.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			Continue.set(false);
 		}
 	}
 
