@@ -91,7 +91,7 @@ public class Driver {
 	public static Map<String, String> CreditAlert = new HashMap<String, String>();
 
 	public static void main(String[] args) throws IOException {
-		Result.fUpdateLog("Intialization");
+		System.out.println("Intialization");
 		killexeTask();
 
 		WorkingDir.set(System.getProperty("user.dir").replace("\\", "/"));
@@ -114,7 +114,7 @@ public class Driver {
 		Calendar cal = Calendar.getInstance();
 		String SRT_Time = For.format(cal.getTime()).toString();
 		ExecutionStarttimestr.set(SRT_Time);
-		Result.fUpdateLog("Execution initiated at --- " + SRT_Time);
+		System.out.println("Execution initiated at --- " + SRT_Time);
 
 		ArrayList<String[]> addUsecase = Utlities.floadUseCases();
 		String[] IDP = addUsecase.get(0);
@@ -229,7 +229,7 @@ public class Driver {
 			Calendar cal1 = Calendar.getInstance();
 			String End_Time = For.format(cal1.getTime()).toString();
 			ExecutionEndtimestr.set(End_Time);
-			Result.fUpdateLog("Execution Completed at --- " + End_Time);
+			System.out.println("Execution Completed at --- " + End_Time);
 			Result.fcreateMasterHTML();
 		}
 		Result.DisplayHTMLReport();
