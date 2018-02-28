@@ -463,7 +463,7 @@ public class Keyword_Putty extends Driver {
 			Channel channel = getChannel(obj_Session);
 
 			PrintStream out = new PrintStream(channel.getOutputStream());
-			// out.println("#!/bin/bash");
+			out.println("#!/bin/bash");
 			for (String command : commands) {
 				out.println(command);
 				Result.fUpdateLog(command);

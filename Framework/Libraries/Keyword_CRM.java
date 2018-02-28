@@ -871,7 +871,7 @@ public class Keyword_CRM extends Driver {
 				if (CO.isAlertExist())
 					Continue.set(false);
 			}
-
+			
 			if (ReservationToken.equals("")) {
 				CO.scroll("Numbers", "WebLink");
 				Browser.WebLink.click("Numbers");
@@ -987,6 +987,7 @@ public class Keyword_CRM extends Driver {
 				 * Browser.WebButton.click("Reserved_Ok"); else Continue.set(false);
 				 */
 			} else if (!ReservationToken.equals("")) {
+				CO.waitforload();
 				Row_Count = Browser.WebTable.getRowCount("Line_Items");
 				if (Row_Count <= 3) {
 					Browser.WebButton.waittillvisible("Expand");
@@ -4187,7 +4188,7 @@ public class Keyword_CRM extends Driver {
 				Browser.WebButton.click("Expand");
 			}
 			CO.Action_Update("Resume", MSISDN);
-			Test_OutPut += OrderSubmission().split("@@")[1];
+			//Test_OutPut += OrderSubmission().split("@@")[1];
 
 			// fetching Order_no
 			Order_no = CO.Order_ID();

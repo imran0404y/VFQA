@@ -525,6 +525,7 @@ public class Common extends Driver {
 
 			waitforload();
 			InstalledAssertChange("New Query                   [Alt+Q]");
+			waitforload();
 			Col = Select_Cell("Installed_Assert", "Service ID");
 			Browser.WebTable.SetDataE("Installed_Assert", 2, Col, "Serial_Number", MSISDN);
 			Browser.WebButton.click("InstalledAssert_Go");
@@ -564,11 +565,9 @@ public class Common extends Driver {
 			} else if (Browser.WebButton.exist("ServicePoi_Menu")) {
 				scroll("ServicePoi_Menu", "WebButton");
 				Browser.WebButton.click("ServicePoi_Menu");
-
 			} else if (Browser.WebButton.exist("CreditAlert_Menu")) {
 				scroll("CreditAlert_Menu", "WebButton");
 				Browser.WebButton.click("CreditAlert_Menu");
-
 			} else {
 				scroll("Prod_Serv_Menu", "WebButton");
 				Browser.WebButton.click("Prod_Serv_Menu");
@@ -582,7 +581,7 @@ public class Common extends Driver {
 				cDriver.get().findElement(By.xpath(cellXpath)).click();
 			} else
 				Continue.set(false);
-
+			waitforload();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
