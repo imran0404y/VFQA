@@ -26,7 +26,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 public class Result extends Driver {
 
 	public static ThreadLocal<String> logfilepth = new ThreadLocal<String>();
-	public static ThreadLocal<String> masterrephtml = new ThreadLocal<String>();
 	public static ThreadLocal<String> UC = new ThreadLocal<String>();
 
 	public static String updatelogmsg = "";

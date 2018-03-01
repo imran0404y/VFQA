@@ -10,8 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.MalformedURLException;
-
 public class Browser extends Driver {
 
 	/*---------------------------------------------------------------------------------------------------------
@@ -732,8 +730,8 @@ public class Browser extends Driver {
 	* Designed By: AG
 	* Last Modified Date : 15-June-2016
 	--------------------------------------------------------------------------------------------------------*/
-	public static void OpenBrowser(String BrowserName, String URL) throws MalformedURLException, InterruptedException {
-
+	public static void OpenBrowser(String BrowserName, String URL){
+		try {
 		switch (BrowserName.toLowerCase()) {
 		case "mobile":
 			cDriver.set(new AndroidMobBrow().getNewDriver());
@@ -744,9 +742,9 @@ public class Browser extends Driver {
 			cDriver.set(new DesktopWebBrow().getNewDriver());
 			cDriver.get().get(URL);
 			Thread.sleep(2000);
-			cDriver.get().findElement(By.xpath("//*[@id='advancedButton']")).click();
-			cDriver.get().findElement(By.xpath("//*[@id='exceptionDialogButton']")).click();
-			Thread.sleep(5000);
+			//cDriver.get().findElement(By.xpath("//*[@id='advancedButton']")).click();
+			//cDriver.get().findElement(By.xpath("//*[@id='exceptionDialogButton']")).click();
+			//Thread.sleep(5000);
 			maximize();
 			System.out.println("Title " + cDriver.get().getTitle());
 			// position();
@@ -773,7 +771,9 @@ public class Browser extends Driver {
 			break;
 
 		}
-
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*---------------------------------------------------------------------------------------------------------

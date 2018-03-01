@@ -33,6 +33,7 @@ public class Driver {
 	public static ThreadLocal<String> Templete_FLD = new ThreadLocal<String>();
 	public static ThreadLocal<String> XMLfilepth = new ThreadLocal<String>();
 	public static ThreadLocal<String> UCscreenfilepth = new ThreadLocal<String>();
+	public static ThreadLocal<String> masterrephtml = new ThreadLocal<String>();
 	public static ThreadLocal<String> URL = new ThreadLocal<String>();
 
 	public static int passUC = 0;
@@ -232,7 +233,8 @@ public class Driver {
 			System.out.println("Execution Completed at --- " + End_Time);
 			Result.fcreateMasterHTML();
 		}
-		Result.DisplayHTMLReport();
+		Browser.OpenBrowser(browser.get(), masterrephtml.get());
+		//Result.DisplayHTMLReport();
 	}
 
 	public static String getdata(String colname) {
@@ -273,6 +275,7 @@ public class Driver {
 			Runtime.getRuntime().exec("taskkill /im chrome.exe /f");
 			Runtime.getRuntime().exec("taskkill /im chromedriver.exe /f");
 			// Runtime.getRuntime().exec("taskkill /im conhost.exe /f");
+			//Runtime.getRuntime().exec("taskkill /im Firefox.exe /f");
 			Runtime.getRuntime().exec("taskkill /im geckodriver.exe /f");
 			Runtime.getRuntime().exec("taskkill /im IEDriverServer.exe /f");
 			// Runtime.getRuntime().exec("taskkill /im iexplore.exe /f");

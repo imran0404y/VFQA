@@ -241,8 +241,10 @@ public class Keyword_CRM extends Driver {
 					Browser.WebEdit.Set("Phone", pulldata("Phone"));
 				}
 
-				Browser.WebLink.waittillvisible("Con_Link");
-				Browser.WebLink.click("Con_Link");
+				/*Browser.WebLink.waittillvisible("Con_Link");
+				Browser.WebLink.click("Con_Link");*/
+				int Col = CO.Select_Cell("Contact", "Last_Name");		
+				Browser.WebTable.click("Contact", 2, Col);
 
 				// Handles Alerts
 				if (CO.isAlertExist())
