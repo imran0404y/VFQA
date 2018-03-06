@@ -785,7 +785,7 @@ public class Common extends Driver {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void LineItems_Dat() {
 		int Row_Count1, Col, Col_P;
 		LineItemData.clear();
@@ -809,8 +809,6 @@ public class Common extends Driver {
 		}
 	}
 
-
-
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: RTBScreen
 	 * Use 					: To check the Unbilled usage in Billing profile
@@ -821,7 +819,7 @@ public class Common extends Driver {
 		try {
 			waitforload();
 			int Row = 2, Col, flag = 1, Count = 1;
-			String Pay_Type = "";
+			//String Pay_Type = "";
 
 			Title_Select("a", "Home");
 			waitforload();
@@ -867,48 +865,45 @@ public class Common extends Driver {
 			waitforload();
 			int Row_Count = Browser.WebTable.getRowCount("Bill_Prof");
 			int Col_Val = Select_Cell("Bill_Prof", "Name");
-			int Col2 = Select_Cell("Bill_Prof", "Payment Type");
+			//int Col2 = Select_Cell("Bill_Prof", "Payment Type");
 			for (int i = 2; i <= Row_Count; i++) {
 				String BillPro = Browser.WebTable.getCellData("Bill_Prof", i, Col_Val);
 				if (BillPro.equals(BP)) {
-					Pay_Type = Browser.WebTable.getCellData("Bill_Prof", i, Col2);
+					//Pay_Type = Browser.WebTable.getCellData("Bill_Prof", i, Col2);
 					Browser.WebTable.click("Bill_Prof", i, Col_Val);
 
 					break;
 				}
 			}
-			if (Pay_Type.equalsIgnoreCase("Postpaid")) {
-				do {
-					waitforload();
-				} while (!Browser.WebButton.waitTillEnabled("Bill_Valid_Name"));
+			// if (Pay_Type.equalsIgnoreCase("Postpaid")) {
+			do {
 				waitforload();
-				do {
-					// TabNavigator("Unbilled Usage");
-					Browser.WebButton.click("UnbilledUsage_Button");
-
-					Result.takescreenshot("Unbilled Usage");
-					waitforload();
-					waitforload();
-					TabNavigator("Real Time Balance");
-					waitforload();
-				} while (!Browser.WebButton.waitTillEnabled("RTB_Valid_Name"));
-				Browser.WebButton.waittillvisible("RTB_Valid_Name");
-				scroll("RTB_Valid_Name", "WebButton");
-				Result.takescreenshot("Real Time Balance");
-
-			} else if (Pay_Type.equalsIgnoreCase("Prepaid")) {
-
-				do {
-					scroll("RTB_Check_Button", "WebButton");
-					waitforload();
-				} while (!Browser.WebButton.waitTillEnabled("RTB_Check_Button"));
+			} while (!Browser.WebButton.waitTillEnabled("Bill_Valid_Name"));
+			waitforload();
+			Browser.WebButton.click("UnbilledUsage_Button");
+			Result.takescreenshot("Unbilled Usage");
+			do {
+				// TabNavigator("Unbilled Usage");
 				waitforload();
-				Browser.WebButton.click("RTB_Check_Button");
-				Browser.WebButton.waittillvisible("RTB_Valid_Name");
-				scroll("RTB_Valid_Name", "WebButton");
-				Result.takescreenshot("Real Time Balance");
+				waitforload();
+				TabNavigator("Real Time Balance");
+				waitforload();
+			} while (!Browser.WebButton.waitTillEnabled("RTB_Valid_Name"));
+			Browser.WebButton.waittillvisible("RTB_Valid_Name");
+			scroll("RTB_Valid_Name", "WebButton");
+			Result.takescreenshot("Real Time Balance");
 
-			}
+			/*
+			 * } else if (Pay_Type.equalsIgnoreCase("Prepaid")) {
+			 * 
+			 * do { scroll("RTB_Check_Button", "WebButton"); waitforload(); } while
+			 * (!Browser.WebButton.waitTillEnabled("RTB_Check_Button")); waitforload();
+			 * Browser.WebButton.click("RTB_Check_Button");
+			 * Browser.WebButton.waittillvisible("RTB_Valid_Name"); scroll("RTB_Valid_Name",
+			 * "WebButton"); Result.takescreenshot("Real Time Balance");
+			 * 
+			 * }
+			 */
 			// Text_Select("a", "Unbilled Usage");
 
 			do {
