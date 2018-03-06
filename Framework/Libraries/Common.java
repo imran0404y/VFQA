@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -176,6 +177,23 @@ public class Common extends Driver {
 				break;
 		}
 		return Col;
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: getKeyFromValue
+	 * Arguments			: MSISDN,Status
+	 * Use 					: To get the key from 
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 26-02-2018
+	--------------------------------------------------------------------------------------------------------*/
+
+	public Object getKeyFromValue(HashMap<String, String> hm, String value) {
+		for (Object o : hm.keySet()) {
+			if (hm.get(o).equals(value)) {
+				return o;
+			}
+		}
+		return null;
 	}
 
 	/*---------------------------------------------------------------------------------------------------------
@@ -767,6 +785,31 @@ public class Common extends Driver {
 			e.printStackTrace();
 		}
 	}
+	
+	public void LineItems_Dat() {
+		int Row_Count1, Col, Col_P;
+		LineItemData.clear();
+		try {
+			Col = Select_Cell("Line_Items", "Product");
+			Col_P = Actual_Cell("Line_Items", "Action");
+			int k = 0;
+			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
+
+			for (int i = 2; i <= Row_Count1; i++) {
+				String LData = Browser.WebTable.getCellData("Line_Items", i, Col);
+				String Action = Browser.WebTable.getCellData("Line_Items", i, Col_P);
+				if (Action.equals("Delete")) {
+					LineItemData.put(Integer.toString(k), LData);
+					Result.fUpdateLog("Action Update : " + LData + ":" + Action);
+					k++;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
 
 	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: RTBScreen
@@ -2131,6 +2174,48 @@ public class Common extends Driver {
 			if (Browser.WebButton.exist("Scroll_Left"))
 				Browser.WebButton.click("Scroll_Left");
 			Account_Search(AccountNumber);
+			waitforload();
+			Text_Select("a", "Orders");
+			waitforload();
+			int Col = Select_Cell("Order_Table", "Order Date");
+			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
+			SimpleDateFormat OD_Format = new SimpleDateFormat("mm/dd/yyyy hh:mm:ss a", Locale.US);
+			Date OrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
+			Date tempDate;
+			String temp;
+			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
+				waitforload();
+				temp = Browser.WebTable.getCellData("Order_Table", O_Row, Col);
+				tempDate = OD_Format.parse(temp);
+				Calendar cal1 = Calendar.getInstance();
+				Calendar cal2 = Calendar.getInstance();
+				cal1.setTime(OrderDate);
+				cal2.setTime(tempDate);
+				if (cal1.before(cal2)) {
+					OrderDate = tempDate;
+					Tgt_Row = O_Row;
+				}
+			}
+			Col = Select_Cell("Order_Table", "Order #");
+			Result.fUpdateLog("Traversing to the latest created Order " + OrderDate);
+			Result.takescreenshot("Traversing to the latest created Order " + OrderDate);
+			Browser.WebTable.clickL("Order_Table", Tgt_Row, Col);
+		} catch (Exception e) {
+			Continue.set(false);
+		}
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: TraverseLatestOrder
+	 * Arguments			: MSISDN,Status
+	 * Use 					: To traverse the latest Order Created in a specific MSISDN 
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 26-02-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public void TraverseLatestOrder(String MSISDN, String Status) {
+		try {
+			int Tgt_Row = 2;
+			Assert_Search(MSISDN, Status);
 			waitforload();
 			Text_Select("a", "Orders");
 			waitforload();

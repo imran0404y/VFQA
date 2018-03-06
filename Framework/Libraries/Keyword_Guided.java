@@ -44,7 +44,7 @@ public class Keyword_Guided extends Driver
 			} else {
 				MediaType = pulldata("MediaType");
 			}
-			
+
 			if (!(getdata("BillType").equals(""))) {
 				BillType = getdata("BillType");
 			} else {
@@ -289,7 +289,7 @@ public class Keyword_Guided extends Driver
 
 			// CO.scroll("Customer_Segment", "ListBox");
 			/*
-			 * if (TestCaseN.get().equalsIgnoreCase("NewCustomer")) {			 * 
+			 * if (TestCaseN.get().equalsIgnoreCase("NewCustomer")) { *
 			 * Browser.ListBox.select("Customer_Segment", Segment); }
 			 */
 			// Browser.ListBox.select("Customer_Segment", Segment);
@@ -307,7 +307,7 @@ public class Keyword_Guided extends Driver
 			// Billing
 
 			CO.waitforload();
-			//String Account_no= Browser.WebEdit.getAttribute("Guid_Account");
+			// String Account_no= Browser.WebEdit.getAttribute("Guid_Account");
 
 			CO.scroll("MediaType", "ListBox");
 
@@ -503,7 +503,7 @@ public class Keyword_Guided extends Driver
 			int Col, col1, RowCount;
 			Col = CO.Select_Cell("Contact", "Account");
 			Browser.WebTable.SetDataE("Contact", Row, Col, "Account", Account_Name);
-			
+
 			col1 = CO.Select_Cell("Contact", "ID Number");
 			Browser.WebTable.SetDataE("Contact", Row, col1, "ID_Number", IDNumber);
 			/*
@@ -649,8 +649,9 @@ public class Keyword_Guided extends Driver
 	public String SIMSwap_Global_Search()
 
 	{
-		String MSISDN, New_SIM, Comments, IDNum, IDType, FirstName;
+		String MSISDN, New_SIM, Comments, IDNum, IDType, FirstName, Order_no, Order_Status, GetData, MSISDNStatus;
 		String Test_OutPut = "", Status = "";
+		int Col, Row = 2;
 		Result.fUpdateLog("------SIM swap Global Search------");
 		try {
 
@@ -670,6 +671,16 @@ public class Keyword_Guided extends Driver
 				Comments = getdata("Comments");
 			} else {
 				Comments = pulldata("Comments");
+			}
+			if (!(getdata("GetData").equals(""))) {
+				GetData = getdata("GetData");
+			} else {
+				GetData = pulldata("GetData");
+			}
+			if (!(getdata("Status").equals(""))) {
+				MSISDNStatus = getdata("Status");
+			} else {
+				MSISDNStatus = pulldata("Status");
 			}
 
 			CO.waitforload();
@@ -746,8 +757,84 @@ public class Keyword_Guided extends Driver
 				Result.takescreenshot("Contact Verification Failure");
 				Continue.set(false);
 			}
+			// Wait time for Dunning Action
+			int loop = 0;
+			do {
+				cDriver.get().navigate().refresh();
+				Thread.sleep(5000);
+				loop++;
+			} while (loop <= 2);
+			CO.waitforload();
+			CO.waitmoreforload();
+			CO.TraverseLatestOrder(MSISDN, MSISDNStatus);
+			int COL_FUL_STATUS = 0;
+			CO.scroll("Ful_Status", "WebButton");
+			Col = CO.Select_Cell("Line_Items", "Fulfillment Status");
+			if (CO.Col_Data(Col).equalsIgnoreCase("fulfillment status"))
+				COL_FUL_STATUS = Col;
+			int Row_Count = Browser.WebTable.getRowCount("Line_Items");
+			CO.scroll("Submit", "WebButton");
+			if (Row_Count <= 3) {
+				CO.scroll("Expand", "WebButton");
+				Browser.WebButton.click("Expand");
+			}
+			Result.takescreenshot("Order Status Verification");
+			Order_Status = Browser.WebTable.getCellData("Line_Items", Row_Count, COL_FUL_STATUS);
+			if (Order_Status.equals("Complete") == false) {
+				Continue.set(false);
+				Result.fUpdateLog("Order is not Completed");
+				Result.takescreenshot("Order is not Completed");
+			}
 
-			if (Continue.get()) {
+			// fetching Order_no
+			Order_no = CO.Order_ID();
+			Utlities.StoreValue("Order_no", Order_no);
+			Test_OutPut += "Order_no : " + Order_no + ",";
+			CO.Action_Update("Update", "");
+			Result.takescreenshot("SIM Swap Order no: " + Order_no);
+
+			CO.ToWait();
+			CO.GetSiebelDate();
+			Result.fUpdateLog("Account Level Validation");
+			Result.takescreenshot("Account Level Validation");
+			CO.GlobalSearch("MSISDN", MSISDN);
+			if (Browser.WebLink.exist("Acc_Portal")) {
+				CO.waitforload();
+				Browser.WebLink.click("Acc_Portal");
+			}
+			CO.waitforload();
+			CO.InstalledAssertChange("New Query                   [Alt+Q]");
+			Col = CO.Select_Cell("Installed_Assert", "Service ID");
+			Browser.WebTable.SetDataE("Installed_Assert", 2, Col, "Serial_Number", MSISDN);
+			Browser.WebButton.click("InstalledAssert_Go");
+			CO.waitforload();
+			CO.Text_Select("a", GetData);
+			CO.waitmoreforload();
+			Browser.WebButton.click("Expand");
+			Col = CO.Select_Cell("Acc_Installed_Assert", "Product");
+			int RowCount = Browser.WebTable.getRowCount("Acc_Installed_Assert");
+			Browser.WebTable.click("Acc_Installed_Assert", Row, Col + 1);
+			boolean flag = false;
+			for (Row = 2; Row <= RowCount; Row++) {
+				if (Browser.WebTable.getCellData("Acc_Installed_Assert", Row, Col).trim().equals("SIM Card")) {
+					Col = CO.Select_Cell("Acc_Installed_Assert", "Service ID");
+					if (Browser.WebTable.getCellData("Acc_Installed_Assert", Row, Col).trim().equals(New_SIM)) {
+						flag = true;
+						Result.fUpdateLog(
+								"SIM Swap reflected in Accountfor the specific MSISDN " + MSISDN + " as " + New_SIM);
+						Result.takescreenshot(
+								"SIM Swap reflected in Accountfor the specific MSISDN " + MSISDN + " as " + New_SIM);
+					} else {
+						Result.fUpdateLog("SIM Swap is not reflected in Accountfor the specific MSISDN " + MSISDN
+								+ " as " + New_SIM);
+						Result.takescreenshot("SIM Swap is not reflected in Account for the specific MSISDN " + MSISDN
+								+ " as " + New_SIM);
+					}
+					break;
+				}
+
+			}
+			if (Continue.get() & flag) {
 				Test_OutPut += "";
 				Result.takescreenshot("SIM swap Global Search is Successfull");
 				Result.fUpdateLog("SIM swap Global Search is Successfull");

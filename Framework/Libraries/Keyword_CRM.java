@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -11,6 +12,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -241,9 +243,11 @@ public class Keyword_CRM extends Driver {
 					Browser.WebEdit.Set("Phone", pulldata("Phone"));
 				}
 
-				/*Browser.WebLink.waittillvisible("Con_Link");
-				Browser.WebLink.click("Con_Link");*/
-				int Col = CO.Select_Cell("Contact", "Last_Name");		
+				/*
+				 * Browser.WebLink.waittillvisible("Con_Link");
+				 * Browser.WebLink.click("Con_Link");
+				 */
+				int Col = CO.Select_Cell("Contact", "Last_Name");
 				Browser.WebTable.click("Contact", 2, Col);
 
 				// Handles Alerts
@@ -873,7 +877,7 @@ public class Keyword_CRM extends Driver {
 				if (CO.isAlertExist())
 					Continue.set(false);
 			}
-			
+
 			if (ReservationToken.equals("")) {
 				CO.scroll("Numbers", "WebLink");
 				Browser.WebLink.click("Numbers");
@@ -2538,7 +2542,7 @@ public class Keyword_CRM extends Driver {
 	 * Designed By			: Sravani Reddy
 	 * Last Modified Date 	: 27-Sep-2017
 	--------------------------------------------------------------------------------------------------------*/
-	public String Change_SmartLimit() {
+	public String ModifySmartLimit() {
 		String Test_OutPut = "", Status = "";
 		String MSISDN, GetData = null, Order_no;
 		int Inst_RowCount, Col_P, Col_SID, Col, Col_s, row_value = 0;
@@ -2555,10 +2559,10 @@ public class Keyword_CRM extends Driver {
 			} else {
 				GetData = pulldata("GetData");
 			}
-			if (!(getdata("SL_LimitAmount").equals(""))) {
-				SL_LimitAmount = getdata("SL_LimitAmount");
+			if (!(getdata("Spend_Limit").equals(""))) {
+				SL_LimitAmount = getdata("Spend_Limit");
 			} else {
-				SL_LimitAmount = pulldata("SL_LimitAmount");
+				SL_LimitAmount = pulldata("Spend_Limit");
 			}
 			CO.Assert_Search(MSISDN, "Active");
 			CO.waitforload();
@@ -4190,7 +4194,7 @@ public class Keyword_CRM extends Driver {
 				Browser.WebButton.click("Expand");
 			}
 			CO.Action_Update("Resume", MSISDN);
-			//Test_OutPut += OrderSubmission().split("@@")[1];
+			// Test_OutPut += OrderSubmission().split("@@")[1];
 
 			// fetching Order_no
 			Order_no = CO.Order_ID();
@@ -6128,9 +6132,16 @@ public class Keyword_CRM extends Driver {
 
 			Browser.WebButton.waittillvisible("Validate");
 			Test_OutPut += OrderSubmission().split("@@")[1];
-			;
+			CO.LineItems_Dat();
 
-			// CO.Assert_Search(MSISDN, "Active");
+			if (CO.getKeyFromValue(LineItemData, BarringOption) != null) {
+				Result.fUpdateLog("Line Item Updation was as expected for " + BarringOption);
+				Result.takescreenshot("Line Item Updation was as expected" + BarringOption);
+			} else {
+				Continue.set(false);
+				Result.fUpdateLog("Line Item Updation was not as expected");
+				Result.takescreenshot("Line Item Updation was not as expected");
+			}
 
 			CO.ToWait();
 			if (Continue.get()) {
@@ -7231,4 +7242,152 @@ public class Keyword_CRM extends Driver {
 		Result.fUpdateLog("------Collection Exit Process Details - Completed------");
 		return Status + "@@" + Test_OutPut + "<br/>";
 	}
+
+	public String ModifySmartLimit_Acc360()
+
+	{
+		String MSISDN, Order_no, Spend_Limit;
+		Boolean flag = false;
+		String Test_OutPut = "", Status = "";
+		Result.fUpdateLog("------Modify Spend Limit via Global Search------");
+		try {
+
+			if (!(getdata("MSISDN").equals(""))) {
+				MSISDN = getdata("MSISDN");
+			} else {
+				MSISDN = pulldata("MSISDN");
+			}
+
+			if (!(getdata("Spend_Limit").equals(""))) {
+				Spend_Limit = getdata("Spend_Limit");
+			} else {
+				Spend_Limit = pulldata("Spend_Limit");
+			}
+			CO.GlobalSearch("MSISDN", MSISDN);
+
+			CO.waitforload();
+			CO.Text_Select("div", "Asset Summary");
+			CO.waitforload();
+			Browser.WebButton.waittillvisible("SpendLimit");
+			CO.waitforload();
+
+			Result.fUpdateLog("Modifying Spend Limit via Account 360");
+			Result.takescreenshot("Modifying Spend Limit via Account 360");
+
+			if (Browser.WebButton.exist("SpendLimit") == true) {
+				CO.waitforload();
+				CO.scroll("SpendLimit", "WebButton");
+				CO.waitforload();
+				Browser.WebButton.click("SpendLimit");
+				CO.waitforload();
+				CO.waitmoreforload();
+				CO.waitforload();
+
+				String x;
+				do {
+					x = Browser.WebEdit.gettext("Due_Date");
+					if (!x.contains("/")) {
+						Browser.WebButton.click("Date_Cancel");
+						CO.waitforload();
+						Browser.WebButton.click("Suspend");
+					}
+					CO.waitforload();
+				} while (x.isEmpty());
+
+				CO.scroll("Date_Continue", "WebButton");
+				Browser.WebButton.click("Date_Continue");
+
+				CO.waitmoreforload();
+				Browser.WebLink.click("Global_Search");
+				CO.waitforload();
+
+				List<WebElement> Title_Search = cDriver.get()
+						.findElements(By.xpath("//div[@class='siebui-ecfg-header-label']"));
+				List<WebElement> input_Search = cDriver.get()
+						.findElements(By.xpath("//input[@class='siebui-ctrl-input ']"));
+				Result.fUpdateLog("Spend Limit Page with " + Title_Search.size() + " Titles and " + input_Search.size()
+						+ " inputs");
+				Result.takescreenshot("Before Modifying Spend Limit");
+				for (int i = 0; i < Title_Search.size(); i++) {
+					if (Title_Search.get(i).getText().contains("SL Limit Amount")) {
+						((RemoteWebDriver) cDriver.get()).executeScript("arguments[0].scrollIntoView(true)",
+								input_Search.get(i));
+						CO.ToWait();
+						input_Search.get(i).click();
+						input_Search.get(i).clear();
+						CO.ToWait();
+						CO.waitforload();
+						input_Search.get(i).sendKeys(Spend_Limit);
+						Result.fUpdateLog("Modifying Spend Limit to " + Spend_Limit);
+						Result.takescreenshot("Modifying Spend Limit to " + Spend_Limit);
+						flag = true;
+						CO.ToWait();
+					}
+				}
+
+				CO.waitforload();
+				CO.Text_Select("button", "Verify");
+				CO.isAlertExist();
+				CO.waitforload();
+				CO.Text_Select("button", "Done");
+
+				if (CO.isAlertExist()) {
+					Continue.set(false);
+					Result.fUpdateLog("Error On Clicking Done Button");
+					Result.takescreenshot("Error On Clicking Done Button");
+				}
+
+				Test_OutPut += OrderSubmission().split("@@")[1];
+
+				Order_no = CO.Order_ID();
+				Utlities.StoreValue("Order_no", Order_no);
+				Test_OutPut += "Order_no : " + Order_no + ",";
+
+				CO.LineItems_Data();
+				Result.takescreenshot("");
+
+				CO.ToWait();
+				CO.GetSiebelDate();
+
+				if (CO.getKeyFromValue(LineItemData, "Smart Limit") != null) {
+					Result.fUpdateLog("Line Item Updation was as expected");
+					Result.takescreenshot("Line Item Updation was as expected");
+				} else {
+					Continue.set(false);
+					Result.fUpdateLog("Line Item Updation was not as expected");
+					Result.takescreenshot("Line Item Updation was not as expected");
+				}
+
+			} else {
+				Result.fUpdateLog(
+						"Please check the MSISDN Provided --- Spendlimit is not available for the MSISDN Provided");
+				Result.takescreenshot(
+						"Please check the MSISDN Provided --- Spendlimit is not available for the MSISDN Provided");
+				Continue.set(false);
+			}
+
+			if (Continue.get() & flag) {
+				Test_OutPut += "";
+				Result.takescreenshot("Modify Spend Limit via Global Search is Successfull");
+				Result.fUpdateLog("Modify Spend Limit via Global Search is Successfull");
+				Status = "PASS";
+			} else {
+				Test_OutPut += "Modify Spend Limit via Global Search Failed" + ",";
+				Result.takescreenshot("Modify Spend Limit via Global Search Failed");
+				Result.fUpdateLog("Modify Spend Limit via Global Search Failed");
+				Status = "FAIL";
+			}
+		} catch (Exception e) {
+			Status = "FAIL";
+			Result.takescreenshot("Exception occurred");
+			Test_OutPut += "Exception occurred" + ",";
+			Result.fUpdateLog("Exception occurred *** " + e.getMessage());
+			e.printStackTrace();
+
+		}
+		Result.fUpdateLog("-----Modify Spend Limit via Global Search - Completed------");
+		return Status + "@@" + Test_OutPut + "<br/>";
+
+	}
+
 }

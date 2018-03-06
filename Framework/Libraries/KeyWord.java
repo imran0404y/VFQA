@@ -106,10 +106,14 @@ public class KeyWord {
 		return KC.Enterprise_Migration();
 	}
 
-	public String Change_SmartLimit() {
-		return KC.Change_SmartLimit();
+	public String ModifySmartLimit() {
+		return KC.ModifySmartLimit();
 	}
 
+	public String ModifySmartLimit_Acc360() {
+		return KC.ModifySmartLimit_Acc360();
+	}
+	
 	public String BillPayment() {
 		return KC.BillPayment();
 	}
