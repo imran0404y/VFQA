@@ -819,7 +819,7 @@ public class Common extends Driver {
 		try {
 			waitforload();
 			int Row = 2, Col, flag = 1, Count = 1;
-			//String Pay_Type = "";
+			// String Pay_Type = "";
 
 			Title_Select("a", "Home");
 			waitforload();
@@ -865,11 +865,11 @@ public class Common extends Driver {
 			waitforload();
 			int Row_Count = Browser.WebTable.getRowCount("Bill_Prof");
 			int Col_Val = Select_Cell("Bill_Prof", "Name");
-			//int Col2 = Select_Cell("Bill_Prof", "Payment Type");
+			// int Col2 = Select_Cell("Bill_Prof", "Payment Type");
 			for (int i = 2; i <= Row_Count; i++) {
 				String BillPro = Browser.WebTable.getCellData("Bill_Prof", i, Col_Val);
 				if (BillPro.equals(BP)) {
-					//Pay_Type = Browser.WebTable.getCellData("Bill_Prof", i, Col2);
+					// Pay_Type = Browser.WebTable.getCellData("Bill_Prof", i, Col2);
 					Browser.WebTable.click("Bill_Prof", i, Col_Val);
 
 					break;
@@ -2153,50 +2153,34 @@ public class Common extends Driver {
 		}
 	}
 
-	/*---------------------------------------------------------------------------------------------------------
-	 * Method Name			: TraverseLatestOrder
-	 * Arguments			: AccountNumber
-	 * Use 					: To traverse the latest Order Created in a specific Account 
-	 * Modified By			: Vinodhini Raviprasad
-	 * Last Modified Date 	: 21-01-2018
-	--------------------------------------------------------------------------------------------------------*/
-	public void TraverseLatestOrder(String AccountNumber) {
+	public void CreditAlertQuery(String AccountNumber, String Action_type) {
 		try {
-			int Tgt_Row = 2;
-			if (Browser.WebButton.exist("Scroll_Left"))
-				Browser.WebButton.click("Scroll_Left");
+			Actions a = new Actions(cDriver.get());
+
+			WebElement we = cDriver.get().findElement(By.xpath("//body"));
+			a.sendKeys(we, Keys.chord(Keys.CONTROL, Keys.SHIFT, "a")).perform();
+
+			Result.takescreenshot("Site Map View Navigation");
+			Result.fUpdateLog("Site Map View Navigation");
+
+			Text_Select("a", "Credit Alert List");
 			waitforload();
-			if (Browser.WebButton.exist("Scroll_Left"))
-				Browser.WebButton.click("Scroll_Left");
-			Account_Search(AccountNumber);
 			waitforload();
-			Text_Select("a", "Orders");
 			waitforload();
-			int Col = Select_Cell("Order_Table", "Order Date");
-			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
-			SimpleDateFormat OD_Format = new SimpleDateFormat("mm/dd/yyyy hh:mm:ss a", Locale.US);
-			Date OrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
-			Date tempDate;
-			String temp;
-			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
-				waitforload();
-				temp = Browser.WebTable.getCellData("Order_Table", O_Row, Col);
-				tempDate = OD_Format.parse(temp);
-				Calendar cal1 = Calendar.getInstance();
-				Calendar cal2 = Calendar.getInstance();
-				cal1.setTime(OrderDate);
-				cal2.setTime(tempDate);
-				if (cal1.before(cal2)) {
-					OrderDate = tempDate;
-					Tgt_Row = O_Row;
-				}
-			}
-			Col = Select_Cell("Order_Table", "Order #");
-			Result.fUpdateLog("Traversing to the latest created Order " + OrderDate);
-			Result.takescreenshot("Traversing to the latest created Order " + OrderDate);
-			Browser.WebTable.clickL("Order_Table", Tgt_Row, Col);
+			Result.takescreenshot("Navigating to CreditAlert Table");
+			Result.fUpdateLog("Navigating to CreditAlert Table");
+			waitforload();
+			scroll("CredetitAlertQuery", "WebButton");
+			Browser.WebButton.click("CredetitAlertQuery");
+			waitforload();
+			Browser.WebEdit.Set("Account_No", AccountNumber);
+			Browser.WebEdit.Set("Action_type", Action_type);
+			waitforload();
+			Browser.WebButton.click("CredetitAlertGO");
 		} catch (Exception e) {
 			Continue.set(false);
+			Result.takescreenshot("Failed to Query Credit Alert Account");
+			Result.fUpdateLog("Failed to Query Credit Alert Account");
 		}
 	}
 
@@ -2243,6 +2227,54 @@ public class Common extends Driver {
 	}
 
 	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: TraverseLatestOrder
+	 * Arguments			: AccountNumber
+	 * Use 					: To traverse the latest Order Created in a specific Account 
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 21-01-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public void TraverseLatestOrder(String AccountNumber) {
+		try {
+			int Tgt_Row = 2;
+			if (Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
+			waitforload();
+			if (Browser.WebButton.exist("Scroll_Left"))
+				Browser.WebButton.click("Scroll_Left");
+			waitforload();
+			Account_Search(AccountNumber);
+			waitforload();
+			Text_Select("a", "Orders");
+			waitforload();
+			int Col = Select_Cell("Order_Table", "Order Date");
+			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
+			SimpleDateFormat OD_Format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a", Locale.US);
+			Date OrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
+			Date tempDate;
+			String temp;
+			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
+				waitforload();
+				temp = Browser.WebTable.getCellData("Order_Table", O_Row, Col);
+				tempDate = OD_Format.parse(temp);
+				Calendar cal1 = Calendar.getInstance();
+				Calendar cal2 = Calendar.getInstance();
+				cal1.setTime(OrderDate);
+				cal2.setTime(tempDate);
+				if (cal1.before(cal2)) {
+					OrderDate = tempDate;
+					Tgt_Row = O_Row;
+				}
+			}
+			Col = Select_Cell("Order_Table", "Order #");
+			Result.fUpdateLog("Traversing to the latest created Order " + OrderDate);
+			Result.takescreenshot("Traversing to the latest created Order " + OrderDate);
+			Browser.WebTable.clickL("Order_Table", Tgt_Row, Col);
+		} catch (Exception e) {
+			Continue.set(false);
+		}
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
 	 * Method Name			: TraverseLatestBeforeOrder
 	 * Arguments			: AccountNumber
 	 * Use 					: To traverse the second latest Order Created in a specific Account 
@@ -2251,9 +2283,11 @@ public class Common extends Driver {
 	--------------------------------------------------------------------------------------------------------*/
 	public void TraverseLatestBeforeOrder(String AccountNumber) {
 		try {
-			int Tgt_Row = 2;
-			if (Browser.WebButton.exist("Scroll_Left"))
-				Browser.WebButton.click("Scroll_Left");
+			int Tgt_Row = 2, Tgt_Row1 = 0;
+			/*
+			 * if(Browser.WebButton.exist("Scroll_Left"))
+			 * Browser.WebButton.click("Scroll_Left");
+			 */
 			waitforload();
 			if (Browser.WebButton.exist("Scroll_Left"))
 				Browser.WebButton.click("Scroll_Left");
@@ -2263,9 +2297,10 @@ public class Common extends Driver {
 			waitforload();
 			int Col = Select_Cell("Order_Table", "Order Date");
 			int OrderCount = Browser.WebTable.getRowCount("Order_Table");
-			SimpleDateFormat OD_Format = new SimpleDateFormat("mm/dd/yyyy hh:mm:ss a", Locale.US);
-			Date LatestOrderDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
-
+			SimpleDateFormat OD_Format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a", Locale.US);
+			// Date LatestOrderDate =
+			// OD_Format.parse(Browser.WebTable.getCellData("Order_Table", Tgt_Row, Col));
+			Date LatestOrderDate = OD_Format.parse("3/04/2018 02:46:54 PM");
 			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
 				Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
 				Calendar cal1 = Calendar.getInstance();
@@ -2282,22 +2317,118 @@ public class Common extends Driver {
 			for (int O_Row = 3; O_Row <= OrderCount; O_Row++) {
 				if (Tgt_Row != O_Row) {
 					Date tempDate = OD_Format.parse(Browser.WebTable.getCellData("Order_Table", O_Row, Col));
-					Calendar cal1 = Calendar.getInstance();
-					Calendar cal2 = Calendar.getInstance();
-					cal1.setTime(BeforeOrderDate);
-					cal2.setTime(tempDate);
-					if (cal1.before(cal2)) {
+					Calendar cal3 = Calendar.getInstance();
+					Calendar cal4 = Calendar.getInstance();
+					cal3.setTime(BeforeOrderDate);
+					cal4.setTime(tempDate);
+
+					if (cal3.before(cal4)) {
 						BeforeOrderDate = tempDate;
-						Tgt_Row = O_Row;
+						Tgt_Row1 = O_Row;
 					}
 				}
 			}
 			Col = Select_Cell("Order_Table", "Order #");
 			Result.fUpdateLog("Traversing to the latest created Order " + BeforeOrderDate);
 			Result.takescreenshot("Traversing to the latest created Order " + BeforeOrderDate);
-			Browser.WebTable.clickL("Order_Table", Tgt_Row, Col);
+			Browser.WebTable.clickL("Order_Table", Tgt_Row1, Col);
 		} catch (Exception e) {
 			Continue.set(false);
+		}
+	}
+
+	/*---------------------------------------------------------------------------------------------------------
+	 * Method Name			: PlanChangeTOO
+	 * Arguments			: Null
+	 * Use 					: To change the existing plan to Prepaid Red Promotion
+	 * Modified By			: Vinodhini Raviprasad
+	 * Last Modified Date 	: 01-03-2018
+	--------------------------------------------------------------------------------------------------------*/
+	public void PlanChangeTOO(String MSISDN, String GetData, String PrepaidBillingNO) {
+		String New_PlanName = "Prepaid Red Promotion", Billprofile_No = PrepaidBillingNO;
+		try {
+			Assert_Search(MSISDN, "Active");
+			waitforload();
+			Text_Select("a", GetData);
+			waitforload();
+			Plan_selection(GetData, MSISDN);
+			waitmoreforload();
+			Browser.WebEdit.Set("PopupQuery_Search", New_PlanName);
+			String Path[] = Utlities.FindObject("PopupQuery_Search", "WebEdit");
+			cDriver.get().findElement(By.xpath(Path[0])).sendKeys(Keys.ENTER);
+			Result.takescreenshot("New Plane is entered in Plan Upgrade Pop Up");
+			waitforload();
+
+			if (Browser.WebTable.getRowCount("Promotion_Upgrades") >= 2) {
+				scroll("Upgrade_OK", "WebButton");
+				Browser.WebButton.click("Upgrade_OK");
+			} else {
+				Continue.set(false);
+				System.exit(0);
+			}
+
+			int Col, Col_P, Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
+			Col = Select_Cell("Line_Items", "Product");
+			Col_P = Actual_Cell("Line_Items", "Action");
+			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
+			for (int i = 2; i <= Row_Count1; i++) {
+				String LData = Browser.WebTable.getCellData("Line_Items", i, Col);
+				String Action = Browser.WebTable.getCellData("Line_Items", i, Col_P);
+
+				if (LData.equalsIgnoreCase(New_PlanName)) {
+					if (Action.equalsIgnoreCase("Add")) {
+						Result.fUpdateLog("Action Update   " + LData + ":" + Action);
+					} else {
+						Result.fUpdateLog(LData + ":" + Action);
+						Continue.set(false);
+					}
+				}
+			}
+			if (Row_Count1 <= 4) {
+				Browser.WebButton.waittillvisible("Expand");
+				Browser.WebButton.click("Expand");
+			}
+			LineItems_Data();
+
+			if (Billprofile_No != null) {
+				Webtable_Value("Billing Profile", Billprofile_No);
+			}
+			Result.takescreenshot("");
+			scroll("Line_Items", "WebTable");
+			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
+			Col = Select_Cell("Line_Items", "Product");
+			Col_P = Actual_Cell("Line_Items", "Action");
+			int Col_bp = Actual_Cell("Line_Items", "Billing Profile");
+			Row_Count1 = Browser.WebTable.getRowCount("Line_Items");
+			for (int i = 2; i <= Row_Count1; i++) {
+				String LData = Browser.WebTable.getCellData("Line_Items", i, Col);
+				String Action = Browser.WebTable.getCellData("Line_Items", i, Col_P);
+				if (LData.equalsIgnoreCase(GetData) || LData.equalsIgnoreCase(New_PlanName)) {
+					Popup_Click("Line_Items", i, Col_bp);
+					waitforload();
+					Popup_Selection("Bill_Selection", "Name", Billprofile_No);
+					Result.takescreenshot("");
+				}
+				if (LData.equalsIgnoreCase(New_PlanName)) {
+					if (Action.equalsIgnoreCase("Add")) {
+						Result.fUpdateLog("Action Update   " + LData + ":" + Action);
+					} else {
+						Result.fUpdateLog(LData + ":" + Action);
+						Continue.set(false);
+					}
+				}
+
+				waitforload();
+				/*
+				 * Test_OutPut += OrderSubmission().split("@@")[1];
+				 * 
+				 * CO.ToWait(); CO.GetSiebelDate();
+				 */
+
+			}
+		} catch (Exception e) {
+			Continue.set(false);
+			Result.fUpdateLog("Exception occured during Postpaid to Prepaid transition");
 		}
 	}
 

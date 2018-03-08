@@ -370,11 +370,9 @@ public class Keyword_Putty extends Driver {
 
 				if (str_FileContent.contains("logout") && Continue.get()) {
 					Test_OutPut += "Commands Executed Successfully" + ",";
-					Result.fUpdateLog(str_FileContent);
 					Status = "PASS";
 				} else {
 					Test_OutPut += "Failed to Execute the commands" + ",";
-					Result.fUpdateLog(str_FileContent);
 					Status = "Fail";
 				}
 

@@ -138,8 +138,8 @@ public class KeyWord {
 		return KC.TransferOfService();
 	}
 
-	public String TransferOfOwnership() {
-		return KC.TransferOfOwnership();
+	public String TransferOfOwnership_C2C() {
+		return KC.TransferOfOwnership_C2C();
 	}
 
 	public String Suspension() {
