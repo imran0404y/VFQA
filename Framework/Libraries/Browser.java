@@ -20,8 +20,7 @@ public class Browser extends Driver {
 	 * Last Modified Date 	: 16-April-2017
 	--------------------------------------------------------------------------------------------------------*/
 	public static class WebEdit {
-		public static void Set(String objname, String objvalue) throws IOException {
-			try {
+		public static void Set(String objname, String objvalue) throws Exception{
 				String objtype = "WebEdit";
 				String[] objprop = Utlities.FindObject(objname, objtype);
 				Method.clearTD(objprop);
@@ -30,10 +29,8 @@ public class Browser extends Driver {
 
 				if (Continue.get() == false) {
 					Result.fUpdateLog("Failed at : " + objname);
+					throw new Exception();
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 
 		public static String gettext(String objname) {
@@ -42,7 +39,7 @@ public class Browser extends Driver {
 			return Method.getval(objprop);
 		}
 
-		public static void click(String objname) throws IOException {
+		public static void click(String objname){
 			String objtype = "WebEdit";
 			String[] objprop = Utlities.FindObject(objname, objtype);
 			Method.clearTD(objprop);
@@ -51,7 +48,7 @@ public class Browser extends Driver {
 			}
 		}
 
-		public static void clear(String objname) throws IOException {
+		public static void clear(String objname) {
 			String objtype = "WebEdit";
 			String[] objprop = Utlities.FindObject(objname, objtype);
 			Method.clearTD(objprop);

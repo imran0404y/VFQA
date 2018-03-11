@@ -490,7 +490,6 @@ public class Method extends Driver {
 		}
 		if (i == identify.length) {
 			Continue.set(false);
-
 			return null;
 		} else {
 			return TxtVal;
@@ -504,7 +503,7 @@ public class Method extends Driver {
 	 * Designed By			: AG
 	 * Last Modified Date 	: 25-Apr-2016
 	--------------------------------------------------------------------------------------------------------*/
-	public static void waittillobjvisible(String[] identify) throws InterruptedException {
+	public static void waittillobjvisible(String[] identify){
 		String vis = "false";
 		int countval = 1;
 		while (countval < 5) {
@@ -556,7 +555,6 @@ public class Method extends Driver {
 			if (i == identify.length) {
 				vis = "false";
 				countval++;
-				Thread.sleep(1);
 			} else {
 				vis = "true";
 				break;
@@ -568,56 +566,65 @@ public class Method extends Driver {
 	}
 
 	public static boolean existobj(String[] identify) {
-		int i = 0;
+		String vis = "false";
+		int countval = 1;
 		Exception Error = null;
-		for (i = 0; i < identify.length;) {
-			try {
-				switch (i) {
-				case 0:
-					if (identify[0] != "") {
-						cDriver.get().findElement(By.xpath(identify[0])).isDisplayed();
-						break;
-					} else {
-						throw new Exception(Error);
+		while (countval < 5) {
+			int i = 0;
+			for (i = 0; i < identify.length;) {
+				try {
+					switch (i) {
+					case 0:
+						if (identify[0] != "") {
+							cDriver.get().findElement(By.xpath(identify[0])).isDisplayed();
+							break;
+						} else {
+							throw new Exception(Error);
+						}
+					case 1:
+						if (identify[1] != "") {
+							cDriver.get().findElement(By.name(identify[1])).isDisplayed();
+							break;
+						} else {
+							throw new Exception(Error);
+						}
+					case 2:
+						if (identify[2] != "") {
+							cDriver.get().findElement(By.id(identify[2])).isDisplayed();
+							break;
+						} else {
+							throw new Exception(Error);
+						}
+					case 3:
+						if (identify[3] != "") {
+							cDriver.get().findElement(By.className(identify[3])).isDisplayed();
+							break;
+						} else {
+							throw new Exception(Error);
+						}
+					case 4:
+						if (identify[4] != "") {
+							cDriver.get().findElement(By.linkText(identify[4])).isDisplayed();
+							break;
+						} else {
+							throw new Exception(Error);
+						}
 					}
-				case 1:
-					if (identify[1] != "") {
-						cDriver.get().findElement(By.name(identify[1])).isDisplayed();
-						break;
-					} else {
-						throw new Exception(Error);
-					}
-				case 2:
-					if (identify[2] != "") {
-						cDriver.get().findElement(By.id(identify[2])).isDisplayed();
-						break;
-					} else {
-						throw new Exception(Error);
-					}
-				case 3:
-					if (identify[3] != "") {
-						cDriver.get().findElement(By.className(identify[3])).isDisplayed();
-						break;
-					} else {
-						throw new Exception(Error);
-					}
-				case 4:
-					if (identify[4] != "") {
-						cDriver.get().findElement(By.linkText(identify[4])).isDisplayed();
-						break;
-					} else {
-						throw new Exception(Error);
-					}
+					break;
+				} catch (Exception e) {
+					i++;
+					Error = e;
 				}
+			}
+			if (i == identify.length) {
+				vis = "false";
+				countval++;
+			} else {
+				vis = "true";
 				break;
-			} catch (Exception e) {
-				i++;
-				Error = e;
 			}
 		}
-		if (i == identify.length) {
-			// System.out.println("Object doesn't Exists:\n");
-			// Error.printStackTrace();
+		if (vis == "false") {
 			return false;
 		} else {
 			return true;
@@ -631,7 +638,7 @@ public class Method extends Driver {
 	 * Designed By			: AG
 	 * Last Modified Date 	: 25-Apr-2016
 	--------------------------------------------------------------------------------------------------------*/
-	public static boolean Methodwaittillenabled(String[] identify) throws InterruptedException {
+	public static boolean Methodwaittillenabled(String[] identify){
 		String vis = "false";
 		int countval = 1;
 		while (countval < 5) {
@@ -683,7 +690,6 @@ public class Method extends Driver {
 			if (i == identify.length) {
 				vis = "false";
 				countval++;
-				Thread.sleep(1);
 			} else {
 				vis = "true";
 				break;
